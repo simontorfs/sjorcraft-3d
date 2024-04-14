@@ -22,9 +22,11 @@ export class InputHandler {
 
   onKeyDown(event: any) {
     if (event.key === "b") {
-      const pole = new Pole();
-      this.viewer.scene.add(pole);
-      this.viewer.poles.push(pole);
+      if (this.viewer.poleTool.active) {
+        this.viewer.poleTool.deactivate();
+      } else {
+        this.viewer.poleTool.activate();
+      }
     }
   }
 
@@ -35,9 +37,11 @@ export class InputHandler {
 
   onMouseUp(event: any) {
     if (this.mouseHasMoved) {
-      // drop
+      // drop after drag
     } else {
-      // click
+      if (this.viewer.poleTool.active) {
+        this.viewer.poleTool.dropPole();
+      }
     }
   }
 
@@ -45,7 +49,10 @@ export class InputHandler {
     this.mouseHasMoved = true;
     this.cursor.x = event.clientX / this.viewer.sizes.width - 0.5;
     this.cursor.y = -event.clientY / this.viewer.sizes.height + 0.5;
-    console.log(this.getGroundPosition());
+    const groundPosition = this.getGroundPosition();
+    if (this.viewer.poleTool.active && groundPosition) {
+      this.viewer.poleTool.dragPole(groundPosition);
+    }
   }
 
   getHoveredObject() {
