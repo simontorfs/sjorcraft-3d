@@ -4,6 +4,7 @@ export class Pole extends THREE.Object3D {
   geometry: THREE.CylinderGeometry;
   material: THREE.MeshStandardMaterial;
   mesh: THREE.Mesh;
+  direction: THREE.Vector3;
   constructor() {
     super();
     const textureLoader = new THREE.TextureLoader();
@@ -25,9 +26,14 @@ export class Pole extends THREE.Object3D {
     });
     this.mesh = new THREE.Mesh(this.geometry, this.material);
     this.add(this.mesh);
-    this.mesh.rotation.y = Math.random() * 2 * Math.PI;
-    this.mesh.position.y = 2;
-    this.position.set(100, 100, 100);
+    this.direction = new THREE.Vector3(0, 1, 0);
+  }
+
+  setDirection(direction: THREE.Vector3) {
+    this.direction = direction.normalize();
+    const quaternion = new THREE.Quaternion();
+    quaternion.setFromUnitVectors(new THREE.Vector3(0, 1, 0), this.direction);
+    this.setRotationFromQuaternion(quaternion);
   }
 
   select() {

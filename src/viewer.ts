@@ -43,8 +43,8 @@ export class Viewer {
       75,
       this.sizes.width / this.sizes.height
     );
-    this.camera.position.z = 5;
-    this.camera.position.y = 3;
+    this.camera.position.z = 4;
+    this.camera.position.y = 5;
     this.camera.position.x = 1;
     this.scene.add(this.camera);
 

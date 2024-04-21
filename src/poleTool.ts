@@ -20,9 +20,8 @@ export class PoleTool {
     demoPole1.position.x = -0.07;
     demoPole1.position.y = 0;
     demoPole1.position.z = -0.8;
-    demoPole1.rotation.x = Math.PI / 6;
-    demoPole1.rotation.y = 0;
-    demoPole1.rotation.z = 0;
+    demoPole1.mesh.position.y = 2;
+    demoPole1.setDirection(new THREE.Vector3(0, 1.8, 1));
 
     const demoPole2 = new Pole();
     this.viewer.scene.add(demoPole2);
@@ -30,9 +29,8 @@ export class PoleTool {
     demoPole2.position.x = 1.8;
     demoPole2.position.y = 0;
     demoPole2.position.z = 0.93;
-    demoPole2.rotation.x = 0;
-    demoPole2.rotation.y = 0;
-    demoPole2.rotation.z = Math.PI / 6;
+    demoPole2.mesh.position.y = 2;
+    demoPole2.setDirection(new THREE.Vector3(-1, 1.8, 0));
 
     const demoPole3 = new Pole();
     this.viewer.scene.add(demoPole3);
@@ -40,9 +38,8 @@ export class PoleTool {
     demoPole3.position.x = 0.07;
     demoPole3.position.y = 0;
     demoPole3.position.z = 2.8;
-    demoPole3.rotation.x = -Math.PI / 6;
-    demoPole3.rotation.y = 0;
-    demoPole3.rotation.z = 0;
+    demoPole3.mesh.position.y = 2;
+    demoPole3.setDirection(new THREE.Vector3(0, 1.8, -1));
 
     const demoPole4 = new Pole();
     this.viewer.scene.add(demoPole4);
@@ -50,9 +47,8 @@ export class PoleTool {
     demoPole4.position.x = -1.8;
     demoPole4.position.y = 0;
     demoPole4.position.z = 1.07;
-    demoPole4.rotation.x = 0;
-    demoPole4.rotation.y = 0;
-    demoPole4.rotation.z = -Math.PI / 6;
+    demoPole4.mesh.position.y = 2;
+    demoPole4.setDirection(new THREE.Vector3(1, 1.8, 0));
   }
 
   activate() {
@@ -73,13 +69,35 @@ export class PoleTool {
     console.log("deactivate");
   }
 
-  dragPole(position: THREE.Vector3) {
+  drawPole(position: THREE.Vector3) {
     if (!this.activePole) return;
     this.activePole.position.set(position.x, position.y, position.z);
+    this.activePole.mesh.position.set(0, 2, 0);
+    this.activePole.setDirection(new THREE.Vector3(0, 1, 0));
+  }
+
+  drawPoleWhileHoveringOtherPole(
+    position: THREE.Vector3,
+    hoveredPole: Pole,
+    normal: THREE.Vector3
+  ) {
+    if (!this.activePole) return;
+
+    const targetOrientationVector = new THREE.Vector3().crossVectors(
+      normal,
+      hoveredPole.direction
+    );
+
+    this.activePole.setDirection(targetOrientationVector);
+
+    this.activePole.position.set(position.x, position.y, position.z);
+    this.activePole.mesh.position.set(0, 0, 0);
   }
 
   dropPole() {
     if (!this.activePole) return;
+    this.viewer.poles.push(this.activePole);
+
     this.activePole = new Pole();
     this.viewer.scene.add(this.activePole);
   }

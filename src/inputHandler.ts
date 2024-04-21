@@ -32,7 +32,6 @@ export class InputHandler {
 
   onMouseDown(event: any) {
     this.mouseHasMoved = false;
-    this.hoveredObject = this.getHoveredObject();
   }
 
   onMouseUp(event: any) {
@@ -50,8 +49,27 @@ export class InputHandler {
     this.cursor.x = event.clientX / this.viewer.sizes.width - 0.5;
     this.cursor.y = -event.clientY / this.viewer.sizes.height + 0.5;
     const groundPosition = this.getGroundPosition();
-    if (this.viewer.poleTool.active && groundPosition) {
-      this.viewer.poleTool.dragPole(groundPosition);
+    const hoveredObject = this.getHoveredObject();
+    if (this.viewer.poleTool.active) {
+      if (hoveredObject?.normal) {
+        const hoveredPole = hoveredObject.object.parent as Pole;
+
+        const rotationMatrix = new THREE.Matrix4();
+        rotationMatrix.extractRotation(hoveredPole.matrix);
+
+        const transformedNormal = hoveredObject.normal
+          .clone()
+          .applyMatrix4(rotationMatrix)
+          .normalize();
+
+        this.viewer.poleTool.drawPoleWhileHoveringOtherPole(
+          hoveredObject.point,
+          hoveredPole,
+          transformedNormal
+        );
+      } else {
+        this.viewer.poleTool.drawPole(groundPosition);
+      }
     }
   }
 
@@ -64,7 +82,7 @@ export class InputHandler {
 
     const intersects = raycaster.intersectObjects(this.viewer.poles);
     if (intersects.length) {
-      return intersects[0].object as Pole;
+      return intersects[0];
     }
     return;
   }
@@ -80,6 +98,6 @@ export class InputHandler {
     if (intersect.length) {
       return intersect[0].point;
     }
-    return;
+    return new THREE.Vector3(0, 0, 0);
   }
 }
