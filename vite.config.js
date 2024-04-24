@@ -1,6 +1,6 @@
 export default {
-  root: "src/",
-  publicDir: "../static/",
+  root: "./",
+  publicDir: "apps/3d/resources/textures",
   base: "./",
   server: {
     host: true, // Open to local network and display URL

@@ -1,7 +1,6 @@
 import * as THREE from "three";
 import { Pole } from "./pole";
 import { Viewer } from "./viewer";
-import { SaveTool } from "./saveTool";
 
 export class InputHandler {
   viewer: Viewer;
