@@ -31,11 +31,13 @@ export class InputHandler {
         }
         break;
       case "e":
-        // export poles
+        // export poles into a textfile and download the file
+        this.viewer.poleTool.exportPoles("demo");
         console.info("Poles: ",this.viewer.poles);
         break;
       case "i":
         // import poles
+        this.viewer.poleTool.importPoles();
         console.info("Poles imported");
         break;
       default:
