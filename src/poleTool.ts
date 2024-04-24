@@ -22,6 +22,7 @@ export class PoleTool {
     demoPole1.position.z = -0.8;
     demoPole1.mesh.position.y = 2;
     demoPole1.setDirection(new THREE.Vector3(0, 1.8, 1));
+    demoPole1.name = "demoPole1";
 
     const demoPole2 = new Pole();
     this.viewer.scene.add(demoPole2);
@@ -31,6 +32,7 @@ export class PoleTool {
     demoPole2.position.z = 0.93;
     demoPole2.mesh.position.y = 2;
     demoPole2.setDirection(new THREE.Vector3(-1, 1.8, 0));
+    demoPole2.name = "demoPole2";
 
     const demoPole3 = new Pole();
     this.viewer.scene.add(demoPole3);
@@ -40,6 +42,7 @@ export class PoleTool {
     demoPole3.position.z = 2.8;
     demoPole3.mesh.position.y = 2;
     demoPole3.setDirection(new THREE.Vector3(0, 1.8, -1));
+    demoPole3.name = "demoPole3";
 
     const demoPole4 = new Pole();
     this.viewer.scene.add(demoPole4);
@@ -49,6 +52,7 @@ export class PoleTool {
     demoPole4.position.z = 1.07;
     demoPole4.mesh.position.y = 2;
     demoPole4.setDirection(new THREE.Vector3(1, 1.8, 0));
+    demoPole4.name = "demoPole4";
   }
 
   activate() {
