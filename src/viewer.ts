@@ -64,16 +64,19 @@ export class Viewer {
     const ambientLight = new THREE.AmbientLight();
     this.scene.add(ambientLight);
 
+    //add background lihgt blue
+    this.scene.background = new THREE.Color(0x87ceeb);
+
     // Poles
     this.poles = [];
     this.poleTool = new PoleTool(this);
 
     // Floor
-    const floorGeometry = new THREE.PlaneGeometry(50, 50);
+    const floorGeometry = new THREE.PlaneGeometry(25, 25);
     const floorMaterial = new THREE.MeshBasicMaterial({
       opacity: 0.5,
       transparent: false,
-      color: "green"
+      color: "green",
     });
     this.floor = new THREE.Mesh(floorGeometry, floorMaterial);
     this.floor.rotation.x = -Math.PI / 2;
