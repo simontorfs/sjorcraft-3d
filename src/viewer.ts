@@ -3,6 +3,7 @@ import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
 import { InputHandler } from "./inputHandler";
 import { Pole } from "./pole";
 import { PoleTool } from "./poleTool";
+import { SaveTool } from "./saveTool";
 
 export class Viewer {
   canvas: HTMLElement;
@@ -15,6 +16,7 @@ export class Viewer {
   poleTool: PoleTool;
   poles: Pole[];
   floor: THREE.Mesh;
+  saveTool: SaveTool;
 
   constructor() {
     this.sizes = { width: window.innerWidth, height: window.innerHeight };
@@ -76,5 +78,8 @@ export class Viewer {
     this.floor = new THREE.Mesh(floorGeometry, floorMaterial);
     this.floor.rotation.x = -Math.PI / 2;
     this.scene.add(this.floor);
+
+    // Save tool
+    this.saveTool = new SaveTool(this);
   }
 }
