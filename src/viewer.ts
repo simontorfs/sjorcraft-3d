@@ -69,8 +69,9 @@ export class Viewer {
     // Floor
     const floorGeometry = new THREE.PlaneGeometry(50, 50);
     const floorMaterial = new THREE.MeshBasicMaterial({
-      opacity: 0.0,
-      transparent: true,
+      opacity: 0.5,
+      transparent: false,
+      color: "green"
     });
     this.floor = new THREE.Mesh(floorGeometry, floorMaterial);
     this.floor.rotation.x = -Math.PI / 2;
