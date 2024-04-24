@@ -21,12 +21,27 @@ export class InputHandler {
   }
 
   onKeyDown(event: any) {
-    if (event.key === "b") {
-      if (this.viewer.poleTool.active) {
-        this.viewer.poleTool.deactivate();
-      } else {
-        this.viewer.poleTool.activate();
-      }
+    switch(event.key) {
+      // start or stop pole tool
+      case "b":
+        if (this.viewer.poleTool.active) {
+          this.viewer.poleTool.deactivate();
+        } else {
+          this.viewer.poleTool.activate();
+        }
+        break;
+      case "e":
+        // export poles
+        console.info("Poles: ",this.viewer.poles);
+        break;
+      case "i":
+        // import poles
+        console.info("Poles imported");
+        break;
+      default:
+        // console.log event.key
+        console.log(event.key);
+        break;
     }
   }
 
