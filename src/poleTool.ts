@@ -119,30 +119,22 @@ export class PoleTool {
   }
 
   importPoles() {
-    const input = document.createElement("input");
-    input.type = "file";
-    input.accept = ".json";
-    input.onchange = (event) => {
-      const target = event.target as HTMLInputElement;
-      const file = target.files?.[0];
-      if (file) {
-        const reader = new FileReader();
-        reader.onload = (event) => {
-          const result = event.target?.result;
-          if (typeof result === "string") {
-            const poles = JSON.parse(result);
-            poles.forEach((pole: { position: THREE.Vector3; direction: THREE.Vector3; }) => {
-              const newPole = new Pole();
-              newPole.position.copy(pole.position);
-              newPole.setDirection(pole.direction);
-              this.viewer.scene.add(newPole);
-              this.viewer.poles.push(newPole);
-            });
-          }
-        };
-        reader.readAsText(file);
-      }
-    };
-    input.click();
+    const fileInput = document.getElementById("file") as HTMLInputElement;
+    fileInput.click();
+    fileInput.addEventListener("change", () => {
+      const file = fileInput.files![0];
+      const reader = new FileReader();
+      reader.onload = () => {
+        const data = JSON.parse(reader.result as string);
+        data.forEach((pole: any) => {
+          const newPole = new Pole();
+          newPole.position.set(pole.position.x, pole.position.y, pole.position.z);
+          newPole.setDirection(new THREE.Vector3(pole.direction.x, pole.direction.y, pole.direction.z));
+          this.viewer.scene.add(newPole);
+          this.viewer.poles.push(newPole);
+        });
+      };
+      reader.readAsText(file);
+    });
   }
 }
