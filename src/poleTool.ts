@@ -102,6 +102,13 @@ export class PoleTool {
     this.viewer.scene.add(this.activePole);
   }
 
+  removeAllPoles() {
+    this.viewer.poles.forEach((pole) => {
+      this.viewer.scene.remove(pole);
+    });
+    this.viewer.poles = [];
+  }
+
   exportPoles(name: string) {
     const poles = this.viewer.poles.map((pole) => {
       return {
@@ -126,6 +133,7 @@ export class PoleTool {
       const reader = new FileReader();
       reader.onload = () => {
         const data = JSON.parse(reader.result as string);
+        this.removeAllPoles();
         data.forEach((pole: any) => {
           const newPole = new Pole();
           newPole.position.set(pole.position.x, pole.position.y, pole.position.z);
