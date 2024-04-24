@@ -1,4 +1,8 @@
 # SjorCRAFT
+![](https://img.shields.io/badge/Project_Name-SjorCRAFT-orange.svg)
+![](https://img.shields.io/badge/Typescript-blue.svg)
+![](https://img.shields.io/badge/Threejs-blue.svg)
+![](https://img.shields.io/badge/Project_Status-In_Progress-green.svg)
 
 SjorCRAFT is a powerful tool tailored specifically for the Usual Leader in Youth Movements. It simplifies the process of creating intricate 3D Sjor constructions, making it easier than ever to design and visualize complex structures for various scouting activities and outdoor adventures.
 
@@ -42,6 +46,7 @@ To get started with SjorCRAFT, you'll need to have Node.js installed on your sys
 - Customization: Tailor constructions to your needs.
 - Collaboration: Work together in real-time.
 - Export: Share your creations easily.
+
 ## License
 This project is under [MIT-License](https://choosealicense.com/licenses/mit/)
 
@@ -49,9 +54,9 @@ This project is under [MIT-License](https://choosealicense.com/licenses/mit/)
 ## Authors
 Meet the minds behind SjorCRAFT:
 
-- [@simontorfs](https://github.com/simontorfs)
-- [@ravenmyrrdin](https://www.github.com/ravenmyrrdin)
-- [@MrDerdiet](https://github.com/MrDerdiet)
+- [Giraf - Simon Torfs](https://github.com/simontorfs)
+- [Springbok - Raven Van Hove](https://www.github.com/ravenmyrrdin)
+- [Meneer Verbruggen - Dieter Verbruggen](https://github.com/MrDerdiet)
 
 ## Disclaimer
 SjorCRAFT is a community project, not affiliated with any organization. Opinions expressed here are ours.
