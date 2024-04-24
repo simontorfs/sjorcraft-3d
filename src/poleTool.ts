@@ -22,6 +22,7 @@ export class PoleTool {
     demoPole1.position.z = -0.8;
     demoPole1.mesh.position.y = 2;
     demoPole1.setDirection(new THREE.Vector3(0, 1.8, 1));
+    demoPole1.name = "demoPole1";
 
     const demoPole2 = new Pole();
     this.viewer.scene.add(demoPole2);
@@ -31,6 +32,7 @@ export class PoleTool {
     demoPole2.position.z = 0.93;
     demoPole2.mesh.position.y = 2;
     demoPole2.setDirection(new THREE.Vector3(-1, 1.8, 0));
+    demoPole2.name = "demoPole2";
 
     const demoPole3 = new Pole();
     this.viewer.scene.add(demoPole3);
@@ -40,6 +42,7 @@ export class PoleTool {
     demoPole3.position.z = 2.8;
     demoPole3.mesh.position.y = 2;
     demoPole3.setDirection(new THREE.Vector3(0, 1.8, -1));
+    demoPole3.name = "demoPole3";
 
     const demoPole4 = new Pole();
     this.viewer.scene.add(demoPole4);
@@ -49,6 +52,7 @@ export class PoleTool {
     demoPole4.position.z = 1.07;
     demoPole4.mesh.position.y = 2;
     demoPole4.setDirection(new THREE.Vector3(1, 1.8, 0));
+    demoPole4.name = "demoPole4";
   }
 
   activate() {
@@ -114,14 +118,20 @@ export class PoleTool {
       return {
         position: pole.position,
         direction: pole.direction,
+        name: pole.name,
+        mesh: pole.mesh.position,
+        rotation: pole.rotation,
       };
     });
     const data = JSON.stringify(poles, null, 2);
-    const blob = new Blob([data], { type: "text/plain" });
+    const blob = new Blob([data], { type: "text/json" });
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
     a.href = url;
-    a.download = `${new Date().toISOString().slice(0, 10).replace(/-/g, "")}-${name}_poles.json`;
+    a.download = `${new Date()
+      .toISOString()
+      .slice(0, 10)
+      .replace(/-/g, "")}-${name}_poles.json`;
     a.click();
   }
 
@@ -133,13 +143,31 @@ export class PoleTool {
       const reader = new FileReader();
       reader.onload = () => {
         const data = JSON.parse(reader.result as string);
+        console.log("testData", data);
         this.removeAllPoles();
         data.forEach((pole: any) => {
           const newPole = new Pole();
-          newPole.position.set(pole.position.x, pole.position.y, pole.position.z);
-          newPole.setDirection(new THREE.Vector3(pole.direction.x, pole.direction.y, pole.direction.z));
+          newPole.position.set(
+            pole.position.x,
+            pole.position.y,
+            pole.position.z
+          );
+          newPole.setDirection(
+            new THREE.Vector3(
+              pole.direction.x,
+              pole.direction.y,
+              pole.direction.z
+            )
+          );
+          newPole.name = pole.name;
+          newPole.mesh.position.set(pole.mesh.x, pole.mesh.y, pole.mesh.z);
+          newPole.rotation.set(
+            pole.rotation._x,
+            pole.rotation._y,
+            pole.rotation._z
+          );
           this.viewer.scene.add(newPole);
-          this.viewer.poles.push(newPole);
+          // this.viewer.poles.push(newPole);
         });
       };
       reader.readAsText(file);
