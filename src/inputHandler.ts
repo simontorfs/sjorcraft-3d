@@ -37,8 +37,6 @@ export class InputHandler {
         break;
       case "i":
         // import poles
-        // remove all current poles
-        
         this.viewer.poleTool.importPoles();
         console.info("Poles imported");
         break;
