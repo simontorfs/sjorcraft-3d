@@ -1,6 +1,7 @@
 import * as THREE from "three";
 import { Pole } from "./pole";
 import { Viewer } from "./viewer";
+import { SaveTool } from "./saveTool";
 
 export class InputHandler {
   viewer: Viewer;
@@ -21,7 +22,7 @@ export class InputHandler {
   }
 
   onKeyDown(event: any) {
-    switch(event.key) {
+    switch (event.key) {
       // start or stop pole tool
       case "b":
         if (this.viewer.poleTool.active) {
@@ -32,12 +33,12 @@ export class InputHandler {
         break;
       case "e":
         // export poles into a textfile and download the file
-        this.viewer.poleTool.exportPoles("demo");
-        console.info("Poles: ",this.viewer.poles);
+        this.viewer.saveTool.exportPoles("demo");
+        console.info("Poles: ", this.viewer.poles);
         break;
       case "i":
         // import poles
-        this.viewer.poleTool.importPoles();
+        this.viewer.saveTool.importPoles();
         console.info("Poles imported");
         break;
       default:
