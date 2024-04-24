@@ -40,9 +40,6 @@ export class InputHandler {
         this.viewer.saveTool.importPoles();
         console.info("Poles imported");
         break;
-      case "v":
-        console.log("deployed vercel test 2");
-        break;
       default:
         // console.log event.key
         console.log(event.key);
