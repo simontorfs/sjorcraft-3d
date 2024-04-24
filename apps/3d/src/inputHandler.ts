@@ -41,7 +41,7 @@ export class InputHandler {
         console.info("Poles imported");
         break;
       case "v":
-        console.log("deployed vercel test");
+        console.log("deployed vercel test 2");
         break;
       default:
         // console.log event.key
