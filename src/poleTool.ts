@@ -105,11 +105,4 @@ export class PoleTool {
     this.activePole = new Pole();
     this.viewer.scene.add(this.activePole);
   }
-
-  removeAllPoles() {
-    this.viewer.poles.forEach((pole) => {
-      this.viewer.scene.remove(pole);
-    });
-    this.viewer.poles = [];
-  }
 }

@@ -16,7 +16,7 @@ export class SaveTool {
       reader.onload = () => {
         const data = JSON.parse(reader.result as string);
         console.log("testData", data);
-        this.viewer.poleTool.removeAllPoles();
+        this.removeAllPoles();
         data.forEach((pole: any) => {
           const newPole = new Pole();
           newPole.position.set(
@@ -66,5 +66,12 @@ export class SaveTool {
       .slice(0, 10)
       .replace(/-/g, "")}-${name}_poles.json`;
     a.click();
+  }
+
+  removeAllPoles() {
+    this.viewer.poles.forEach((pole) => {
+      this.viewer.scene.remove(pole);
+    });
+    this.viewer.poles = [];
   }
 }
