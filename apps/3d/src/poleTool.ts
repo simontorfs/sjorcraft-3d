@@ -7,9 +7,16 @@ export class PoleTool {
   activePole: Pole | undefined;
   snapPlain: THREE.Mesh;
   viewer: Viewer;
+  firstPointPlaced: boolean;
+  firstPoint: THREE.Vector3;
+  hoveringGround: boolean;
+
   constructor(viewer: Viewer) {
     this.viewer = viewer;
     this.active = false;
+    this.firstPointPlaced = false;
+    this.firstPoint = new THREE.Vector3(0, 0, 0);
+    this.hoveringGround = false;
     this.addDemoPoles();
   }
 
@@ -75,9 +82,14 @@ export class PoleTool {
 
   drawPole(position: THREE.Vector3) {
     if (!this.activePole) return;
-    this.activePole.position.set(position.x, position.y, position.z);
-    this.activePole.mesh.position.set(0, 2, 0);
-    this.activePole.setDirection(new THREE.Vector3(0, 1, 0));
+    if (this.firstPointPlaced) {
+      this.activePole.setPositionByTwoPoints(position, this.firstPoint);
+    } else {
+      this.activePole.position.set(position.x, position.y, position.z);
+      this.activePole.mesh.position.set(0, 2, 0);
+      this.activePole.setDirection(new THREE.Vector3(0, 1, 0));
+      this.hoveringGround = true;
+    }
   }
 
   drawPoleWhileHoveringOtherPole(
@@ -87,22 +99,33 @@ export class PoleTool {
   ) {
     if (!this.activePole) return;
 
-    const targetOrientationVector = new THREE.Vector3().crossVectors(
-      normal,
-      hoveredPole.direction
-    );
+    if (this.firstPointPlaced) {
+    } else {
+      const targetOrientationVector = new THREE.Vector3().crossVectors(
+        normal,
+        hoveredPole.direction
+      );
 
-    this.activePole.setDirection(targetOrientationVector);
+      this.activePole.setDirection(targetOrientationVector);
 
-    this.activePole.position.set(position.x, position.y, position.z);
-    this.activePole.mesh.position.set(0, 0, 0);
+      this.activePole.position.set(position.x, position.y, position.z);
+      this.firstPoint.set(position.x, position.y, position.z);
+      this.activePole.mesh.position.set(0, 0, 0);
+
+      this.hoveringGround = false;
+    }
   }
 
-  dropPole() {
+  click() {
     if (!this.activePole) return;
-    this.viewer.poles.push(this.activePole);
+    if (this.firstPointPlaced || this.hoveringGround) {
+      this.viewer.poles.push(this.activePole);
 
-    this.activePole = new Pole();
-    this.viewer.scene.add(this.activePole);
+      this.activePole = new Pole();
+      this.viewer.scene.add(this.activePole);
+      this.firstPointPlaced = false;
+    } else {
+      this.firstPointPlaced = true;
+    }
   }
 }

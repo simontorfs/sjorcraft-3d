@@ -56,7 +56,7 @@ export class InputHandler {
       // drop after drag
     } else {
       if (this.viewer.poleTool.active) {
-        this.viewer.poleTool.dropPole();
+        this.viewer.poleTool.click();
       }
     }
   }
