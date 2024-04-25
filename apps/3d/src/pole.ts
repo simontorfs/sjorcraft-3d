@@ -29,7 +29,7 @@ export class Pole extends THREE.Object3D {
   }
 
   setDirection(direction: THREE.Vector3) {
-    this.direction = direction.normalize();
+    this.direction = direction.clone().normalize();
     const quaternion = new THREE.Quaternion();
     quaternion.setFromUnitVectors(new THREE.Vector3(0, 1, 0), this.direction);
     this.setRotationFromQuaternion(quaternion);
