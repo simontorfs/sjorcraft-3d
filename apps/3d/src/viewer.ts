@@ -64,6 +64,9 @@ export class Viewer {
     const ambientLight = new THREE.AmbientLight();
     this.scene.add(ambientLight);
 
+    //add background
+    this.scene.background = new THREE.Color(0x87ceeb);
+
     // Poles
     this.poles = [];
     this.poleTool = new PoleTool(this);
@@ -71,12 +74,19 @@ export class Viewer {
     // Floor
     const floorGeometry = new THREE.PlaneGeometry(50, 50);
     const floorMaterial = new THREE.MeshBasicMaterial({
-      opacity: 0.0,
-      transparent: true,
+      opacity: 0.5,
+      transparent: false,
+      color: "green",
     });
+
     this.floor = new THREE.Mesh(floorGeometry, floorMaterial);
     this.floor.rotation.x = -Math.PI / 2;
     this.scene.add(this.floor);
+
+    // add grid to floor of 1 by 1 
+    const grid = new THREE.GridHelper(50, 50, 0x000000, 0x000000);
+    grid.position.y = 0.01;
+    this.scene.add(grid);
 
     // Save tool
     this.saveTool = new SaveTool(this);
