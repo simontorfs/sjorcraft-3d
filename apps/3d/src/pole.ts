@@ -46,6 +46,14 @@ export class Pole extends THREE.Object3D {
     this.mesh.position.y = 2.0;
   }
 
+  setPositionBetweenTwoPoles(pointA: THREE.Vector3, pointB: THREE.Vector3) {
+    const centerPoint = pointA.clone().add(pointB.clone()).divideScalar(2.0);
+    this.mesh.position.y = 0.0;
+    this.position.set(centerPoint.x, centerPoint.y, centerPoint.z);
+    const targetOrientationVector = pointB.clone().sub(pointA.clone());
+    this.setDirection(targetOrientationVector);
+  }
+
   select() {
     console.log("select");
   }

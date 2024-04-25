@@ -103,6 +103,7 @@ export class PoleTool {
     if (!this.activePole) return;
 
     if (this.firstPointPlaced) {
+      this.activePole.setPositionBetweenTwoPoles(this.firstPoint, position);
     } else {
       const targetOrientationVector = new THREE.Vector3().crossVectors(
         normal,
