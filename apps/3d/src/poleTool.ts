@@ -83,7 +83,10 @@ export class PoleTool {
   drawPole(position: THREE.Vector3) {
     if (!this.activePole) return;
     if (this.firstPointPlaced) {
-      this.activePole.setPositionByTwoPoints(position, this.firstPoint);
+      this.activePole.setPositionBetweenGroundAndPole(
+        position,
+        this.firstPoint
+      );
     } else {
       this.activePole.position.set(position.x, position.y, position.z);
       this.activePole.mesh.position.set(0, 2, 0);
