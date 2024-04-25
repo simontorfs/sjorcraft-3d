@@ -83,9 +83,11 @@ export class Viewer {
     this.floor.rotation.x = -Math.PI / 2;
     this.scene.add(this.floor);
 
-    // add grid to floor of 1 by 1 
-    const grid = new THREE.GridHelper(50, 50, 0x000000, 0x000000);
+    // add grid to floor of 1 by 1
+    const grid = new THREE.GridHelper(50, 50, 0x888888, 0x888888);
     grid.position.y = 0.01;
+    grid.material.opacity = 0.65;
+    grid.material.transparent = true;
     this.scene.add(grid);
 
     // Save tool
