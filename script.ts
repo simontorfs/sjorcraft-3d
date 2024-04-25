@@ -1,5 +1,4 @@
-import * as THREE from "three";
-import { Viewer } from "./viewer";
+import { Viewer } from "./apps/3d/src/viewer";
 
 const viewer = new Viewer();
 
