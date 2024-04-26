@@ -17,7 +17,17 @@ export class PoleTool {
     this.firstPointPlaced = false;
     this.firstPoint = new THREE.Vector3(0, 0, 0);
     this.hoveringGround = false;
-    this.addDemoPoles();
+    if (
+      this.viewer.poles.length === 0 &&
+      localStorage.getItem("poles") === null
+    ) {
+      this.addDemoPoles();
+    } else if (
+      this.viewer.poles.length === 0 &&
+      localStorage.getItem("poles") !== null
+    ) {
+      this.viewer.saveTool.loadPolesFromLocalStorage();
+    }
   }
 
   addDemoPoles() {

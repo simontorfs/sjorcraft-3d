@@ -67,6 +67,9 @@ export class Viewer {
     //add background
     this.scene.background = new THREE.Color(0x87ceeb);
 
+    // Save tool
+    this.saveTool = new SaveTool(this);
+
     // Poles
     this.poles = [];
     this.poleTool = new PoleTool(this);
@@ -89,8 +92,5 @@ export class Viewer {
     grid.material.opacity = 0.65;
     grid.material.transparent = true;
     this.scene.add(grid);
-
-    // Save tool
-    this.saveTool = new SaveTool(this);
   }
 }
