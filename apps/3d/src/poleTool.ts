@@ -76,6 +76,7 @@ export class PoleTool {
     }
     this.viewer.scene.remove(this.activePole);
     this.activePole = undefined;
+    this.firstPointPlaced = false;
     this.active = false;
     console.log("deactivate");
   }
