@@ -1,6 +1,7 @@
-import { Lashing, Pole } from "./pole";
+import { Pole } from "./pole";
 import * as THREE from "three";
 import { Viewer } from "./viewer";
+import { Lashing } from "./lashing";
 
 export class PoleTool {
   active: boolean;
