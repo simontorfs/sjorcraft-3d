@@ -97,6 +97,5 @@ export class Viewer {
 
     // Details Tool
     this.detailsTool = new DetailsTool(this);
-    this.detailsTool.getPolesGroupedByLength();
   }
 }
