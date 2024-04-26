@@ -68,6 +68,7 @@ export class Pole extends THREE.Object3D {
         break;
       }
     }
+    if (minimumLength > 6.0) this.length = 6.0;
     this.mesh.geometry.dispose();
     this.mesh.geometry = new THREE.CylinderGeometry(0.07, 0.07, this.length);
     // @ts-ignore
