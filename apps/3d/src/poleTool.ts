@@ -87,7 +87,7 @@ export class PoleTool {
     if (this.fixedLashing) {
       this.activePole.setPositionBetweenGroundAndPole(
         position,
-        this.fixedLashing.position
+        this.fixedLashing.centerPole2
       );
     } else {
       this.activePole.position.set(position.x, position.y, position.z);
@@ -106,14 +106,20 @@ export class PoleTool {
 
     if (!this.newLashing) {
       this.hoveredPole = hoveredPole;
-      this.newLashing = new Lashing(hoveredPole, this.activePole, position);
+      this.newLashing = new Lashing(
+        hoveredPole,
+        this.activePole,
+        position,
+        normal
+      );
     } else {
-      this.newLashing.position.set(position.x, position.y, position.z);
+      this.newLashing.update(position, normal);
     }
     if (this.fixedLashing) {
+      if (this.fixedLashing.pole1 === hoveredPole) return;
       this.activePole.setPositionBetweenTwoPoles(
-        this.fixedLashing.position,
-        this.newLashing.position
+        this.fixedLashing.centerPole2,
+        this.newLashing.centerPole2
       );
     } else {
       const targetOrientationVector = new THREE.Vector3().crossVectors(
@@ -123,7 +129,11 @@ export class PoleTool {
 
       this.activePole.setDirection(targetOrientationVector);
 
-      this.activePole.position.set(position.x, position.y, position.z);
+      this.activePole.position.set(
+        this.newLashing.centerPole2.x,
+        this.newLashing.centerPole2.y,
+        this.newLashing.centerPole2.z
+      );
       this.activePole.mesh.position.set(0, 0, 0);
 
       this.hoveringGround = false;
