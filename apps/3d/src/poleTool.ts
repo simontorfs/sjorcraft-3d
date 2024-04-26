@@ -53,17 +53,6 @@ export class PoleTool {
     demoPole4.mesh.position.y = 2;
     demoPole4.setDirection(new THREE.Vector3(1, 1.8, 0));
     demoPole4.name = "demoPole4";
-
-    // add demoPole5 on the floor, horizontal
-    const demoPole5 = new Pole();
-    this.viewer.scene.add(demoPole5);
-    this.viewer.poles.push(demoPole5);
-    demoPole5.position.x = 3;
-    demoPole5.position.y = 0.1;
-    demoPole5.position.z = 15;
-    demoPole5.mesh.position.y = 2;
-    demoPole5.setDirection(new THREE.Vector3(3, 0, 15));
-    demoPole5.name = "horizontal";
   }
 
   activate() {

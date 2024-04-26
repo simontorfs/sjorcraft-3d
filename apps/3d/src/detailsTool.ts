@@ -19,16 +19,6 @@ export class DetailsTool {
         length: pole.geometry.parameters.height,
       };
     });
-    // return list of amount of poles based on their length
-    const polesLengths = polesDetails.reduce((acc, pole) => {
-      if (acc[pole.length]) {
-        acc[pole.length]++;
-      } else {
-        acc[pole.length] = 1;
-      }
-      return acc;
-    }, {});
-    console.log("Amount of poles by length: ", polesLengths);
     console.log("Poles: ", this.viewer.poles);
     console.log("Poles details: ", polesDetails);
   }
