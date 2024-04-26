@@ -1,4 +1,4 @@
-import { Pole } from "./pole";
+import { Lashing, Pole } from "./pole";
 import * as THREE from "three";
 import { Viewer } from "./viewer";
 
@@ -10,6 +10,9 @@ export class PoleTool {
   firstPointPlaced: boolean;
   firstPoint: THREE.Vector3;
   hoveringGround: boolean;
+  hoveredPole: Pole | undefined;
+  fixedLashing: Lashing | undefined;
+  newLashing: Lashing | undefined;
 
   constructor(viewer: Viewer) {
     this.viewer = viewer;
@@ -83,6 +86,8 @@ export class PoleTool {
 
   drawPole(position: THREE.Vector3) {
     if (!this.activePole) return;
+    this.hoveredPole = undefined;
+    this.newLashing = undefined;
     if (this.firstPointPlaced) {
       this.activePole.setPositionBetweenGroundAndPole(
         position,
@@ -103,6 +108,12 @@ export class PoleTool {
   ) {
     if (!this.activePole) return;
 
+    if (this.hoveredPole !== hoveredPole) {
+      this.hoveredPole = hoveredPole;
+      this.newLashing = new Lashing(hoveredPole, this.activePole, position);
+    } else {
+      // Update lashing
+    }
     if (this.firstPointPlaced) {
       this.activePole.setPositionBetweenTwoPoles(this.firstPoint, position);
     } else {
@@ -124,6 +135,7 @@ export class PoleTool {
   leftClick() {
     if (!this.activePole) return;
     if (this.firstPointPlaced || this.hoveringGround) {
+      this.commitLashings();
       this.viewer.poles.push(this.activePole);
 
       this.activePole = new Pole();
@@ -132,7 +144,13 @@ export class PoleTool {
       this.firstPointPlaced = false;
     } else {
       this.firstPointPlaced = true;
+      this.fixedLashing = this.newLashing;
     }
+  }
+
+  commitLashings() {
+    this.fixedLashing?.commit();
+    this.newLashing?.commit();
   }
 
   rightClick() {
@@ -140,5 +158,8 @@ export class PoleTool {
     this.firstPointPlaced = false;
     this.activePole.setLength(4.0);
     this.activePole.position.y = 200;
+
+    this.newLashing = undefined;
+    this.fixedLashing = undefined;
   }
 }

@@ -1,9 +1,26 @@
 import * as THREE from "three";
 
+export class Lashing {
+  pole1: Pole;
+  pole2: Pole;
+  position: THREE.Vector3;
+  constructor(pole1: Pole, pole2: Pole, position: THREE.Vector3) {
+    this.pole1 = pole1;
+    this.pole2 = pole2;
+    this.position = position;
+  }
+
+  commit() {
+    this.pole1.addLashing(this);
+    this.pole2.addLashing(this);
+  }
+}
+
 export class Pole extends THREE.Object3D {
   mesh: THREE.Mesh;
   direction: THREE.Vector3;
   length: number = 4.0;
+  lashings: Lashing[] = [];
   constructor() {
     super();
     const textureLoader = new THREE.TextureLoader();
@@ -70,6 +87,16 @@ export class Pole extends THREE.Object3D {
     this.mesh.geometry = new THREE.CylinderGeometry(0.07, 0.07, this.length);
     // @ts-ignore
     this.mesh.material.map.repeat.y = this.length * 2;
+  }
+
+  addLashing(lashing: Lashing) {
+    this.lashings.push(lashing);
+  }
+
+  removeLashing(pole: Pole) {
+    this.lashings = this.lashings.filter(
+      (lashing) => lashing.pole1 !== pole && lashing.pole2 !== pole
+    );
   }
 
   select() {
