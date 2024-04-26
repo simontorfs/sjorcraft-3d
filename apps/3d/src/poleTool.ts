@@ -17,16 +17,12 @@ export class PoleTool {
     this.firstPointPlaced = false;
     this.firstPoint = new THREE.Vector3(0, 0, 0);
     this.hoveringGround = false;
-    if (
-      this.viewer.poles.length === 0 &&
-      localStorage.getItem("poles") === null
-    ) {
-      this.addDemoPoles();
-    } else if (
-      this.viewer.poles.length === 0 &&
-      localStorage.getItem("poles") !== null
-    ) {
+
+    // load poles from local storage if available else add demo poles
+    if (localStorage.getItem("poles") !== null) {
       this.viewer.saveTool.loadPolesFromLocalStorage();
+    } else if (this.viewer.poles.length === 0) {
+      this.addDemoPoles();
     }
   }
 
