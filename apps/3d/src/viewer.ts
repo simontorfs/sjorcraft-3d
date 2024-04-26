@@ -97,7 +97,6 @@ export class Viewer {
 
     // Details Tool
     this.detailsTool = new DetailsTool(this);
-    this.detailsTool.getPoleDetails();
-    this.detailsTool.getTouchingPoints();
+    this.detailsTool.getPolesGroupedByLength();
   }
 }

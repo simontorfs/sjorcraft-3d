@@ -3,37 +3,25 @@ import * as THREE from "three";
 import { Viewer } from "./viewer";
 
 interface IPolesDetail {
-  name: string;
-  length: number;
+  [key: number]: number;
 }
 export class DetailsTool {
   viewer: Viewer;
   constructor(viewer: Viewer) {
     this.viewer = viewer;
   }
-  // return amount of poles and their length based on their direction
-  getPoleDetails() {
-    const polesDetails: IPolesDetail[] = this.viewer.poles.map((pole) => {
-      return {
-        name: pole.name,
-        length: pole.geometry.parameters.height,
-      };
-    });
-    console.log("Poles: ", this.viewer.poles);
-    console.log("Poles details: ", polesDetails);
-  }
-
-  // get amount of points where 2 or more poles touch eachother if multiple poles are in the same position it counts as 1 point
-  getTouchingPoints() {
-    const touchingPoints = this.viewer.poles.reduce((acc, pole, index) => {
-      const touchingPoles = this.viewer.poles.filter((p, i) => {
-        return i !== index && p.position.equals(pole.position);
-      });
-      if (touchingPoles.length > 0) {
-        acc++;
+  //return amount of poles grouped by length
+  getPolesGroupedByLength() {
+    const poles: Pole[] = this.viewer.poles;
+    const polesGroupedByLength: IPolesDetail = {};
+    poles.forEach((pole) => {
+      if (polesGroupedByLength[pole.length]) {
+        polesGroupedByLength[pole.length]++;
+      } else {
+        polesGroupedByLength[pole.length] = 1;
       }
-      return acc;
-    }, 0);
-    console.log("Touching points: ", touchingPoints);
+    });
+    console.log("Poles grouped by length: ", polesGroupedByLength);
+    return polesGroupedByLength;
   }
 }
