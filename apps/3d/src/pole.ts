@@ -61,7 +61,7 @@ export class Pole extends THREE.Object3D {
   setLength(minimumLength: number) {
     const allowedLengths = [1.0, 1.5, 2.0, 2.5, 3.0, 4.0, 5.0, 6.0];
     for (const length of allowedLengths) {
-      if (length > minimumLength) {
+      if (length >= minimumLength) {
         this.length = length;
         break;
       }

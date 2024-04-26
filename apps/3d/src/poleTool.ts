@@ -121,16 +121,24 @@ export class PoleTool {
     }
   }
 
-  click() {
+  leftClick() {
     if (!this.activePole) return;
     if (this.firstPointPlaced || this.hoveringGround) {
       this.viewer.poles.push(this.activePole);
 
       this.activePole = new Pole();
+      this.activePole.position.y = 200;
       this.viewer.scene.add(this.activePole);
       this.firstPointPlaced = false;
     } else {
       this.firstPointPlaced = true;
     }
+  }
+
+  rightClick() {
+    if (!this.activePole) return;
+    this.firstPointPlaced = false;
+    this.activePole.setLength(4.0);
+    this.activePole.position.y = 200;
   }
 }
