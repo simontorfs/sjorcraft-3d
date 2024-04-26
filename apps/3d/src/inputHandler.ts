@@ -40,6 +40,11 @@ export class InputHandler {
         this.viewer.saveTool.importPoles();
         console.info("Poles imported");
         break;
+      case "c":
+        // get amount of poles and their length and the touching points
+        this.viewer.detailsTool.getPoleDetails();
+        this.viewer.detailsTool.getTouchingPoints();
+        break;
       default:
         // console.log event.key
         console.log(event.key);

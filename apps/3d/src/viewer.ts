@@ -4,6 +4,7 @@ import { InputHandler } from "./inputHandler";
 import { Pole } from "./pole";
 import { PoleTool } from "./poleTool";
 import { SaveTool } from "./saveTool";
+import { DetailsTool } from "./detailsTool";
 
 export class Viewer {
   canvas: HTMLElement;
@@ -17,6 +18,7 @@ export class Viewer {
   poles: Pole[];
   floor: THREE.Mesh;
   saveTool: SaveTool;
+  detailsTool: DetailsTool;
 
   constructor() {
     this.sizes = { width: window.innerWidth, height: window.innerHeight };
@@ -83,12 +85,17 @@ export class Viewer {
     this.floor.rotation.x = -Math.PI / 2;
     this.scene.add(this.floor);
 
-    // add grid to floor of 1 by 1 
+    // add grid to floor of 1 by 1
     const grid = new THREE.GridHelper(50, 50, 0x000000, 0x000000);
     grid.position.y = 0.01;
     this.scene.add(grid);
 
     // Save tool
     this.saveTool = new SaveTool(this);
+
+    // Details Tool
+    this.detailsTool = new DetailsTool(this);
+    this.detailsTool.getPoleDetails();
+    this.detailsTool.getTouchingPoints();
   }
 }
