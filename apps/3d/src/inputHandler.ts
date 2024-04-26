@@ -61,7 +61,11 @@ export class InputHandler {
       // drop after drag
     } else {
       if (this.viewer.poleTool.active) {
-        this.viewer.poleTool.dropPole();
+        if (event.button === THREE.MOUSE.LEFT) {
+          this.viewer.poleTool.leftClick();
+        } else if (event.button === THREE.MOUSE.RIGHT) {
+          this.viewer.poleTool.rightClick();
+        }
       }
     }
   }
