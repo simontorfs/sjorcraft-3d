@@ -9,9 +9,7 @@ export class DetailsTool {
   viewer: Viewer;
   constructor(viewer: Viewer) {
     this.viewer = viewer;
-    this.getPolesGroupedByLength();
   }
-  //return amount of poles grouped by length
   getPolesGroupedByLength() {
     const poles: Pole[] = this.viewer.poles;
     const polesGroupedByLength: IPolesDetail = {};
