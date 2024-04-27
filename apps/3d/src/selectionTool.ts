@@ -17,11 +17,13 @@ export class SelectionTool {
 
   deactivate() {
     this.active = false;
+    this.selectedPole?.deselect();
     this.selectedPole = undefined;
   }
 
   leftClick() {
     if (!this.active) return;
+    this.selectedPole?.deselect();
     this.hoveredPole?.select();
     this.selectedPole = this.hoveredPole;
   }
