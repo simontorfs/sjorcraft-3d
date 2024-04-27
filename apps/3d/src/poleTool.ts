@@ -67,7 +67,6 @@ export class PoleTool {
     this.activePole.position.y = 200;
     this.viewer.scene.add(this.activePole);
     this.active = true;
-    console.log("activate");
   }
 
   deactivate() {
@@ -80,30 +79,18 @@ export class PoleTool {
     this.active = false;
     this.fixedLashing = undefined;
     this.newLashing = undefined;
-    console.log("deactivate");
   }
 
-  drawPole(position: THREE.Vector3) {
+  drawPoleWhileHoveringGound(groundPosition: THREE.Vector3) {
     if (!this.activePole) return;
 
     this.newLashing = undefined;
     this.hoveringGround = true;
 
     if (this.fixedLashing) {
-      // Step 1: Set naive pole position based on the anchorPoint
-      this.activePole.setPositionBetweenGroundAndPole(
-        position,
-        this.fixedLashing.anchorPoint
-      );
-      // Step 2: Use the pole's naive orientation to estimate the center coordinates of the lashing
-      this.fixedLashing.calculatePositions();
-      // Step 3: Set the pole position with the estimated center coordinates
-      this.activePole.setPositionBetweenGroundAndPole(
-        position,
-        this.fixedLashing.centerPole2
-      );
+      this.placePoleBetweenOneLashingAndGround(groundPosition);
     } else {
-      this.activePole.setPositionOnGround(position);
+      this.placePoleOnGround(groundPosition);
     }
   }
 
@@ -172,6 +159,28 @@ export class PoleTool {
       this.newLashing.centerPole2.z
     );
     this.activePole.mesh.position.set(0, 0, 0);
+  }
+
+  placePoleBetweenOneLashingAndGround(groundPosition: THREE.Vector3) {
+    if (!this.activePole || !this.fixedLashing) return;
+
+    // Step 1: Set naive pole position based on the anchorPoint
+    this.activePole.setPositionBetweenGroundAndPole(
+      groundPosition,
+      this.fixedLashing.anchorPoint
+    );
+    // Step 2: Use the pole's naive orientation to estimate the center coordinates of the lashing
+    this.fixedLashing.calculatePositions();
+    // Step 3: Set the pole position with the estimated center coordinates
+    this.activePole.setPositionBetweenGroundAndPole(
+      groundPosition,
+      this.fixedLashing.centerPole2
+    );
+  }
+
+  placePoleOnGround(groundPosition: THREE.Vector3) {
+    if (!this.activePole) return;
+    this.activePole.setPositionOnGround(groundPosition);
   }
 
   leftClick() {

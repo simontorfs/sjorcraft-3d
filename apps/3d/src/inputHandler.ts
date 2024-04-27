@@ -91,7 +91,7 @@ export class InputHandler {
           transformedNormal
         );
       } else {
-        this.viewer.poleTool.drawPole(groundPosition);
+        this.viewer.poleTool.drawPoleWhileHoveringGound(groundPosition);
       }
     }
   }
