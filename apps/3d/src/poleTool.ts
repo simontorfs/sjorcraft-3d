@@ -126,6 +126,12 @@ export class PoleTool {
     if (this.fixedLashing) {
       if (this.fixedLashing.pole1 === hoveredPole) return;
       this.activePole.setPositionBetweenTwoPoles(
+        this.fixedLashing.originalTangentPoint,
+        position
+      );
+      this.fixedLashing.update();
+      this.newLashing.update();
+      this.activePole.setPositionBetweenTwoPoles(
         this.fixedLashing.centerPole2,
         this.newLashing.centerPole2
       );
@@ -159,6 +165,7 @@ export class PoleTool {
       this.viewer.scene.add(this.activePole);
     } else {
       this.fixedLashing = this.newLashing;
+      this.newLashing = undefined;
     }
   }
 

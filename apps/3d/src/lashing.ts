@@ -22,6 +22,8 @@ export class Lashing {
   }
 
   move(position: THREE.Vector3, normal: THREE.Vector3) {
+    this.originalTangentPoint = position.clone();
+    this.originalTangentPointNormal = normal.clone();
     this.centerPole1 = position
       .clone()
       .sub(normal.clone().multiplyScalar(0.07));
