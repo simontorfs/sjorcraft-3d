@@ -38,6 +38,7 @@ export class SaveTool {
             pole.rotation._y,
             pole.rotation._z
           );
+          newPole.length = pole.length;
           this.viewer.scene.add(newPole);
           this.viewer.poles.push(newPole);
         });
@@ -54,6 +55,7 @@ export class SaveTool {
         name: pole.name,
         mesh: pole.mesh.position,
         rotation: pole.rotation,
+        length: pole.length,
       };
     });
     const data = JSON.stringify(poles, null, 2);
@@ -75,7 +77,6 @@ export class SaveTool {
     this.viewer.poles = [];
   }
 
-  //save poles to local storage
   savePolesToLocalStorage() {
     const poles = this.viewer.poles.map((pole) => {
       return {
@@ -84,12 +85,12 @@ export class SaveTool {
         name: pole.name,
         mesh: pole.mesh.position,
         rotation: pole.rotation,
+        length: pole.length,
       };
     });
     localStorage.setItem("poles", JSON.stringify(poles));
   }
 
-  //load poles from local storage
   loadPolesFromLocalStorage() {
     const poles = JSON.parse(localStorage.getItem("poles") as string);
     this.removeAllPoles();
@@ -106,6 +107,7 @@ export class SaveTool {
         pole.rotation._y,
         pole.rotation._z
       );
+      newPole.length = pole.length;
       this.viewer.scene.add(newPole);
       this.viewer.poles.push(newPole);
     });
