@@ -64,6 +64,7 @@ export class PoleTool {
 
   activate() {
     this.activePole = new Pole();
+    this.activePole.position.y = 200;
     this.viewer.scene.add(this.activePole);
     this.active = true;
     console.log("activate");
@@ -77,6 +78,8 @@ export class PoleTool {
     this.viewer.scene.remove(this.activePole);
     this.activePole = undefined;
     this.active = false;
+    this.fixedLashing = undefined;
+    this.newLashing = undefined;
     console.log("deactivate");
   }
 
