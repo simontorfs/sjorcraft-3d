@@ -90,6 +90,11 @@ export class PoleTool {
     if (this.fixedLashing) {
       this.activePole.setPositionBetweenGroundAndPole(
         position,
+        this.fixedLashing.originalTangentPoint
+      );
+      this.fixedLashing.update();
+      this.activePole.setPositionBetweenGroundAndPole(
+        position,
         this.fixedLashing.centerPole2
       );
     } else {
@@ -116,7 +121,7 @@ export class PoleTool {
         normal
       );
     } else {
-      this.newLashing.update(position, normal);
+      this.newLashing.move(position, normal);
     }
     if (this.fixedLashing) {
       if (this.fixedLashing.pole1 === hoveredPole) return;

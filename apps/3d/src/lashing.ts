@@ -6,6 +6,8 @@ export class Lashing {
   pole2: Pole;
   centerPole1: THREE.Vector3;
   centerPole2: THREE.Vector3;
+  originalTangentPoint: THREE.Vector3;
+  originalTangentPointNormal: THREE.Vector3;
   constructor(
     pole1: Pole,
     pole2: Pole,
@@ -14,10 +16,12 @@ export class Lashing {
   ) {
     this.pole1 = pole1;
     this.pole2 = pole2;
-    this.update(position, normal);
+    this.originalTangentPoint = position.clone();
+    this.originalTangentPointNormal = normal.clone();
+    this.move(position, normal);
   }
 
-  update(position: THREE.Vector3, normal: THREE.Vector3) {
+  move(position: THREE.Vector3, normal: THREE.Vector3) {
     this.centerPole1 = position
       .clone()
       .sub(normal.clone().multiplyScalar(0.07));
@@ -37,6 +41,10 @@ export class Lashing {
     } else {
       this.centerPole2 = centerPole2Option2;
     }
+  }
+
+  update() {
+    this.move(this.originalTangentPoint, this.originalTangentPointNormal);
   }
 
   commit() {
