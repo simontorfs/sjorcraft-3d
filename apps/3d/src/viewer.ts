@@ -4,6 +4,7 @@ import { InputHandler } from "./inputHandler";
 import { Pole } from "./pole";
 import { PoleTool } from "./poleTool";
 import { SaveTool } from "./saveTool";
+import { DetailsTool } from "./detailsTool";
 
 export class Viewer {
   canvas: HTMLElement;
@@ -17,6 +18,7 @@ export class Viewer {
   poles: Pole[];
   floor: THREE.Mesh;
   saveTool: SaveTool;
+  detailsTool: DetailsTool;
 
   constructor() {
     this.sizes = { width: window.innerWidth, height: window.innerHeight };

@@ -31,11 +31,13 @@ export class InputHandler {
         break;
       case "e":
         this.viewer.saveTool.exportPoles("demo");
-        console.info("Poles: ", this.viewer.poles);
         break;
       case "i":
         this.viewer.saveTool.importPoles();
-        console.info("Poles imported");
+        break;
+      case "c":
+        // get amount of poles grouped by length
+        this.viewer.detailsTool.getPolesGroupedByLength();
         break;
       case "r":
         this.viewer.saveTool.removeAllPoles();
