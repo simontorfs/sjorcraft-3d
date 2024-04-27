@@ -17,11 +17,20 @@ export class SelectionTool {
 
   deactivate() {
     this.active = false;
+    this.selectedPole = undefined;
   }
 
   leftClick() {
     if (!this.active) return;
     this.hoveredPole?.select();
     this.selectedPole = this.hoveredPole;
+  }
+
+  delete() {
+    if (!this.active || !this.selectedPole) return;
+    this.viewer.scene.remove(this.selectedPole);
+    this.viewer.poles = this.viewer.poles.filter(
+      (pole) => pole !== this.selectedPole
+    );
   }
 }

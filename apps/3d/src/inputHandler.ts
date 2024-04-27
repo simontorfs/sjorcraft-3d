@@ -31,6 +31,9 @@ export class InputHandler {
         this.viewer.poleTool.deactivate();
         this.viewer.selectionTool.activate();
         break;
+      case "Delete":
+        this.viewer.selectionTool.delete();
+        break;
       case "e":
         // export poles into a textfile and download the file
         this.viewer.saveTool.exportPoles("demo");
