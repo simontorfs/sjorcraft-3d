@@ -6,9 +6,18 @@ export class Lashing {
   pole2: Pole;
   centerPole1: THREE.Vector3;
   centerPole2: THREE.Vector3;
-  originalTangentPoint: THREE.Vector3;
-  originalTangentPointNormal: THREE.Vector3;
+  anchorPoint: THREE.Vector3;
+  anchorPointNormal: THREE.Vector3;
   constructor(
+    pole1: Pole,
+    pole2: Pole,
+    position: THREE.Vector3,
+    normal: THREE.Vector3
+  ) {
+    this.setProperties(pole1, pole2, position, normal);
+  }
+
+  setProperties(
     pole1: Pole,
     pole2: Pole,
     position: THREE.Vector3,
@@ -16,17 +25,15 @@ export class Lashing {
   ) {
     this.pole1 = pole1;
     this.pole2 = pole2;
-    this.originalTangentPoint = position.clone();
-    this.originalTangentPointNormal = normal.clone();
-    this.move(position, normal);
+    this.anchorPoint = position;
+    this.anchorPointNormal = normal;
+    this.calculatePositions();
   }
 
-  move(position: THREE.Vector3, normal: THREE.Vector3) {
-    this.originalTangentPoint = position.clone();
-    this.originalTangentPointNormal = normal.clone();
-    this.centerPole1 = position
+  calculatePositions() {
+    this.centerPole1 = this.anchorPoint
       .clone()
-      .sub(normal.clone().multiplyScalar(0.07));
+      .sub(this.anchorPointNormal.clone().multiplyScalar(0.07));
 
     const centerDifference = new THREE.Vector3()
       .crossVectors(this.pole1.direction, this.pole2.direction)
@@ -35,18 +42,14 @@ export class Lashing {
 
     const centerPole2Option1 = this.centerPole1.clone().add(centerDifference);
     const centerPole2Option2 = this.centerPole1.clone().sub(centerDifference);
-    const distanceOption1 = position.distanceTo(centerPole2Option1);
-    const distanceOption2 = position.distanceTo(centerPole2Option2);
+    const distanceOption1 = this.anchorPoint.distanceTo(centerPole2Option1);
+    const distanceOption2 = this.anchorPoint.distanceTo(centerPole2Option2);
 
     if (distanceOption1 < distanceOption2) {
       this.centerPole2 = centerPole2Option1;
     } else {
       this.centerPole2 = centerPole2Option2;
     }
-  }
-
-  update() {
-    this.move(this.originalTangentPoint, this.originalTangentPointNormal);
   }
 
   commit() {

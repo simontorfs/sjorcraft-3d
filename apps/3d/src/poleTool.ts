@@ -90,9 +90,9 @@ export class PoleTool {
     if (this.fixedLashing) {
       this.activePole.setPositionBetweenGroundAndPole(
         position,
-        this.fixedLashing.originalTangentPoint
+        this.fixedLashing.anchorPoint
       );
-      this.fixedLashing.update();
+      this.fixedLashing.calculatePositions();
       this.activePole.setPositionBetweenGroundAndPole(
         position,
         this.fixedLashing.centerPole2
@@ -121,16 +121,21 @@ export class PoleTool {
         normal
       );
     } else {
-      this.newLashing.move(position, normal);
+      this.newLashing.setProperties(
+        hoveredPole,
+        this.activePole,
+        position,
+        normal
+      );
     }
     if (this.fixedLashing) {
       if (this.fixedLashing.pole1 === hoveredPole) return;
       this.activePole.setPositionBetweenTwoPoles(
-        this.fixedLashing.originalTangentPoint,
+        this.fixedLashing.anchorPoint,
         position
       );
-      this.fixedLashing.update();
-      this.newLashing.update();
+      this.fixedLashing.calculatePositions();
+      this.newLashing.calculatePositions();
       this.activePole.setPositionBetweenTwoPoles(
         this.fixedLashing.centerPole2,
         this.newLashing.centerPole2
