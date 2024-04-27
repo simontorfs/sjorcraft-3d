@@ -6,10 +6,8 @@ import { Lashing } from "./lashing";
 export class PoleTool {
   active: boolean;
   activePole: Pole | undefined;
-  snapPlain: THREE.Mesh;
   viewer: Viewer;
   hoveringGround: boolean;
-  hoveredPole: Pole | undefined;
   fixedLashing: Lashing | undefined;
   newLashing: Lashing | undefined;
 
