@@ -87,7 +87,7 @@ export class Pole extends THREE.Object3D {
 
   removeLashing(pole: Pole) {
     this.lashings = this.lashings.filter(
-      (lashing) => lashing.pole1 !== pole && lashing.pole2 !== pole
+      (lashing) => lashing.fixedPole !== pole && lashing.loosePole !== pole
     );
   }
 
