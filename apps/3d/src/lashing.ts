@@ -27,7 +27,16 @@ export class Lashing {
       .normalize()
       .multiplyScalar(0.14);
 
-    this.centerPole2 = this.centerPole1.clone().add(centerDifference);
+    const centerPole2Option1 = this.centerPole1.clone().add(centerDifference);
+    const centerPole2Option2 = this.centerPole1.clone().sub(centerDifference);
+    const distanceOption1 = position.distanceTo(centerPole2Option1);
+    const distanceOption2 = position.distanceTo(centerPole2Option2);
+
+    if (distanceOption1 < distanceOption2) {
+      this.centerPole2 = centerPole2Option1;
+    } else {
+      this.centerPole2 = centerPole2Option2;
+    }
   }
 
   commit() {
