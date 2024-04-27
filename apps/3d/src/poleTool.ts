@@ -63,6 +63,7 @@ export class PoleTool {
   }
 
   activate() {
+    if (this.active) return;
     this.activePole = new Pole();
     this.viewer.scene.add(this.activePole);
     this.active = true;
