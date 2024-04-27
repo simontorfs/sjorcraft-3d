@@ -33,12 +33,14 @@ export class InputHandler {
       case "e":
         // export poles into a textfile and download the file
         this.viewer.saveTool.exportPoles("demo");
-        console.info("Poles: ", this.viewer.poles);
         break;
       case "i":
         // import poles
         this.viewer.saveTool.importPoles();
-        console.info("Poles imported");
+        break;
+      case "c":
+        // get amount of poles grouped by length
+        this.viewer.detailsTool.getPolesGroupedByLength();
         break;
       default:
         // console.log event.key
