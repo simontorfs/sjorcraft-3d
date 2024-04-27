@@ -37,6 +37,12 @@ export class Pole extends THREE.Object3D {
     this.setRotationFromQuaternion(quaternion);
   }
 
+  setPositionOnGround(position: THREE.Vector3) {
+    this.position.set(position.x, position.y, position.z);
+    this.mesh.position.set(0, 2, 0);
+    this.setDirection(new THREE.Vector3(0, 1, 0));
+  }
+
   setPositionBetweenGroundAndPole(
     groundPoint: THREE.Vector3,
     polePoint: THREE.Vector3

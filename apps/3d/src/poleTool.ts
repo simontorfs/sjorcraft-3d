@@ -85,23 +85,25 @@ export class PoleTool {
 
   drawPole(position: THREE.Vector3) {
     if (!this.activePole) return;
-    this.hoveredPole = undefined;
+
     this.newLashing = undefined;
+    this.hoveringGround = true;
+
     if (this.fixedLashing) {
+      // Step 1: Set naive pole position based on the anchorPoint
       this.activePole.setPositionBetweenGroundAndPole(
         position,
         this.fixedLashing.anchorPoint
       );
+      // Step 2: Use the pole's naive orientation to estimate the center coordinates of the lashing
       this.fixedLashing.calculatePositions();
+      // Step 3: Set the pole position with the estimated center coordinates
       this.activePole.setPositionBetweenGroundAndPole(
         position,
         this.fixedLashing.centerPole2
       );
     } else {
-      this.activePole.position.set(position.x, position.y, position.z);
-      this.activePole.mesh.position.set(0, 2, 0);
-      this.activePole.setDirection(new THREE.Vector3(0, 1, 0));
-      this.hoveringGround = true;
+      this.activePole.setPositionOnGround(position);
     }
   }
 
@@ -112,8 +114,9 @@ export class PoleTool {
   ) {
     if (!this.activePole) return;
 
+    this.hoveringGround = false;
+
     if (!this.newLashing) {
-      this.hoveredPole = hoveredPole;
       this.newLashing = new Lashing(
         hoveredPole,
         this.activePole,
@@ -128,35 +131,47 @@ export class PoleTool {
         normal
       );
     }
+
     if (this.fixedLashing) {
       if (this.fixedLashing.pole1 === hoveredPole) return;
-      this.activePole.setPositionBetweenTwoPoles(
-        this.fixedLashing.anchorPoint,
-        position
-      );
-      this.fixedLashing.calculatePositions();
-      this.newLashing.calculatePositions();
-      this.activePole.setPositionBetweenTwoPoles(
-        this.fixedLashing.centerPole2,
-        this.newLashing.centerPole2
-      );
+      this.placePoleBetweenTwoLashings();
     } else {
-      const targetOrientationVector = new THREE.Vector3().crossVectors(
-        normal,
-        hoveredPole.direction
-      );
-
-      this.activePole.setDirection(targetOrientationVector);
-
-      this.activePole.position.set(
-        this.newLashing.centerPole2.x,
-        this.newLashing.centerPole2.y,
-        this.newLashing.centerPole2.z
-      );
-      this.activePole.mesh.position.set(0, 0, 0);
-
-      this.hoveringGround = false;
+      this.placePoleOnOneLashing();
     }
+  }
+
+  placePoleBetweenTwoLashings() {
+    if (!this.activePole || !this.fixedLashing || !this.newLashing) return;
+    // Step 1: Set naive pole position based on the anchorPoints
+    this.activePole.setPositionBetweenTwoPoles(
+      this.fixedLashing.anchorPoint,
+      this.newLashing.anchorPoint
+    );
+    // Step 2: Use the pole's naive orientation to estimate the center coordinates of the lashings
+    this.fixedLashing.calculatePositions();
+    this.newLashing.calculatePositions();
+    // Step 3: Set the pole position with the estimated center coordinates
+    this.activePole.setPositionBetweenTwoPoles(
+      this.fixedLashing.centerPole2,
+      this.newLashing.centerPole2
+    );
+  }
+
+  placePoleOnOneLashing() {
+    if (!this.activePole || !this.newLashing) return;
+    const targetOrientationVector = new THREE.Vector3().crossVectors(
+      this.newLashing.anchorPointNormal,
+      this.newLashing.pole1.direction
+    );
+
+    this.activePole.setDirection(targetOrientationVector);
+
+    this.activePole.position.set(
+      this.newLashing.centerPole2.x,
+      this.newLashing.centerPole2.y,
+      this.newLashing.centerPole2.z
+    );
+    this.activePole.mesh.position.set(0, 0, 0);
   }
 
   leftClick() {
