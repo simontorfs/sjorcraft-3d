@@ -92,6 +92,12 @@ export class Pole extends THREE.Object3D {
   }
 
   select() {
-    console.log("select");
+    // @ts-ignore
+    this.mesh.material.color = new THREE.Color(0, 1, 1);
+  }
+
+  deselect() {
+    // @ts-ignore
+    this.mesh.material.color = new THREE.Color(1, 1, 1);
   }
 }

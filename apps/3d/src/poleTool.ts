@@ -61,6 +61,7 @@ export class PoleTool {
   }
 
   activate() {
+    if (this.active) return;
     this.activePole = new Pole();
     this.activePole.position.y = 200;
     this.viewer.scene.add(this.activePole);
