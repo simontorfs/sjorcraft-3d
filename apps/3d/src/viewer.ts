@@ -69,6 +69,9 @@ export class Viewer {
     //add background
     this.scene.background = new THREE.Color(0x87ceeb);
 
+    // Details tool
+    this.detailsTool = new DetailsTool(this);
+
     // Save tool
     this.saveTool = new SaveTool(this);
 

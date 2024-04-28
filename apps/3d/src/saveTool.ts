@@ -38,7 +38,7 @@ export class SaveTool {
             pole.rotation._y,
             pole.rotation._z
           );
-          newPole.length = pole.length;
+          newPole.setLength(pole.length);
           this.viewer.scene.add(newPole);
           this.viewer.poles.push(newPole);
         });
@@ -107,7 +107,7 @@ export class SaveTool {
         pole.rotation._y,
         pole.rotation._z
       );
-      newPole.length = pole.length;
+      newPole.setLength(pole.length);
       this.viewer.scene.add(newPole);
       this.viewer.poles.push(newPole);
     });
