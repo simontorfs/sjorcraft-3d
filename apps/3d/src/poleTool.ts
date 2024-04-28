@@ -15,7 +15,13 @@ export class PoleTool {
     this.viewer = viewer;
     this.active = false;
     this.hoveringGround = false;
-    this.addDemoPoles();
+
+    // load poles from local storage if available else add demo poles
+    if (localStorage.getItem("poles") !== null) {
+      this.viewer.saveTool.loadPolesFromLocalStorage();
+    } else if (this.viewer.poles.length === 0) {
+      this.addDemoPoles();
+    }
   }
 
   addDemoPoles() {

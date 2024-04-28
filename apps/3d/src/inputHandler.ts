@@ -22,7 +22,6 @@ export class InputHandler {
 
   onKeyDown(event: any) {
     switch (event.key) {
-      // start or stop pole tool
       case "b":
         this.viewer.selectionTool.deactivate();
         this.viewer.poleTool.activate();
@@ -35,19 +34,22 @@ export class InputHandler {
         this.viewer.selectionTool.delete();
         break;
       case "e":
-        // export poles into a textfile and download the file
         this.viewer.saveTool.exportPoles("demo");
         break;
       case "i":
-        // import poles
         this.viewer.saveTool.importPoles();
         break;
       case "c":
-        // get amount of poles grouped by length
         this.viewer.detailsTool.getPolesGroupedByLength();
         break;
+      case "r":
+        this.viewer.saveTool.removeAllPoles();
+        this.viewer.saveTool.clearLocalStorage();
+        break;
+      case "s":
+        this.viewer.saveTool.savePolesToLocalStorage();
+        break;
       default:
-        // console.log event.key
         console.log(event.key);
         break;
     }

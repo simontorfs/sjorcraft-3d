@@ -38,6 +38,7 @@ export class SaveTool {
             pole.rotation._y,
             pole.rotation._z
           );
+          newPole.setLength(pole.length);
           this.viewer.scene.add(newPole);
           this.viewer.poles.push(newPole);
         });
@@ -54,6 +55,7 @@ export class SaveTool {
         name: pole.name,
         mesh: pole.mesh.position,
         rotation: pole.rotation,
+        length: pole.length,
       };
     });
     const data = JSON.stringify(poles, null, 2);
@@ -73,5 +75,46 @@ export class SaveTool {
       this.viewer.scene.remove(pole);
     });
     this.viewer.poles = [];
+  }
+
+  savePolesToLocalStorage() {
+    const poles = this.viewer.poles.map((pole) => {
+      return {
+        position: pole.position,
+        direction: pole.direction,
+        name: pole.name,
+        mesh: pole.mesh.position,
+        rotation: pole.rotation,
+        length: pole.length,
+      };
+    });
+    localStorage.setItem("poles", JSON.stringify(poles));
+  }
+
+  loadPolesFromLocalStorage() {
+    const poles = JSON.parse(localStorage.getItem("poles") as string);
+    this.removeAllPoles();
+    poles.forEach((pole: any) => {
+      const newPole = new Pole();
+      newPole.position.set(pole.position.x, pole.position.y, pole.position.z);
+      newPole.setDirection(
+        new THREE.Vector3(pole.direction.x, pole.direction.y, pole.direction.z)
+      );
+      newPole.name = pole.name;
+      newPole.mesh.position.set(pole.mesh.x, pole.mesh.y, pole.mesh.z);
+      newPole.rotation.set(
+        pole.rotation._x,
+        pole.rotation._y,
+        pole.rotation._z
+      );
+      newPole.setLength(pole.length);
+      this.viewer.scene.add(newPole);
+      this.viewer.poles.push(newPole);
+    });
+  }
+
+  //clear local storage
+  clearLocalStorage() {
+    localStorage.clear();
   }
 }
