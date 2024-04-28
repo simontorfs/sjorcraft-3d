@@ -10,6 +10,7 @@ export class PoleTool {
   hoveringGround: boolean;
   fixedLashing: Lashing | undefined;
   newLashing: Lashing | undefined;
+  snapHeightsLastPole: number[] = [];
 
   constructor(viewer: Viewer) {
     this.viewer = viewer;
@@ -120,10 +121,10 @@ export class PoleTool {
     if (this.fixedLashing) {
       if (this.fixedLashing.fixedPole === hoveredPole) return;
       this.placePoleBetweenTwoLashings();
-      this.snap();
     } else {
       this.placePoleOnOneLashing();
     }
+    this.snap();
   }
 
   placePoleBetweenTwoLashings() {
@@ -183,17 +184,27 @@ export class PoleTool {
   }
 
   snap() {
-    if (!this.activePole || !this.newLashing || !this.fixedLashing) return;
+    if (!this.activePole || !this.newLashing) return;
 
-    const snapped = this.newLashing.calculatePositionsWithHorizontalSnap(
-      this.fixedLashing.centerLoosePole.y
-    );
+    const snapHeights = [...this.snapHeightsLastPole];
+    if (this.fixedLashing)
+      snapHeights.push(this.fixedLashing.centerLoosePole.y);
 
-    if (snapped) {
-      this.activePole.setPositionBetweenTwoPoles(
-        this.fixedLashing.centerLoosePole,
-        this.newLashing.centerLoosePole
-      );
+    for (const snapHeight of snapHeights) {
+      const snapped =
+        this.newLashing.calculatePositionsWithHorizontalSnap(snapHeight);
+      if (snapped) {
+        if (this.fixedLashing) {
+          this.activePole.setPositionBetweenTwoPoles(
+            this.fixedLashing.centerLoosePole,
+            this.newLashing.centerLoosePole
+          );
+        } else {
+          this.placePoleOnOneLashing();
+        }
+
+        break;
+      }
     }
   }
 
@@ -213,8 +224,15 @@ export class PoleTool {
   }
 
   commitLashings() {
-    this.fixedLashing?.commit();
-    this.newLashing?.commit();
+    if (this.fixedLashing) {
+      this.snapHeightsLastPole = [];
+      this.snapHeightsLastPole.push(this.fixedLashing.centerLoosePole.y);
+      this.fixedLashing.commit();
+    }
+    if (this.newLashing) {
+      this.snapHeightsLastPole.push(this.newLashing.centerLoosePole.y);
+      this.newLashing.commit();
+    }
     this.fixedLashing = undefined;
     this.newLashing = undefined;
   }
