@@ -98,7 +98,7 @@ export class InputHandler {
           transformedNormal
         );
       } else {
-        this.viewer.poleTool.drawPole(groundPosition);
+        this.viewer.poleTool.drawPoleWhileHoveringGound(groundPosition);
       }
     } else if (this.viewer.selectionTool.active) {
       this.viewer.selectionTool.hoveredPole = hoveredPole;
