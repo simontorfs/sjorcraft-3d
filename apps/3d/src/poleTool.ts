@@ -191,9 +191,11 @@ export class PoleTool {
       snapHeights.push(this.fixedLashing.centerLoosePole.y);
 
     for (const snapHeight of snapHeights) {
-      const snapped =
+      const newLashingSnapped =
         this.newLashing.calculatePositionsWithHorizontalSnap(snapHeight);
-      if (snapped) {
+      const fixedLashingSnapped =
+        this.fixedLashing?.calculatePositionsWithHorizontalSnap(snapHeight);
+      if (newLashingSnapped || fixedLashingSnapped) {
         if (this.fixedLashing) {
           this.activePole.setPositionBetweenTwoPoles(
             this.fixedLashing.centerLoosePole,
