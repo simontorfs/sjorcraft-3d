@@ -120,6 +120,7 @@ export class PoleTool {
     if (this.fixedLashing) {
       if (this.fixedLashing.fixedPole === hoveredPole) return;
       this.placePoleBetweenTwoLashings();
+      this.snap();
     } else {
       this.placePoleOnOneLashing();
     }
@@ -179,6 +180,21 @@ export class PoleTool {
   placePoleOnGround(groundPosition: THREE.Vector3) {
     if (!this.activePole) return;
     this.activePole.setPositionOnGround(groundPosition);
+  }
+
+  snap() {
+    if (!this.activePole || !this.newLashing || !this.fixedLashing) return;
+
+    const snapped = this.newLashing.calculatePositionsWithHorizontalSnap(
+      this.fixedLashing.centerLoosePole.y
+    );
+
+    if (snapped) {
+      this.activePole.setPositionBetweenTwoPoles(
+        this.fixedLashing.centerLoosePole,
+        this.newLashing.centerLoosePole
+      );
+    }
   }
 
   leftClick() {
