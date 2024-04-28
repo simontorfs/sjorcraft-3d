@@ -40,7 +40,6 @@ export class InputHandler {
         this.viewer.saveTool.importPoles();
         break;
       case "c":
-        // get amount of poles grouped by length
         this.viewer.detailsTool.getPolesGroupedByLength();
         break;
       case "r":
