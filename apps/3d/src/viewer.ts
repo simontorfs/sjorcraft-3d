@@ -5,6 +5,7 @@ import { Pole } from "./pole";
 import { PoleTool } from "./poleTool";
 import { SaveTool } from "./saveTool";
 import { DetailsTool } from "./detailsTool";
+import { SelectionTool } from "./selectionTool";
 
 export class Viewer {
   canvas: HTMLElement;
@@ -15,6 +16,7 @@ export class Viewer {
   controls: OrbitControls;
   inputHandler: InputHandler;
   poleTool: PoleTool;
+  selectionTool: SelectionTool;
   poles: Pole[];
   floor: THREE.Mesh;
   saveTool: SaveTool;
@@ -69,9 +71,19 @@ export class Viewer {
     //add background
     this.scene.background = new THREE.Color(0x87ceeb);
 
+    // Details tool
+    this.detailsTool = new DetailsTool(this);
+
+    // Save tool
+    this.saveTool = new SaveTool(this);
+
     // Poles
     this.poles = [];
+
+    // Tools
     this.poleTool = new PoleTool(this);
+    this.selectionTool = new SelectionTool(this);
+    this.selectionTool.activate();
 
     // Floor
     const floorGeometry = new THREE.PlaneGeometry(50, 50);
@@ -91,11 +103,5 @@ export class Viewer {
     grid.material.opacity = 0.65;
     grid.material.transparent = true;
     this.scene.add(grid);
-
-    // Save tool
-    this.saveTool = new SaveTool(this);
-
-    // Details Tool
-    this.detailsTool = new DetailsTool(this);
   }
 }
