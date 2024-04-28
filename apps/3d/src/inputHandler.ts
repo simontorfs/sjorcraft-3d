@@ -23,11 +23,15 @@ export class InputHandler {
   onKeyDown(event: any) {
     switch (event.key) {
       case "b":
-        if (this.viewer.poleTool.active) {
-          this.viewer.poleTool.deactivate();
-        } else {
-          this.viewer.poleTool.activate();
-        }
+        this.viewer.selectionTool.deactivate();
+        this.viewer.poleTool.activate();
+        break;
+      case "n":
+        this.viewer.poleTool.deactivate();
+        this.viewer.selectionTool.activate();
+        break;
+      case "Delete":
+        this.viewer.selectionTool.delete();
         break;
       case "e":
         this.viewer.saveTool.exportPoles("demo");
@@ -66,6 +70,10 @@ export class InputHandler {
         } else if (event.button === THREE.MOUSE.RIGHT) {
           this.viewer.poleTool.rightClick();
         }
+      } else if (this.viewer.selectionTool.active) {
+        if (event.button === THREE.MOUSE.LEFT) {
+          this.viewer.selectionTool.leftClick();
+        }
       }
     }
   }
@@ -75,31 +83,32 @@ export class InputHandler {
     this.cursor.x = event.clientX / this.viewer.sizes.width - 0.5;
     this.cursor.y = -event.clientY / this.viewer.sizes.height + 0.5;
     const groundPosition = this.getGroundPosition();
-    const hoveredObject = this.getHoveredObject();
+    const intersect = this.getPoleIntersect();
+    const hoveredPole = intersect?.object.parent as Pole;
     if (this.viewer.poleTool.active) {
-      if (hoveredObject?.normal) {
-        const hoveredPole = hoveredObject.object.parent as Pole;
-
+      if (intersect?.normal) {
         const rotationMatrix = new THREE.Matrix4();
         rotationMatrix.extractRotation(hoveredPole.matrix);
 
-        const transformedNormal = hoveredObject.normal
+        const transformedNormal = intersect.normal
           .clone()
           .applyMatrix4(rotationMatrix)
           .normalize();
 
         this.viewer.poleTool.drawPoleWhileHoveringOtherPole(
-          hoveredObject.point,
+          intersect.point,
           hoveredPole,
           transformedNormal
         );
       } else {
-        this.viewer.poleTool.drawPole(groundPosition);
+        this.viewer.poleTool.drawPoleWhileHoveringGound(groundPosition);
       }
+    } else if (this.viewer.selectionTool.active) {
+      this.viewer.selectionTool.hoveredPole = hoveredPole;
     }
   }
 
-  getHoveredObject() {
+  getPoleIntersect() {
     const raycaster = new THREE.Raycaster();
     raycaster.setFromCamera(
       new THREE.Vector2(this.cursor.x * 2, this.cursor.y * 2),

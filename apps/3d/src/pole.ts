@@ -1,9 +1,11 @@
 import * as THREE from "three";
+import { Lashing } from "./lashing";
 
 export class Pole extends THREE.Object3D {
   mesh: THREE.Mesh;
   direction: THREE.Vector3;
   length: number = 4.0;
+  lashings: Lashing[] = [];
   constructor() {
     super();
     const textureLoader = new THREE.TextureLoader();
@@ -33,6 +35,12 @@ export class Pole extends THREE.Object3D {
     const quaternion = new THREE.Quaternion();
     quaternion.setFromUnitVectors(new THREE.Vector3(0, 1, 0), this.direction);
     this.setRotationFromQuaternion(quaternion);
+  }
+
+  setPositionOnGround(position: THREE.Vector3) {
+    this.position.set(position.x, position.y, position.z);
+    this.mesh.position.set(0, 2, 0);
+    this.setDirection(new THREE.Vector3(0, 1, 0));
   }
 
   setPositionBetweenGroundAndPole(
@@ -66,13 +74,30 @@ export class Pole extends THREE.Object3D {
         break;
       }
     }
+    if (minimumLength > 6.0) this.length = 6.0;
     this.mesh.geometry.dispose();
     this.mesh.geometry = new THREE.CylinderGeometry(0.07, 0.07, this.length);
     // @ts-ignore
     this.mesh.material.map.repeat.y = this.length * 2;
   }
 
+  addLashing(lashing: Lashing) {
+    this.lashings.push(lashing);
+  }
+
+  removeLashing(pole: Pole) {
+    this.lashings = this.lashings.filter(
+      (lashing) => lashing.fixedPole !== pole && lashing.loosePole !== pole
+    );
+  }
+
   select() {
-    console.log("select");
+    // @ts-ignore
+    this.mesh.material.color = new THREE.Color(0, 1, 1);
+  }
+
+  deselect() {
+    // @ts-ignore
+    this.mesh.material.color = new THREE.Color(1, 1, 1);
   }
 }
