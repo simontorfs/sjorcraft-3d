@@ -26,6 +26,7 @@ export class Pole extends THREE.Object3D {
       wireframe: false,
     });
     this.mesh = new THREE.Mesh(geometry, material);
+    this.mesh.rotation.y = Math.random() * 2 * Math.PI;
     this.add(this.mesh);
     this.direction = new THREE.Vector3(0, 1, 0);
   }

@@ -87,7 +87,7 @@ export class InputHandler {
     if (this.viewer.poleTool.active) {
       if (intersect?.normal) {
         const rotationMatrix = new THREE.Matrix4();
-        rotationMatrix.extractRotation(hoveredPole.matrix);
+        rotationMatrix.extractRotation(hoveredPole.mesh.matrix);
 
         const transformedNormal = intersect.normal
           .clone()
