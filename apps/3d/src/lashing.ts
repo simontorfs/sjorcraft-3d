@@ -8,14 +8,8 @@ export class Lashing {
   centerLoosePole: THREE.Vector3;
   anchorPoint: THREE.Vector3; // Point on the surface of the fixed pole where the user clicked
   anchorPointNormal: THREE.Vector3;
-  constructor(
-    fixedPole: Pole,
-    loosePole: Pole,
-    position: THREE.Vector3,
-    normal: THREE.Vector3
-  ) {
-    this.setProperties(fixedPole, loosePole, position, normal);
-  }
+  fixedHeight: number | undefined;
+  constructor() {}
 
   setProperties(
     fixedPole: Pole,
@@ -53,6 +47,10 @@ export class Lashing {
       this.centerLoosePole = centerLoosePoleOption1;
     } else {
       this.centerLoosePole = centerLoosePoleOption2;
+    }
+
+    if (this.fixedHeight) {
+      this.calculatePositionsWithHorizontalSnap(this.fixedHeight);
     }
   }
 

@@ -10,7 +10,8 @@ export class PoleTool {
   hoveringGround: boolean;
   fixedLashing: Lashing | undefined;
   newLashing: Lashing | undefined;
-  snapHeightsLastPole: number[] = [];
+  heightsLastPole: number[] = [];
+  currentSnapHeight: number | undefined;
 
   constructor(viewer: Viewer) {
     this.viewer = viewer;
@@ -110,20 +111,14 @@ export class PoleTool {
     this.hoveringGround = false;
 
     if (!this.newLashing) {
-      this.newLashing = new Lashing(
-        hoveredPole,
-        this.activePole,
-        position,
-        normal
-      );
-    } else {
-      this.newLashing.setProperties(
-        hoveredPole,
-        this.activePole,
-        position,
-        normal
-      );
+      this.newLashing = new Lashing();
     }
+    this.newLashing.setProperties(
+      hoveredPole,
+      this.activePole,
+      position,
+      normal
+    );
 
     if (this.fixedLashing) {
       if (this.fixedLashing.fixedPole === hoveredPole) return;
@@ -131,7 +126,6 @@ export class PoleTool {
     } else {
       this.placePoleOnOneLashing();
     }
-    this.snap();
   }
 
   placePoleBetweenTwoLashings() {
@@ -144,6 +138,7 @@ export class PoleTool {
     // Step 2: Use the pole's naive orientation to estimate the center coordinates of the lashings
     this.fixedLashing.calculatePositions();
     this.newLashing.calculatePositions();
+    this.snap();
     // Step 3: Set the pole position with the estimated center coordinates
     this.activePole.setPositionBetweenTwoPoles(
       this.fixedLashing.centerLoosePole,
@@ -159,6 +154,7 @@ export class PoleTool {
     );
 
     this.activePole.setDirection(targetOrientationVector);
+    this.snap();
 
     this.activePole.position.set(
       this.newLashing.centerLoosePole.x,
@@ -193,25 +189,17 @@ export class PoleTool {
   snap() {
     if (!this.activePole || !this.newLashing) return;
 
-    const snapHeights = [...this.snapHeightsLastPole];
+    this.currentSnapHeight = undefined;
+
+    const snapHeights = [...this.heightsLastPole];
     if (this.fixedLashing)
       snapHeights.push(this.fixedLashing.centerLoosePole.y);
 
     for (const snapHeight of snapHeights) {
-      const newLashingSnapped =
+      const snapped =
         this.newLashing.calculatePositionsWithHorizontalSnap(snapHeight);
-      const fixedLashingSnapped =
-        this.fixedLashing?.calculatePositionsWithHorizontalSnap(snapHeight);
-      if (newLashingSnapped || fixedLashingSnapped) {
-        if (this.fixedLashing) {
-          this.activePole.setPositionBetweenTwoPoles(
-            this.fixedLashing.centerLoosePole,
-            this.newLashing.centerLoosePole
-          );
-        } else {
-          this.placePoleOnOneLashing();
-        }
-
+      if (snapped) {
+        this.currentSnapHeight = snapHeight;
         break;
       }
     }
@@ -227,19 +215,22 @@ export class PoleTool {
       this.activePole.position.y = 200;
       this.viewer.scene.add(this.activePole);
     } else {
-      this.fixedLashing = this.newLashing;
-      this.newLashing = undefined;
+      if (this.newLashing) {
+        this.newLashing.fixedHeight = this.currentSnapHeight;
+        this.fixedLashing = this.newLashing;
+        this.newLashing = undefined;
+      }
     }
   }
 
   commitLashings() {
     if (this.fixedLashing) {
-      this.snapHeightsLastPole = [];
-      this.snapHeightsLastPole.push(this.fixedLashing.centerLoosePole.y);
+      this.heightsLastPole = [];
+      this.heightsLastPole.push(this.fixedLashing.centerLoosePole.y);
       this.fixedLashing.commit();
     }
     if (this.newLashing) {
-      this.snapHeightsLastPole.push(this.newLashing.centerLoosePole.y);
+      this.heightsLastPole.push(this.newLashing.centerLoosePole.y);
       this.newLashing.commit();
     }
     this.fixedLashing = undefined;
