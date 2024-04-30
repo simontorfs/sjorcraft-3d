@@ -166,6 +166,7 @@ export class PoleTool {
 
   placePoleBetweenOneLashingAndGround(groundPosition: THREE.Vector3) {
     if (!this.activePole || !this.fixedLashing) return;
+    this.snapToGrid(groundPosition);
 
     // Step 1: Set naive pole position based on the anchorPoint
     this.activePole.setPositionBetweenGroundAndPole(
@@ -183,6 +184,7 @@ export class PoleTool {
 
   placePoleOnGround(groundPosition: THREE.Vector3) {
     if (!this.activePole) return;
+    this.snapToGrid(groundPosition);
     this.activePole.setPositionOnGround(groundPosition);
   }
 
@@ -205,6 +207,15 @@ export class PoleTool {
         this.currentSnapHeight = snapHeight;
         break;
       }
+    }
+  }
+
+  snapToGrid(position: THREE.Vector3) {
+    if (Math.abs(Math.abs((position.x + 0.5) % 1) - 0.5) < 0.05) {
+      position.x = Math.round(position.x);
+    }
+    if (Math.abs(Math.abs((position.z + 0.5) % 1) - 0.5) < 0.05) {
+      position.z = Math.round(position.z);
     }
   }
 
