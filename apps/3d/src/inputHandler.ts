@@ -49,6 +49,12 @@ export class InputHandler {
       case "s":
         this.viewer.saveTool.savePolesToLocalStorage();
         break;
+      case "f":
+        const length = Number(prompt("Enter the length of the floor"));
+        const width = Number(prompt("Enter the width of the floor"));
+        this.viewer.customizeTool.setFloor(length, width);
+        this.viewer.customizeTool.setGrid(length, width);
+        break;
       default:
         console.log(event.key);
         break;

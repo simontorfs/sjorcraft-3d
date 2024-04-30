@@ -6,6 +6,7 @@ import { PoleTool } from "./poleTool";
 import { SaveTool } from "./saveTool";
 import { DetailsTool } from "./detailsTool";
 import { SelectionTool } from "./selectionTool";
+import { CustomizeTool } from "./customizeTool";
 
 export class Viewer {
   canvas: HTMLElement;
@@ -21,6 +22,7 @@ export class Viewer {
   floor: THREE.Mesh;
   saveTool: SaveTool;
   detailsTool: DetailsTool;
+  customizeTool: CustomizeTool;
 
   constructor() {
     this.sizes = { width: window.innerWidth, height: window.innerHeight };
@@ -103,5 +105,8 @@ export class Viewer {
     grid.material.opacity = 0.65;
     grid.material.transparent = true;
     this.scene.add(grid);
+
+    // add customize tool
+    this.customizeTool = new CustomizeTool(this);
   }
 }
