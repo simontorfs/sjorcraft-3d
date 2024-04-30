@@ -7,6 +7,7 @@ export class SaveTool {
   constructor(viewer: Viewer) {
     this.viewer = viewer;
   }
+
   importPoles() {
     const fileInput = document.getElementById("file") as HTMLInputElement;
     fileInput.click();
@@ -14,8 +15,11 @@ export class SaveTool {
       const file = fileInput.files![0];
       const reader = new FileReader();
       reader.onload = () => {
+        // check if extension is .sjor otherwise ignore
+        if (file.name.split(".").pop() !== "sjor") {
+          return;
+        }
         const data = JSON.parse(reader.result as string);
-        console.log("testData", data);
         this.removeAllPoles();
         data.forEach((pole: any) => {
           const newPole = new Pole();
@@ -66,7 +70,7 @@ export class SaveTool {
     a.download = `${new Date()
       .toISOString()
       .slice(0, 10)
-      .replace(/-/g, "")}-${name}_poles.json`;
+      .replace(/-/g, "")}-${name}_poles.sjor`;
     a.click();
   }
 
