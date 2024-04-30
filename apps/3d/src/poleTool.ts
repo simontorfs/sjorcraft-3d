@@ -10,7 +10,7 @@ export class PoleTool {
   hoveringGround: boolean;
   fixedLashing: Lashing | undefined;
   newLashing: Lashing | undefined;
-  heightsLastPole: number[] = [];
+  lastPole: Pole;
   currentSnapHeight: number | undefined;
 
   constructor(viewer: Viewer) {
@@ -191,7 +191,10 @@ export class PoleTool {
 
     this.currentSnapHeight = undefined;
 
-    const snapHeights = [...this.heightsLastPole];
+    const snapHeights =
+      this.lastPole?.lashings
+        .filter((lashing) => lashing.fixedPole.isVertical())
+        .map((lashing) => lashing.centerLoosePole.y) || [];
     if (this.fixedLashing)
       snapHeights.push(this.fixedLashing.centerLoosePole.y);
 
@@ -210,6 +213,7 @@ export class PoleTool {
     if (this.fixedLashing || this.hoveringGround) {
       this.commitLashings();
       this.viewer.poles.push(this.activePole);
+      this.lastPole = this.activePole;
 
       this.activePole = new Pole();
       this.activePole.position.y = 200;
@@ -225,12 +229,9 @@ export class PoleTool {
 
   commitLashings() {
     if (this.fixedLashing) {
-      this.heightsLastPole = [];
-      this.heightsLastPole.push(this.fixedLashing.centerLoosePole.y);
       this.fixedLashing.commit();
     }
     if (this.newLashing) {
-      this.heightsLastPole.push(this.newLashing.centerLoosePole.y);
       this.newLashing.commit();
     }
     this.fixedLashing = undefined;
