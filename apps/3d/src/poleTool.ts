@@ -138,7 +138,7 @@ export class PoleTool {
     // Step 2: Use the pole's naive orientation to estimate the center coordinates of the lashings
     this.fixedLashing.calculatePositions();
     this.newLashing.calculatePositions();
-    this.snap();
+    this.snapToHeight();
     // Step 3: Set the pole position with the estimated center coordinates
     this.activePole.setPositionBetweenTwoPoles(
       this.fixedLashing.centerLoosePole,
@@ -154,7 +154,7 @@ export class PoleTool {
     );
 
     this.activePole.setDirection(targetOrientationVector);
-    this.snap();
+    this.snapToHeight();
 
     this.activePole.position.set(
       this.newLashing.centerLoosePole.x,
@@ -188,7 +188,7 @@ export class PoleTool {
     this.activePole.setPositionOnGround(groundPosition);
   }
 
-  snap() {
+  snapToHeight() {
     if (!this.activePole || !this.newLashing) return;
 
     this.currentSnapHeight = undefined;
