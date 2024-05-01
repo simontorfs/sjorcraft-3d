@@ -97,6 +97,10 @@ export class InputHandler {
         if (event.button === THREE.MOUSE.LEFT) {
           this.viewer.selectionTool.leftClick();
         }
+      } else if (this.viewer.bipodTool.active) {
+        if (event.button === THREE.MOUSE.LEFT) {
+          this.viewer.bipodTool.leftClick();
+        }
       }
     }
   }
