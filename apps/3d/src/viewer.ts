@@ -6,6 +6,7 @@ import { PoleTool } from "./poleTool";
 import { SaveTool } from "./saveTool";
 import { DetailsTool } from "./detailsTool";
 import { SelectionTool } from "./selectionTool";
+import { Floor } from "./floor";
 import { BipodTool } from "./bipodTool";
 
 export class Viewer {
@@ -22,9 +23,9 @@ export class Viewer {
   bipodTool: BipodTool;
 
   poles: Pole[];
-  floor: THREE.Mesh;
   saveTool: SaveTool;
   detailsTool: DetailsTool;
+  floor: Floor;
 
   constructor() {
     this.sizes = { width: window.innerWidth, height: window.innerHeight };
@@ -68,6 +69,9 @@ export class Viewer {
     // const axesHelper = new THREE.AxesHelper();
     // this.scene.add(axesHelper);
 
+    // Floor
+    this.floor = new Floor(this);
+    this.floor.setNewFloor(50, 50, "green");
     // Light
     const ambientLight = new THREE.AmbientLight();
     this.scene.add(ambientLight);
@@ -89,24 +93,5 @@ export class Viewer {
     this.selectionTool.activate();
     this.poleTool = new PoleTool(this);
     this.bipodTool = new BipodTool(this);
-
-    // Floor
-    const floorGeometry = new THREE.PlaneGeometry(50, 50);
-    const floorMaterial = new THREE.MeshBasicMaterial({
-      opacity: 0.5,
-      transparent: false,
-      color: "green",
-    });
-
-    this.floor = new THREE.Mesh(floorGeometry, floorMaterial);
-    this.floor.rotation.x = -Math.PI / 2;
-    this.scene.add(this.floor);
-
-    // add grid to floor of 1 by 1
-    const grid = new THREE.GridHelper(50, 50, 0x888888, 0x888888);
-    grid.position.y = 0.01;
-    grid.material.opacity = 0.65;
-    grid.material.transparent = true;
-    this.scene.add(grid);
   }
 }

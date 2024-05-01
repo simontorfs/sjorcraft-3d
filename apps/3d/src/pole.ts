@@ -100,4 +100,14 @@ export class Pole extends THREE.Object3D {
     // @ts-ignore
     this.mesh.material.color = new THREE.Color(1, 1, 1);
   }
+
+  isParallelTo(direction: THREE.Vector3) {
+    const angle = direction.angleTo(this.direction);
+    if (angle < 0) console.log("IS THIS LEGAL????");
+    return angle < 0.01;
+  }
+
+  isVertical() {
+    return this.isParallelTo(new THREE.Vector3(0, 1, 0));
+  }
 }
