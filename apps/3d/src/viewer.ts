@@ -6,6 +6,7 @@ import { PoleTool } from "./poleTool";
 import { SaveTool } from "./saveTool";
 import { DetailsTool } from "./detailsTool";
 import { SelectionTool } from "./selectionTool";
+import { BipodTool } from "./bipodTool";
 
 export class Viewer {
   canvas: HTMLElement;
@@ -15,8 +16,11 @@ export class Viewer {
   camera: THREE.PerspectiveCamera;
   controls: OrbitControls;
   inputHandler: InputHandler;
-  poleTool: PoleTool;
+
   selectionTool: SelectionTool;
+  poleTool: PoleTool;
+  bipodTool: BipodTool;
+
   poles: Pole[];
   floor: THREE.Mesh;
   saveTool: SaveTool;
@@ -81,9 +85,10 @@ export class Viewer {
     this.poles = [];
 
     // Tools
-    this.poleTool = new PoleTool(this);
     this.selectionTool = new SelectionTool(this);
     this.selectionTool.activate();
+    this.poleTool = new PoleTool(this);
+    this.bipodTool = new BipodTool(this);
 
     // Floor
     const floorGeometry = new THREE.PlaneGeometry(50, 50);

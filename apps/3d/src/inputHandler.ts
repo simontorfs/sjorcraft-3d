@@ -22,13 +22,37 @@ export class InputHandler {
 
   onKeyDown(event: any) {
     switch (event.key) {
-      case "b":
+      case "h":
+        this.viewer.poleTool.deactivate();
+        this.viewer.bipodTool.deactivate();
+
+        this.viewer.selectionTool.activate();
+        break;
+      case "j":
         this.viewer.selectionTool.deactivate();
+        this.viewer.bipodTool.deactivate();
+
         this.viewer.poleTool.activate();
         break;
-      case "n":
+      case "k":
+        this.viewer.selectionTool.deactivate();
         this.viewer.poleTool.deactivate();
-        this.viewer.selectionTool.activate();
+
+        this.viewer.bipodTool.activate();
+        break;
+      case "l":
+        this.viewer.selectionTool.deactivate();
+        this.viewer.poleTool.deactivate();
+        this.viewer.bipodTool.deactivate();
+
+        // Activate tripodTool
+        break;
+      case "m":
+        this.viewer.selectionTool.deactivate();
+        this.viewer.poleTool.deactivate();
+        this.viewer.bipodTool.deactivate();
+
+        // Activate polypedastraTool
         break;
       case "Delete":
         this.viewer.selectionTool.delete();
@@ -104,6 +128,8 @@ export class InputHandler {
       }
     } else if (this.viewer.selectionTool.active) {
       this.viewer.selectionTool.hoveredPole = hoveredPole;
+    } else if (this.viewer.bipodTool.active) {
+      this.viewer.bipodTool.drawBipod(groundPosition);
     }
   }
 
