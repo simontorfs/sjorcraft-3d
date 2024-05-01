@@ -50,15 +50,15 @@ export class Lashing {
     }
 
     if (this.fixedHeight) {
-      this.calculatePositionsWithHorizontalSnap(this.fixedHeight);
+      this.snapLoosePole(this.fixedHeight);
     }
   }
 
-  calculatePositionsWithHorizontalSnap(desiredHeight: number) {
+  snapLoosePole(desiredHeight: number) {
     // Move the center of the loose pole along the fixed pole direction until it is on the desired height.
     const heightDifference = this.centerLoosePole.y - desiredHeight;
     const translationDistance = heightDifference / this.fixedPole.direction.y;
-    if (Math.abs(translationDistance) < 0.1) {
+    if (Math.abs(translationDistance) < 0.1 || this.fixedHeight) {
       const translationVector = this.fixedPole.direction
         .clone()
         .multiplyScalar(translationDistance);

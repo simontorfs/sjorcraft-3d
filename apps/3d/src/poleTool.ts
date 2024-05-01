@@ -10,7 +10,7 @@ export class PoleTool {
   hoveringGround: boolean;
   fixedLashing: Lashing | undefined;
   newLashing: Lashing | undefined;
-  lastPole: Pole;
+  lastPole: Pole | undefined;
   currentSnapHeight: number | undefined;
 
   constructor(viewer: Viewer) {
@@ -86,6 +86,7 @@ export class PoleTool {
     this.active = false;
     this.fixedLashing = undefined;
     this.newLashing = undefined;
+    this.lastPole = undefined;
   }
 
   drawPoleWhileHoveringGound(groundPosition: THREE.Vector3) {
@@ -93,6 +94,8 @@ export class PoleTool {
 
     this.newLashing = undefined;
     this.hoveringGround = true;
+
+    this.snapToGrid(groundPosition);
 
     if (this.fixedLashing) {
       this.placePoleBetweenOneLashingAndGround(groundPosition);
@@ -166,7 +169,6 @@ export class PoleTool {
 
   placePoleBetweenOneLashingAndGround(groundPosition: THREE.Vector3) {
     if (!this.activePole || !this.fixedLashing) return;
-    this.snapToGrid(groundPosition);
 
     // Step 1: Set naive pole position based on the anchorPoint
     this.activePole.setPositionBetweenGroundAndPole(
@@ -184,7 +186,6 @@ export class PoleTool {
 
   placePoleOnGround(groundPosition: THREE.Vector3) {
     if (!this.activePole) return;
-    this.snapToGrid(groundPosition);
     this.activePole.setPositionOnGround(groundPosition);
   }
 
@@ -201,8 +202,7 @@ export class PoleTool {
       snapHeights.push(this.fixedLashing.centerLoosePole.y);
 
     for (const snapHeight of snapHeights) {
-      const snapped =
-        this.newLashing.calculatePositionsWithHorizontalSnap(snapHeight);
+      const snapped = this.newLashing.snapLoosePole(snapHeight);
       if (snapped) {
         this.currentSnapHeight = snapHeight;
         break;
@@ -211,6 +211,8 @@ export class PoleTool {
   }
 
   snapToGrid(position: THREE.Vector3) {
+    // Check if position x or z is close to a whole number.
+    // If somebody knows a shorter formula, be my guest.
     if (Math.abs(Math.abs((position.x + 0.5) % 1) - 0.5) < 0.05) {
       position.x = Math.round(position.x);
     }
