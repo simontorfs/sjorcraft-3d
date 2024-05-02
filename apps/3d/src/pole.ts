@@ -3,8 +3,14 @@ import { Lashing } from "./lashing";
 
 export class Pole extends THREE.Object3D {
   mesh: THREE.Mesh;
+  capTop: THREE.Mesh;
+  capBottom: THREE.Mesh;
   direction: THREE.Vector3;
   length: number = 4.0;
+  radius: number = 0.07;
+  capLength: number = 0.2;
+  capOffset: number = 0.001; //makes the render look great
+  color: number = 0x0000ff;
   lashings: Lashing[] = [];
   constructor() {
     super();
@@ -13,12 +19,16 @@ export class Pole extends THREE.Object3D {
     colorTexture.repeat.y = this.length * 2;
     colorTexture.wrapT = THREE.MirroredRepeatWrapping;
     const heightTexture = textureLoader.load("./wood/Wood_025_height.png");
-    const normalTexture = textureLoader.load("./woord/Wood_025_normal.png");
+    const normalTexture = textureLoader.load("./wood/Wood_025_normal.png");
     const roughnessTexture = textureLoader.load(
       "./wood/Wood_025_roughness.png"
     );
 
-    const geometry = new THREE.CylinderGeometry(0.07, 0.07, this.length);
+    const geometry = new THREE.CylinderGeometry(
+      this.radius,
+      this.radius,
+      this.length
+    );
     const material = new THREE.MeshStandardMaterial({
       map: colorTexture,
       roughnessMap: roughnessTexture,
@@ -26,7 +36,25 @@ export class Pole extends THREE.Object3D {
       wireframe: false,
     });
     this.mesh = new THREE.Mesh(geometry, material);
+    // Create top and bottom caps meshes
+    const capGeometry = new THREE.CylinderGeometry(
+      this.radius + this.capOffset,
+      this.radius + this.capOffset,
+      this.capLength
+    );
+    const capMaterial = new THREE.MeshStandardMaterial({
+      color: this.color,
+      transparent: true,
+      opacity: 0.5,
+    }); // Blue color
+    this.capTop = new THREE.Mesh(capGeometry, capMaterial);
+    this.capBottom = new THREE.Mesh(capGeometry, capMaterial);
+
+    // Add top and bottom caps to the pole
+    this.add(this.capTop);
+    this.add(this.capBottom);
     this.add(this.mesh);
+
     this.direction = new THREE.Vector3(0, 1, 0);
   }
 
@@ -39,7 +67,7 @@ export class Pole extends THREE.Object3D {
 
   setPositionOnGround(position: THREE.Vector3) {
     this.position.set(position.x, position.y, position.z);
-    this.mesh.position.set(0, 2, 0);
+    this.setPositionMesh(0, 2, 0);
     this.setDirection(new THREE.Vector3(0, 1, 0));
   }
 
@@ -52,12 +80,12 @@ export class Pole extends THREE.Object3D {
     const distance = targetOrientationVector.length();
     this.setLength(distance + 0.15);
     this.setDirection(targetOrientationVector);
-    this.mesh.position.y = this.length / 2.0;
+    this.setPositionMesh(0, this.length / 2.0, 0);
   }
 
   setPositionBetweenTwoPoles(pointA: THREE.Vector3, pointB: THREE.Vector3) {
     const centerPoint = pointA.clone().add(pointB.clone()).divideScalar(2.0);
-    this.mesh.position.y = 0.0;
+    this.setPositionMesh(0, 0, 0);
     this.position.set(centerPoint.x, centerPoint.y, centerPoint.z);
     const targetOrientationVector = pointB.clone().sub(pointA.clone());
 
@@ -67,18 +95,56 @@ export class Pole extends THREE.Object3D {
   }
 
   setLength(minimumLength: number) {
-    const allowedLengths = [1.0, 1.5, 2.0, 2.5, 3.0, 4.0, 5.0, 6.0];
-    for (const length of allowedLengths) {
+    const allowedLengths: number[] = [1.0, 1.5, 2.0, 2.5, 3.0, 4.0, 5.0, 6.0];
+    const colors: number[] = [
+      0xff5733, 0xffbd33, 0xffd633, 0x33ff7a, 0x337aff, 0x7933ff, 0xb733ff,
+      0xff33e6,
+    ];
+
+    // if the lenth is to big, just set it to the biggest lenght
+    this.length = allowedLengths[allowedLengths.length - 1];
+    this.color = colors[colors.length - 1];
+
+    for (let i = 0; i < allowedLengths.length; i++) {
+      const length = allowedLengths[i];
       if (length >= minimumLength) {
         this.length = length;
+        this.color = colors[i];
         break;
       }
     }
-    if (minimumLength > 6.0) this.length = 6.0;
     this.mesh.geometry.dispose();
-    this.mesh.geometry = new THREE.CylinderGeometry(0.07, 0.07, this.length);
+    this.mesh.geometry = new THREE.CylinderGeometry(
+      this.radius,
+      this.radius,
+      this.length
+    );
     // @ts-ignore
     this.mesh.material.map.repeat.y = this.length * 2;
+    this.capBottom.material = new THREE.MeshStandardMaterial({
+      color: this.color,
+      transparent: true,
+      opacity: 0.5,
+    });
+    this.capTop.material = new THREE.MeshStandardMaterial({
+      color: this.color,
+      transparent: true,
+      opacity: 0.5,
+    });
+  }
+
+  setPositionMesh(x: number, y: number, z: number) {
+    this.mesh.position.set(x, y, z);
+    this.capBottom.position.set(
+      x,
+      y - (this.length - this.capLength) / 2 - this.capOffset,
+      z
+    );
+    this.capTop.position.set(
+      x,
+      y + (this.length - this.capLength) / 2 + this.capOffset,
+      z
+    );
   }
 
   addLashing(lashing: Lashing) {

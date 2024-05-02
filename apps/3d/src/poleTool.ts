@@ -33,7 +33,7 @@ export class PoleTool {
     demoPole1.position.x = -0.07;
     demoPole1.position.y = 0;
     demoPole1.position.z = -0.8;
-    demoPole1.mesh.position.y = 2;
+    demoPole1.setPositionMesh(0,2,0);
     demoPole1.setDirection(new THREE.Vector3(0, 1.8, 1));
     demoPole1.name = "demoPole1";
 
@@ -43,7 +43,7 @@ export class PoleTool {
     demoPole2.position.x = 1.8;
     demoPole2.position.y = 0;
     demoPole2.position.z = 0.93;
-    demoPole2.mesh.position.y = 2;
+    demoPole2.setPositionMesh(0,2,0);
     demoPole2.setDirection(new THREE.Vector3(-1, 1.8, 0));
     demoPole2.name = "demoPole2";
 
@@ -53,7 +53,7 @@ export class PoleTool {
     demoPole3.position.x = 0.07;
     demoPole3.position.y = 0;
     demoPole3.position.z = 2.8;
-    demoPole3.mesh.position.y = 2;
+    demoPole3.setPositionMesh(0,2,0);
     demoPole3.setDirection(new THREE.Vector3(0, 1.8, -1));
     demoPole3.name = "demoPole3";
 
@@ -63,7 +63,7 @@ export class PoleTool {
     demoPole4.position.x = -1.8;
     demoPole4.position.y = 0;
     demoPole4.position.z = 1.07;
-    demoPole4.mesh.position.y = 2;
+    demoPole4.setPositionMesh(0,2,0);
     demoPole4.setDirection(new THREE.Vector3(1, 1.8, 0));
     demoPole4.name = "demoPole4";
   }
@@ -164,7 +164,7 @@ export class PoleTool {
       this.newLashing.centerLoosePole.y,
       this.newLashing.centerLoosePole.z
     );
-    this.activePole.mesh.position.set(0, 0, 0);
+    this.activePole.setPositionMesh(0, 0, 0);
   }
 
   placePoleBetweenOneLashingAndGround(groundPosition: THREE.Vector3) {
