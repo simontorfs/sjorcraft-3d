@@ -49,6 +49,11 @@ export class InputHandler {
       case "s":
         this.viewer.saveTool.savePolesToLocalStorage();
         break;
+      case "f":
+        const length = Number(prompt("Enter the length of the floor"));
+        const width = Number(prompt("Enter the width of the floor"));
+        this.viewer.floor.setDimensions(length, width);
+        break;
       default:
         console.log(event.key);
         break;
@@ -128,7 +133,7 @@ export class InputHandler {
       this.viewer.camera
     );
 
-    const intersect = raycaster.intersectObject(this.viewer.floor);
+    const intersect = raycaster.intersectObject(this.viewer.floor.mesh);
     if (intersect.length) {
       return intersect[0].point;
     }
