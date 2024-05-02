@@ -5,7 +5,7 @@
 ![](https://img.shields.io/badge/Threejs-blue.svg)
 ![](https://img.shields.io/badge/Project_Status-In_Progress-green.svg)
 
-SjorCRAFT is a powerful tool tailored specifically for the Usual Leader in Youth Movements. It simplifies the process of creating intricate 3D Sjor constructions, making it easier than ever to design and visualize complex structures for various scouting activities and outdoor adventures.
+SjorCRAFT is a powerful tool tailored specifically for the Leaders in Youth Movements. It simplifies the process of creating intricate 3D Sjor constructions, making it easier than ever to design and visualize complex structures for various scouting activities and outdoor adventures.
 
 ---
 
@@ -38,10 +38,11 @@ To get started with SjorCRAFT, you'll need to have Node.js installed on your sys
 
 - ### Download repository
 
-     ```bash
-     $ git clone https://github.com/simontorfs/SjorCRAFT
-     $ cd SjorCRAFT
-     ```
+  ```bash
+  $ git clone https://github.com/simontorfs/SjorCRAFT
+  $ cd SjorCRAFT
+  ```
+
 - ### Installing all needed dependencies
 
       $ npm install
