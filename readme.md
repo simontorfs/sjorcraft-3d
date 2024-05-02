@@ -37,7 +37,6 @@ To get started with SjorCRAFT, you'll need to have Node.js installed on your sys
 ## Getting Started - Run locally
 
 - ### Download repository
-      ```bash
       $ git clone https://github.com/simontorfs/SjorCRAFT
 - ### Installing all needed dependencies
 
