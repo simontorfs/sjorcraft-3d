@@ -13,6 +13,7 @@ export class BipodTool {
   pole2Placed: boolean = false;
 
   firstGroundPoint: THREE.Vector3;
+  secondGroundPoint: THREE.Vector3;
 
   constructor(viewer: Viewer) {
     this.active = false;
@@ -41,6 +42,8 @@ export class BipodTool {
       this.drawFirstStep(groundPosition);
     } else if (!this.pole2Placed) {
       this.drawSecondStep(groundPosition);
+    } else {
+      this.drawThridStep(groundPosition);
     }
   }
 
@@ -91,6 +94,21 @@ export class BipodTool {
         center.z - perpendicularDirection.z * 0.07
       )
     );
+    this.secondGroundPoint = groundPosition;
+  }
+
+  drawThridStep(groundPosition: THREE.Vector3) {
+    const points = [this.firstGroundPoint, this.secondGroundPoint];
+    const geometry = new THREE.BufferGeometry().setFromPoints(points);
+    const material = new THREE.LineDashedMaterial({
+      color: 0x0000ff,
+      dashSize: 0.05,
+      gapSize: 0.05,
+    });
+
+    const axis = new THREE.Line(geometry, material);
+    axis.computeLineDistances();
+    this.viewer.scene.add(axis);
   }
 
   leftClick() {

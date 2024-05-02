@@ -27,7 +27,7 @@ export class Floor extends THREE.Object3D {
     const floorGeometry = new THREE.PlaneGeometry(length, width);
     const floorMaterial = new THREE.MeshBasicMaterial({
       opacity: 0.5,
-      transparent: false,
+      transparent: true,
       color: color ? color : "green",
     });
     this.mesh = new THREE.Mesh(floorGeometry, floorMaterial);
