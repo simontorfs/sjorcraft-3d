@@ -7,6 +7,7 @@ import { SaveTool } from "./saveTool";
 import { DetailsTool } from "./detailsTool";
 import { SelectionTool } from "./selectionTool";
 import { Floor } from "./floor";
+import { imageExporter } from "./imageExporter";
 
 export class Viewer {
   canvas: HTMLElement;
@@ -22,6 +23,7 @@ export class Viewer {
   saveTool: SaveTool;
   detailsTool: DetailsTool;
   floor: Floor;
+  imageExporter: imageExporter;
 
   constructor() {
     this.sizes = { width: window.innerWidth, height: window.innerHeight };
@@ -80,6 +82,9 @@ export class Viewer {
 
     // Save tool
     this.saveTool = new SaveTool(this);
+
+    // Image Exporter
+    this.imageExporter = new imageExporter(this);
 
     // Poles
     this.poles = [];

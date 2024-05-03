@@ -54,6 +54,12 @@ export class InputHandler {
         const width = Number(prompt("Enter the width of the floor"));
         this.viewer.floor.setDimensions(length, width);
         break;
+      case "a": // alles laten zien
+        this.viewer.imageExporter.exportImage();
+      case "w":
+        console.log("camera pos", this.viewer.camera.position);
+        console.log("camera r", this.viewer.camera.rotation);
+        console.log("camera", this.viewer.camera.position);
       default:
         console.log(event.key);
         break;
