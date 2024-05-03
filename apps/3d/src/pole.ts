@@ -152,8 +152,6 @@ export class Pole extends THREE.Object3D {
       transparent: true,
       opacity: 0.5,
     });
-    console.log("length", this.length);
-    console.log("color", this.color);
   }
 
   setPositionMesh(x: number, y: number, z: number) {
