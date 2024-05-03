@@ -54,15 +54,15 @@ export class BipodTool {
   }
 
   drawFirstStep(groundPosition: THREE.Vector3) {
-    this.pole1.position.set(
-      groundPosition.x,
-      groundPosition.y + this.pole1.length / 2.0,
-      groundPosition.z
+    this.pole1.setPositionOnGround(
+      new THREE.Vector3(groundPosition.x, groundPosition.y, groundPosition.z)
     );
-    this.pole2.position.set(
-      groundPosition.x + 0.14,
-      groundPosition.y + this.pole1.length / 2.0,
-      groundPosition.z
+    this.pole2.setPositionOnGround(
+      new THREE.Vector3(
+        groundPosition.x + 0.14,
+        groundPosition.y,
+        groundPosition.z
+      )
     );
     this.firstGroundPoint = groundPosition.clone();
   }
