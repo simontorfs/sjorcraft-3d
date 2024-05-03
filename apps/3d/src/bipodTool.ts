@@ -11,9 +11,14 @@ export class BipodTool {
 
   pole1Placed: boolean = false;
   pole2Placed: boolean = false;
+  lashPositionPlaced: boolean = false;
 
   firstGroundPoint: THREE.Vector3;
   secondGroundPoint: THREE.Vector3;
+
+  parallelHelperAxis: THREE.Line;
+  perpendicularHelperAxis: THREE.Line;
+  verticalHelperAxis: THREE.Line;
 
   constructor(viewer: Viewer) {
     this.active = false;
@@ -36,6 +41,7 @@ export class BipodTool {
     this.viewer.scene.remove(this.pole2);
     this.pole1Placed = false;
     this.pole2Placed = false;
+    this.lashPositionPlaced = false;
   }
 
   drawBipod(groundPosition: THREE.Vector3) {
@@ -43,8 +49,10 @@ export class BipodTool {
       this.drawFirstStep(groundPosition);
     } else if (!this.pole2Placed) {
       this.drawSecondStep(groundPosition);
-    } else {
+    } else if (!this.lashPositionPlaced) {
       this.drawThirdStep(groundPosition);
+    } else {
+      this.drawFourthStep();
     }
   }
 
@@ -64,6 +72,8 @@ export class BipodTool {
   drawThirdStep(groundPosition: THREE.Vector3) {
     this.setLashingPosition(groundPosition);
   }
+
+  drawFourthStep() {}
 
   setLashingPosition(groundPosition: THREE.Vector3) {
     const lashingOffset = new THREE.Vector3()
@@ -104,9 +114,9 @@ export class BipodTool {
       gapSize: 0.05,
     });
 
-    const axis = new THREE.Line(geometry, material);
-    axis.computeLineDistances();
-    this.viewer.scene.add(axis);
+    this.parallelHelperAxis = new THREE.Line(geometry, material);
+    this.parallelHelperAxis.computeLineDistances();
+    this.viewer.scene.add(this.parallelHelperAxis);
 
     const perpendicularDirection = new THREE.Vector3()
       .crossVectors(
@@ -119,10 +129,20 @@ export class BipodTool {
       center.clone().sub(perpendicularDirection.clone().multiplyScalar(5)),
     ]);
 
-    const perpendicularAxis = new THREE.Line(perpendicularGeometry, material);
-    perpendicularAxis.computeLineDistances();
-    this.viewer.scene.add(perpendicularAxis);
+    this.perpendicularHelperAxis = new THREE.Line(
+      perpendicularGeometry,
+      material
+    );
+    this.perpendicularHelperAxis.computeLineDistances();
+    this.viewer.scene.add(this.perpendicularHelperAxis);
   }
+
+  removeHorizontalHelperLines() {
+    this.viewer.scene.remove(this.parallelHelperAxis);
+    this.viewer.scene.remove(this.perpendicularHelperAxis);
+  }
+
+  addVerticalHelperLine() {}
 
   leftClick() {
     if (!this.active) return;
@@ -132,6 +152,10 @@ export class BipodTool {
     } else if (!this.pole2Placed) {
       this.pole2Placed = true;
       this.AddHorizontalHelperLines();
+    } else if (!this.lashPositionPlaced) {
+      this.lashPositionPlaced = true;
+      this.removeHorizontalHelperLines();
+      this.addVerticalHelperLine();
     } else {
       this.viewer.poles.push(this.pole1);
       this.viewer.poles.push(this.pole2);
