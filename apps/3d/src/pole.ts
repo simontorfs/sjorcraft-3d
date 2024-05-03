@@ -58,6 +58,28 @@ export class Pole extends THREE.Object3D {
     this.direction = new THREE.Vector3(0, 1, 0);
   }
 
+  loadFromJson(pole: any) {
+    this.position.set(pole.position.x, pole.position.y, pole.position.z);
+    this.setDirection(
+      new THREE.Vector3(pole.direction.x, pole.direction.y, pole.direction.z)
+    );
+    this.name = pole.name;
+    this.setLength(pole.length);
+    this.setPositionMesh(pole.mesh.x, pole.mesh.y, pole.mesh.z);
+    this.rotation.set(pole.rotation._x, pole.rotation._y, pole.rotation._z);
+  }
+
+  saveToJson() {
+    return {
+      position: this.position,
+      direction: this.direction,
+      name: this.name,
+      mesh: this.mesh.position,
+      rotation: this.rotation,
+      length: this.length,
+    };
+  }
+
   setDirection(direction: THREE.Vector3) {
     this.direction = direction.clone().normalize();
     const quaternion = new THREE.Quaternion();
@@ -85,12 +107,11 @@ export class Pole extends THREE.Object3D {
 
   setPositionBetweenTwoPoles(pointA: THREE.Vector3, pointB: THREE.Vector3) {
     const centerPoint = pointA.clone().add(pointB.clone()).divideScalar(2.0);
-    this.setPositionMesh(0, 0, 0);
     this.position.set(centerPoint.x, centerPoint.y, centerPoint.z);
     const targetOrientationVector = pointB.clone().sub(pointA.clone());
-
     const distance = targetOrientationVector.length();
     this.setLength(distance + 0.3);
+    this.setPositionMesh(0, 0, 0);
     this.setDirection(targetOrientationVector);
   }
 
@@ -131,6 +152,8 @@ export class Pole extends THREE.Object3D {
       transparent: true,
       opacity: 0.5,
     });
+    console.log("length", this.length);
+    console.log("color", this.color);
   }
 
   setPositionMesh(x: number, y: number, z: number) {

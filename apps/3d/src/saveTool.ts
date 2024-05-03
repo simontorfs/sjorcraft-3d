@@ -23,26 +23,7 @@ export class SaveTool {
         this.removeAllPoles();
         data.forEach((pole: any) => {
           const newPole = new Pole();
-          newPole.position.set(
-            pole.position.x,
-            pole.position.y,
-            pole.position.z
-          );
-          newPole.setDirection(
-            new THREE.Vector3(
-              pole.direction.x,
-              pole.direction.y,
-              pole.direction.z
-            )
-          );
-          newPole.name = pole.name;
-          newPole.mesh.position.set(pole.mesh.x, pole.mesh.y, pole.mesh.z);
-          newPole.rotation.set(
-            pole.rotation._x,
-            pole.rotation._y,
-            pole.rotation._z
-          );
-          newPole.setLength(pole.length);
+          newPole.loadFromJson(pole);
           this.viewer.scene.add(newPole);
           this.viewer.poles.push(newPole);
         });
@@ -52,16 +33,7 @@ export class SaveTool {
   }
 
   exportPoles(name: string) {
-    const poles = this.viewer.poles.map((pole) => {
-      return {
-        position: pole.position,
-        direction: pole.direction,
-        name: pole.name,
-        mesh: pole.mesh.position,
-        rotation: pole.rotation,
-        length: pole.length,
-      };
-    });
+    const poles = this.viewer.poles.map((pole) => pole.saveToJson());
     const data = JSON.stringify(poles, null, 2);
     const blob = new Blob([data], { type: "text/json" });
     const url = URL.createObjectURL(blob);
@@ -82,16 +54,7 @@ export class SaveTool {
   }
 
   savePolesToLocalStorage() {
-    const poles = this.viewer.poles.map((pole) => {
-      return {
-        position: pole.position,
-        direction: pole.direction,
-        name: pole.name,
-        mesh: pole.mesh.position,
-        rotation: pole.rotation,
-        length: pole.length,
-      };
-    });
+    const poles = this.viewer.poles.map((pole) => pole.saveToJson());
     localStorage.setItem("poles", JSON.stringify(poles));
   }
 
@@ -100,18 +63,7 @@ export class SaveTool {
     this.removeAllPoles();
     poles.forEach((pole: any) => {
       const newPole = new Pole();
-      newPole.position.set(pole.position.x, pole.position.y, pole.position.z);
-      newPole.setDirection(
-        new THREE.Vector3(pole.direction.x, pole.direction.y, pole.direction.z)
-      );
-      newPole.name = pole.name;
-      newPole.mesh.position.set(pole.mesh.x, pole.mesh.y, pole.mesh.z);
-      newPole.rotation.set(
-        pole.rotation._x,
-        pole.rotation._y,
-        pole.rotation._z
-      );
-      newPole.setLength(pole.length);
+      newPole.loadFromJson(pole);
       this.viewer.scene.add(newPole);
       this.viewer.poles.push(newPole);
     });
