@@ -15,9 +15,6 @@ export class BipodTool {
   firstGroundPoint: THREE.Vector3;
   secondGroundPoint: THREE.Vector3;
 
-  center: THREE.Vector3;
-  perpendicularDirection: THREE.Vector3;
-
   constructor(viewer: Viewer) {
     this.active = false;
     this.viewer = viewer;
@@ -25,8 +22,6 @@ export class BipodTool {
     this.pole2 = new Pole();
     this.firstGroundPoint = new THREE.Vector3();
     this.secondGroundPoint = new THREE.Vector3();
-    this.center = new THREE.Vector3();
-    this.perpendicularDirection = new THREE.Vector3();
   }
 
   activate() {
@@ -71,7 +66,10 @@ export class BipodTool {
   }
 
   setLashingPosition(groundPosition: THREE.Vector3) {
-    this.calculatePerpendicularDirection();
+    const lashingOffset = new THREE.Vector3()
+      .crossVectors(this.pole1.direction, this.pole2.direction)
+      .normalize()
+      .multiplyScalar(0.07);
 
     const lashPosition = new THREE.Vector3(
       groundPosition.x,
@@ -79,8 +77,8 @@ export class BipodTool {
       groundPosition.z
     );
 
-    const centerPole1 = lashPosition.clone().add(this.perpendicularDirection);
-    const centerPole2 = lashPosition.clone().sub(this.perpendicularDirection);
+    const centerPole1 = lashPosition.clone().add(lashingOffset);
+    const centerPole2 = lashPosition.clone().sub(lashingOffset);
 
     this.pole1.setPositionBetweenGroundAndPole(
       this.firstGroundPoint,
@@ -92,8 +90,8 @@ export class BipodTool {
     );
   }
 
-  initThirdStep() {
-    this.center = this.firstGroundPoint
+  AddHorizontalHelperLines() {
+    const center = this.firstGroundPoint
       .clone()
       .add(this.secondGroundPoint)
       .divideScalar(2.0);
@@ -117,20 +115,13 @@ export class BipodTool {
       )
       .normalize();
     const perpendicularGeometry = new THREE.BufferGeometry().setFromPoints([
-      this.center.clone().add(perpendicularDirection.clone().multiplyScalar(5)),
-      this.center.clone().sub(perpendicularDirection.clone().multiplyScalar(5)),
+      center.clone().add(perpendicularDirection.clone().multiplyScalar(5)),
+      center.clone().sub(perpendicularDirection.clone().multiplyScalar(5)),
     ]);
 
     const perpendicularAxis = new THREE.Line(perpendicularGeometry, material);
     perpendicularAxis.computeLineDistances();
     this.viewer.scene.add(perpendicularAxis);
-  }
-
-  calculatePerpendicularDirection() {
-    this.perpendicularDirection = new THREE.Vector3()
-      .crossVectors(this.pole1.direction, this.pole2.direction)
-      .normalize()
-      .multiplyScalar(0.07);
   }
 
   leftClick() {
@@ -140,7 +131,7 @@ export class BipodTool {
       this.pole1Placed = true;
     } else if (!this.pole2Placed) {
       this.pole2Placed = true;
-      this.initThirdStep();
+      this.AddHorizontalHelperLines();
     } else {
       this.viewer.poles.push(this.pole1);
       this.viewer.poles.push(this.pole2);
