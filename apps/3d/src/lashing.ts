@@ -24,6 +24,43 @@ export class Lashing {
     this.calculatePositions();
   }
 
+  loadFromJson(lashing: any, poles: Pole[]) {
+    const fixedPole: Pole | undefined = poles.find(
+      (pole) => pole.uuid === lashing.fixedPole
+    );
+    const loosePole: Pole | undefined = poles.find(
+      (pole) => pole.uuid === lashing.loosePole
+    );
+    if (fixedPole && loosePole) {
+      this.setProperties(
+        fixedPole,
+        loosePole,
+        new THREE.Vector3(
+          lashing.anchorPoint.x,
+          lashing.anchorPoint.y,
+          lashing.anchorPoint.z
+        ),
+        new THREE.Vector3(
+          lashing.anchorPointNormal.x,
+          lashing.anchorPointNormal.y,
+          lashing.anchorPointNormal.z
+        )
+      );
+      return true;
+    }
+    console.log("Dropping lashing, no valid poles; check order of loading");
+    return false;
+  }
+
+  saveToJson() {
+    return {
+      fixedPole: this.fixedPole.uuid,
+      loosePole: this.loosePole.uuid,
+      anchorPoint: this.anchorPoint,
+      anchorPointNormal: this.anchorPointNormal,
+    };
+  }
+
   calculatePositions() {
     this.centerFixedPole = this.anchorPoint
       .clone()
@@ -66,10 +103,5 @@ export class Lashing {
       return true;
     }
     return false;
-  }
-
-  commit() {
-    this.fixedPole.addLashing(this);
-    this.loosePole.addLashing(this);
   }
 }

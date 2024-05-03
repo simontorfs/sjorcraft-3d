@@ -11,7 +11,6 @@ export class Pole extends THREE.Object3D {
   capLength: number = 0.2;
   capOffset: number = 0.001; //makes the render look great
   color: number = 0x0000ff;
-  lashings: Lashing[] = [];
   constructor() {
     super();
     const textureLoader = new THREE.TextureLoader();
@@ -67,6 +66,7 @@ export class Pole extends THREE.Object3D {
     this.setLength(pole.length);
     this.setPositionMesh(pole.mesh.x, pole.mesh.y, pole.mesh.z);
     this.rotation.set(pole.rotation._x, pole.rotation._y, pole.rotation._z);
+    this.uuid = pole.uuid;
   }
 
   saveToJson() {
@@ -77,6 +77,7 @@ export class Pole extends THREE.Object3D {
       mesh: this.mesh.position,
       rotation: this.rotation,
       length: this.length,
+      uuid: this.uuid,
     };
   }
 
@@ -165,16 +166,6 @@ export class Pole extends THREE.Object3D {
       x,
       y + (this.length - this.capLength) / 2 + this.capOffset,
       z
-    );
-  }
-
-  addLashing(lashing: Lashing) {
-    this.lashings.push(lashing);
-  }
-
-  removeLashing(pole: Pole) {
-    this.lashings = this.lashings.filter(
-      (lashing) => lashing.fixedPole !== pole && lashing.loosePole !== pole
     );
   }
 

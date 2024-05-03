@@ -34,26 +34,31 @@ export class InputHandler {
         this.viewer.selectionTool.delete();
         break;
       case "e":
-        this.viewer.saveTool.exportPoles("demo");
+        this.viewer.saveTool.exportAll("demo");
         break;
       case "i":
-        this.viewer.saveTool.importPoles();
+        this.viewer.saveTool.importAll();
         break;
       case "c":
         this.viewer.detailsTool.getPolesGroupedByLength();
         break;
       case "r":
         this.viewer.saveTool.removeAllPoles();
+        this.viewer.saveTool.removeAllLashings();
         this.viewer.saveTool.clearLocalStorage();
         break;
       case "s":
         this.viewer.saveTool.savePolesToLocalStorage();
+        this.viewer.saveTool.saveLashingsToLocalStorage();
         break;
       case "f":
         const length = Number(prompt("Enter the length of the floor"));
         const width = Number(prompt("Enter the width of the floor"));
         this.viewer.floor.setDimensions(length, width);
         break;
+      case "q":
+        console.log(this.viewer.poles);
+        console.log(this.viewer.lashings);
       default:
         console.log(event.key);
         break;
