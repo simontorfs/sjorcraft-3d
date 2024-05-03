@@ -4,14 +4,9 @@ import { SjorcraftCanvas } from "./SjorcraftCanvas";
 
 const SjorcraftEditor = () => {
   return (
-    <div>
+    <div className="sjorcraft-editor">
+      <h1>Sjorcraft</h1>
       <SjorcraftCanvas />
-      <div>
-        <button>Toggle Right Panel</button>
-        <div>
-          <h1>Right Panel</h1>
-        </div>
-      </div>
     </div>
   );
 };

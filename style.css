@@ -6,13 +6,14 @@
 html,
 body {
   overflow: hidden;
+  /* background-color: #212121; */
+  background-color: azure;
 }
 
+#webgl,
 .webgl {
-  position: fixed;
-  top: 0;
-  left: 0;
   outline: none;
+  border: 3px solid blue;
 }
 
 .grid {
@@ -23,4 +24,10 @@ body {
   height: 100%;
   display: grid;
   grid-template-columns: 80% 20%;
+}
+
+.sjorcraft-editor {
+  background-color: beige;
+  font-family: "Lucida Sans", "Lucida Sans Regular", "Lucida Grande",
+    "Lucida Sans Unicode", Geneva, Verdana, sans-serif;
 }
