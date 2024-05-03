@@ -54,56 +54,50 @@ export class BipodTool {
   }
 
   drawFirstStep(groundPosition: THREE.Vector3) {
-    this.pole1.setPositionOnGround(
-      new THREE.Vector3(groundPosition.x, groundPosition.y, groundPosition.z)
-    );
+    this.pole1.setPositionOnGround(groundPosition);
     this.pole2.setPositionOnGround(
-      new THREE.Vector3(
-        groundPosition.x + 0.14,
-        groundPosition.y,
-        groundPosition.z
-      )
+      groundPosition.clone().add(new THREE.Vector3(0.14, 0, 0))
     );
-    this.firstGroundPoint = groundPosition.clone();
+    this.firstGroundPoint = groundPosition;
   }
 
   drawSecondStep(groundPosition: THREE.Vector3) {
-    this.center = groundPosition
-      .clone()
-      .add(this.firstGroundPoint)
-      .divideScalar(2.0);
+    this.secondGroundPoint = groundPosition;
+    this.setLashingPosition(groundPosition);
+  }
 
-    const lashingHeight = Math.sqrt(
-      Math.pow(3.8, 2) - Math.pow(groundPosition.distanceTo(this.center), 2)
+  drawThirdStep(groundPosition: THREE.Vector3) {
+    this.setLashingPosition(groundPosition);
+  }
+
+  setLashingPosition(groundPosition: THREE.Vector3) {
+    this.calculatePerpendicularDirection();
+
+    const lashPosition = new THREE.Vector3(
+      groundPosition.x,
+      2.8,
+      groundPosition.z
     );
 
-    this.perpendicularDirection = new THREE.Vector3()
-      .crossVectors(
-        groundPosition.clone().sub(this.center),
-        new THREE.Vector3(0, 1, 0)
-      )
-      .normalize();
+    const centerPole1 = lashPosition.clone().add(this.perpendicularDirection);
+    const centerPole2 = lashPosition.clone().sub(this.perpendicularDirection);
 
     this.pole1.setPositionBetweenGroundAndPole(
       this.firstGroundPoint,
-      new THREE.Vector3(
-        this.center.x + this.perpendicularDirection.x * 0.07,
-        lashingHeight,
-        this.center.z + this.perpendicularDirection.z * 0.07
-      )
+      centerPole1
     );
     this.pole2.setPositionBetweenGroundAndPole(
-      groundPosition,
-      new THREE.Vector3(
-        this.center.x - this.perpendicularDirection.x * 0.07,
-        lashingHeight,
-        this.center.z - this.perpendicularDirection.z * 0.07
-      )
+      this.secondGroundPoint,
+      centerPole2
     );
-    this.secondGroundPoint = groundPosition;
   }
 
   initThirdStep() {
+    this.center = this.firstGroundPoint
+      .clone()
+      .add(this.secondGroundPoint)
+      .divideScalar(2.0);
+
     const points = [this.firstGroundPoint, this.secondGroundPoint];
     const geometry = new THREE.BufferGeometry().setFromPoints(points);
     const material = new THREE.LineDashedMaterial({
@@ -116,13 +110,15 @@ export class BipodTool {
     axis.computeLineDistances();
     this.viewer.scene.add(axis);
 
+    const perpendicularDirection = new THREE.Vector3()
+      .crossVectors(
+        this.firstGroundPoint.clone().sub(this.secondGroundPoint),
+        new THREE.Vector3(0, 1, 0)
+      )
+      .normalize();
     const perpendicularGeometry = new THREE.BufferGeometry().setFromPoints([
-      this.center
-        .clone()
-        .add(this.perpendicularDirection.clone().multiplyScalar(5)),
-      this.center
-        .clone()
-        .sub(this.perpendicularDirection.clone().multiplyScalar(5)),
+      this.center.clone().add(perpendicularDirection.clone().multiplyScalar(5)),
+      this.center.clone().sub(perpendicularDirection.clone().multiplyScalar(5)),
     ]);
 
     const perpendicularAxis = new THREE.Line(perpendicularGeometry, material);
@@ -130,37 +126,11 @@ export class BipodTool {
     this.viewer.scene.add(perpendicularAxis);
   }
 
-  drawThirdStep(groundPosition: THREE.Vector3) {
-    const originalHeight = Math.sqrt(
-      Math.pow(3.8, 2) -
-        Math.pow(this.firstGroundPoint.distanceTo(this.center), 2)
-    );
-
-    const perpendicularDirection = new THREE.Vector3()
+  calculatePerpendicularDirection() {
+    this.perpendicularDirection = new THREE.Vector3()
       .crossVectors(this.pole1.direction, this.pole2.direction)
-      .normalize();
-
-    const lashPosition = new THREE.Vector3(
-      groundPosition.x,
-      originalHeight,
-      groundPosition.z
-    );
-
-    const centerPole1 = lashPosition
-      .clone()
-      .add(perpendicularDirection.clone().multiplyScalar(0.07));
-    const centerPole2 = lashPosition
-      .clone()
-      .sub(perpendicularDirection.clone().multiplyScalar(0.07));
-
-    this.pole1.setPositionBetweenGroundAndPole(
-      this.firstGroundPoint,
-      centerPole1
-    );
-    this.pole2.setPositionBetweenGroundAndPole(
-      this.secondGroundPoint,
-      centerPole2
-    );
+      .normalize()
+      .multiplyScalar(0.07);
   }
 
   leftClick() {
