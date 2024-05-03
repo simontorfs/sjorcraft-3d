@@ -59,6 +59,10 @@ export class InputHandler {
       case "q":
         console.log(this.viewer.poles);
         console.log(this.viewer.lashings);
+        break;
+      case "t":
+        this.viewer.triangleTool.getTriangles();
+        break;
       default:
         console.log(event.key);
         break;

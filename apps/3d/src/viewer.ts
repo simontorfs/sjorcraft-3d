@@ -8,6 +8,7 @@ import { DetailsTool } from "./detailsTool";
 import { SelectionTool } from "./selectionTool";
 import { Floor } from "./floor";
 import { Lashing } from "./lashing";
+import { TriangleTool } from "./triangleTool";
 
 export class Viewer {
   canvas: HTMLElement;
@@ -24,6 +25,7 @@ export class Viewer {
   saveTool: SaveTool;
   detailsTool: DetailsTool;
   floor: Floor;
+  triangleTool: TriangleTool;
 
   constructor() {
     this.sizes = { width: window.innerWidth, height: window.innerHeight };
@@ -82,6 +84,9 @@ export class Viewer {
 
     // Save tool
     this.saveTool = new SaveTool(this);
+
+    // Save tool
+    this.triangleTool = new TriangleTool(this);
 
     // Poles
     this.poles = [];
