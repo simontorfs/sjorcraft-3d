@@ -49,7 +49,7 @@ export class BipodTool {
     } else if (!this.pole2Placed) {
       this.drawSecondStep(groundPosition);
     } else {
-      this.drawThridStep(groundPosition);
+      this.drawThirdStep(groundPosition);
     }
   }
 
@@ -103,7 +103,7 @@ export class BipodTool {
     this.secondGroundPoint = groundPosition;
   }
 
-  drawThridStep(groundPosition: THREE.Vector3) {
+  initThirdStep() {
     const points = [this.firstGroundPoint, this.secondGroundPoint];
     const geometry = new THREE.BufferGeometry().setFromPoints(points);
     const material = new THREE.LineDashedMaterial({
@@ -130,6 +130,39 @@ export class BipodTool {
     this.viewer.scene.add(perpendicularAxis);
   }
 
+  drawThirdStep(groundPosition: THREE.Vector3) {
+    const originalHeight = Math.sqrt(
+      Math.pow(3.8, 2) -
+        Math.pow(this.firstGroundPoint.distanceTo(this.center), 2)
+    );
+
+    const perpendicularDirection = new THREE.Vector3()
+      .crossVectors(this.pole1.direction, this.pole2.direction)
+      .normalize();
+
+    const lashPosition = new THREE.Vector3(
+      groundPosition.x,
+      originalHeight,
+      groundPosition.z
+    );
+
+    const centerPole1 = lashPosition
+      .clone()
+      .add(perpendicularDirection.clone().multiplyScalar(0.07));
+    const centerPole2 = lashPosition
+      .clone()
+      .sub(perpendicularDirection.clone().multiplyScalar(0.07));
+
+    this.pole1.setPositionBetweenGroundAndPole(
+      this.firstGroundPoint,
+      centerPole1
+    );
+    this.pole2.setPositionBetweenGroundAndPole(
+      this.secondGroundPoint,
+      centerPole2
+    );
+  }
+
   leftClick() {
     if (!this.active) return;
 
@@ -137,6 +170,7 @@ export class BipodTool {
       this.pole1Placed = true;
     } else if (!this.pole2Placed) {
       this.pole2Placed = true;
+      this.initThirdStep();
     } else {
       this.viewer.poles.push(this.pole1);
       this.viewer.poles.push(this.pole2);
