@@ -15,10 +15,11 @@ export class BipodTool {
 
   firstGroundPoint: THREE.Vector3;
   secondGroundPoint: THREE.Vector3;
+  lashPosition: THREE.Vector3;
 
-  parallelHelperAxis: THREE.Line;
-  perpendicularHelperAxis: THREE.Line;
-  verticalHelperAxis: THREE.Line;
+  parallelHelperLine: THREE.Line;
+  perpendicularHelperLine: THREE.Line;
+  verticalHelperLine: THREE.Line;
 
   constructor(viewer: Viewer) {
     this.active = false;
@@ -81,14 +82,14 @@ export class BipodTool {
       .normalize()
       .multiplyScalar(0.07);
 
-    const lashPosition = new THREE.Vector3(
+    this.lashPosition = new THREE.Vector3(
       groundPosition.x,
       2.8,
       groundPosition.z
     );
 
-    const centerPole1 = lashPosition.clone().add(lashingOffset);
-    const centerPole2 = lashPosition.clone().sub(lashingOffset);
+    const centerPole1 = this.lashPosition.clone().add(lashingOffset);
+    const centerPole2 = this.lashPosition.clone().sub(lashingOffset);
 
     this.pole1.setPositionBetweenGroundAndPole(
       this.firstGroundPoint,
@@ -114,9 +115,9 @@ export class BipodTool {
       gapSize: 0.05,
     });
 
-    this.parallelHelperAxis = new THREE.Line(geometry, material);
-    this.parallelHelperAxis.computeLineDistances();
-    this.viewer.scene.add(this.parallelHelperAxis);
+    this.parallelHelperLine = new THREE.Line(geometry, material);
+    this.parallelHelperLine.computeLineDistances();
+    this.viewer.scene.add(this.parallelHelperLine);
 
     const perpendicularDirection = new THREE.Vector3()
       .crossVectors(
@@ -129,20 +130,39 @@ export class BipodTool {
       center.clone().sub(perpendicularDirection.clone().multiplyScalar(5)),
     ]);
 
-    this.perpendicularHelperAxis = new THREE.Line(
+    this.perpendicularHelperLine = new THREE.Line(
       perpendicularGeometry,
       material
     );
-    this.perpendicularHelperAxis.computeLineDistances();
-    this.viewer.scene.add(this.perpendicularHelperAxis);
+    this.perpendicularHelperLine.computeLineDistances();
+    this.viewer.scene.add(this.perpendicularHelperLine);
   }
 
   removeHorizontalHelperLines() {
-    this.viewer.scene.remove(this.parallelHelperAxis);
-    this.viewer.scene.remove(this.perpendicularHelperAxis);
+    this.viewer.scene.remove(this.parallelHelperLine);
+    this.viewer.scene.remove(this.perpendicularHelperLine);
   }
 
-  addVerticalHelperLine() {}
+  addVerticalHelperLine() {
+    const points = [
+      this.lashPosition,
+      new THREE.Vector3(this.lashPosition.x, 0, this.lashPosition.z),
+    ];
+    const geometry = new THREE.BufferGeometry().setFromPoints(points);
+    const material = new THREE.LineDashedMaterial({
+      color: 0x0000ff,
+      dashSize: 0.05,
+      gapSize: 0.05,
+    });
+
+    this.verticalHelperLine = new THREE.Line(geometry, material);
+    this.verticalHelperLine.computeLineDistances();
+    this.viewer.scene.add(this.verticalHelperLine);
+  }
+
+  removeVerticalHelperLine() {
+    this.viewer.scene.remove(this.verticalHelperLine);
+  }
 
   leftClick() {
     if (!this.active) return;
@@ -157,6 +177,7 @@ export class BipodTool {
       this.removeHorizontalHelperLines();
       this.addVerticalHelperLine();
     } else {
+      this.removeVerticalHelperLine();
       this.viewer.poles.push(this.pole1);
       this.viewer.poles.push(this.pole2);
       this.pole1 = new Pole();
@@ -165,6 +186,7 @@ export class BipodTool {
       this.viewer.scene.add(this.pole2);
       this.pole1Placed = false;
       this.pole2Placed = false;
+      this.lashPositionPlaced = false;
     }
   }
 }
