@@ -7,6 +7,7 @@ import { SaveTool } from "./saveTool";
 import { DetailsTool } from "./detailsTool";
 import { SelectionTool } from "./selectionTool";
 import { Floor } from "./floor";
+import { Lashing } from "./lashing";
 
 export class Viewer {
   canvas: HTMLElement;
@@ -19,6 +20,7 @@ export class Viewer {
   poleTool: PoleTool;
   selectionTool: SelectionTool;
   poles: Pole[];
+  lashings: Lashing[];
   saveTool: SaveTool;
   detailsTool: DetailsTool;
   floor: Floor;
@@ -83,6 +85,9 @@ export class Viewer {
 
     // Poles
     this.poles = [];
+
+    // Lashings
+    this.lashings = [];
 
     // Tools
     this.poleTool = new PoleTool(this);
