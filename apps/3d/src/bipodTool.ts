@@ -64,7 +64,9 @@ export class BipodTool {
   drawFirstStep(groundPosition: THREE.Vector3) {
     this.pole1.setPositionOnGround(groundPosition);
     this.pole2.setPositionOnGround(
-      groundPosition.clone().add(new THREE.Vector3(0.14, 0, 0))
+      groundPosition
+        .clone()
+        .add(new THREE.Vector3(this.pole1.radius + this.pole2.radius, 0, 0))
     );
     this.firstGroundPoint = groundPosition;
   }
@@ -93,7 +95,7 @@ export class BipodTool {
     const lashingOffset = new THREE.Vector3()
       .crossVectors(this.pole1.direction, this.pole2.direction)
       .normalize()
-      .multiplyScalar(0.07);
+      .multiplyScalar((this.pole1.radius + this.pole2.radius) / 2.0);
 
     this.lashPosition = new THREE.Vector3(
       groundPosition.x,
