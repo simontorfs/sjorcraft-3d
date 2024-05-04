@@ -24,6 +24,9 @@ export class PoleTool {
     } else if (this.viewer.poles.length === 0) {
       this.addDemoPoles();
     }
+    if (localStorage.getItem("lashes") !== null) {
+      this.viewer.saveTool.loadLashingsFromLocalStorage();
+    }
   }
 
   addDemoPoles() {
@@ -33,7 +36,7 @@ export class PoleTool {
     demoPole1.position.x = -0.07;
     demoPole1.position.y = 0;
     demoPole1.position.z = -0.8;
-    demoPole1.setPositionMesh(0,2,0);
+    demoPole1.setPositionMesh(0, 2, 0);
     demoPole1.setDirection(new THREE.Vector3(0, 1.8, 1));
     demoPole1.name = "demoPole1";
 
@@ -43,7 +46,7 @@ export class PoleTool {
     demoPole2.position.x = 1.8;
     demoPole2.position.y = 0;
     demoPole2.position.z = 0.93;
-    demoPole2.setPositionMesh(0,2,0);
+    demoPole2.setPositionMesh(0, 2, 0);
     demoPole2.setDirection(new THREE.Vector3(-1, 1.8, 0));
     demoPole2.name = "demoPole2";
 
@@ -53,7 +56,7 @@ export class PoleTool {
     demoPole3.position.x = 0.07;
     demoPole3.position.y = 0;
     demoPole3.position.z = 2.8;
-    demoPole3.setPositionMesh(0,2,0);
+    demoPole3.setPositionMesh(0, 2, 0);
     demoPole3.setDirection(new THREE.Vector3(0, 1.8, -1));
     demoPole3.name = "demoPole3";
 
@@ -63,7 +66,7 @@ export class PoleTool {
     demoPole4.position.x = -1.8;
     demoPole4.position.y = 0;
     demoPole4.position.z = 1.07;
-    demoPole4.setPositionMesh(0,2,0);
+    demoPole4.setPositionMesh(0, 2, 0);
     demoPole4.setDirection(new THREE.Vector3(1, 1.8, 0));
     demoPole4.name = "demoPole4";
   }
@@ -141,7 +144,7 @@ export class PoleTool {
     // Step 2: Use the pole's naive orientation to estimate the center coordinates of the lashings
     this.fixedLashing.calculatePositions();
     this.newLashing.calculatePositions();
-    this.snapToHeight();
+    // this.snapToHeight();
     // Step 3: Set the pole position with the estimated center coordinates
     this.activePole.setPositionBetweenTwoPoles(
       this.fixedLashing.centerLoosePole,
@@ -157,7 +160,7 @@ export class PoleTool {
     );
 
     this.activePole.setDirection(targetOrientationVector);
-    this.snapToHeight();
+    // this.snapToHeight();
 
     this.activePole.position.set(
       this.newLashing.centerLoosePole.x,
@@ -189,26 +192,26 @@ export class PoleTool {
     this.activePole.setPositionOnGround(groundPosition);
   }
 
-  snapToHeight() {
-    if (!this.activePole || !this.newLashing) return;
+  // snapToHeight() {
+  //   if (!this.activePole || !this.newLashing) return;
 
-    this.currentSnapHeight = undefined;
+  //   this.currentSnapHeight = undefined;
 
-    const snapHeights =
-      this.lastPole?.lashings
-        .filter((lashing) => lashing.fixedPole.isVertical())
-        .map((lashing) => lashing.centerLoosePole.y) || [];
-    if (this.fixedLashing)
-      snapHeights.push(this.fixedLashing.centerLoosePole.y);
+  //   const snapHeights =
+  //     this.lastPole?.lashings
+  //       .filter((lashing) => lashing.fixedPole.isVertical())
+  //       .map((lashing) => lashing.centerLoosePole.y) || [];
+  //   if (this.fixedLashing)
+  //     snapHeights.push(this.fixedLashing.centerLoosePole.y);
 
-    for (const snapHeight of snapHeights) {
-      const snapped = this.newLashing.snapLoosePole(snapHeight);
-      if (snapped) {
-        this.currentSnapHeight = snapHeight;
-        break;
-      }
-    }
-  }
+  //   for (const snapHeight of snapHeights) {
+  //     const snapped = this.newLashing.snapLoosePole(snapHeight);
+  //     if (snapped) {
+  //       this.currentSnapHeight = snapHeight;
+  //       break;
+  //     }
+  //   }
+  // }
 
   snapToGrid(position: THREE.Vector3) {
     // Check if position x or z is close to a whole number.
@@ -242,11 +245,12 @@ export class PoleTool {
 
   commitLashings() {
     if (this.fixedLashing) {
-      this.fixedLashing.commit();
+      this.viewer.lashings.push(this.fixedLashing);
     }
     if (this.newLashing) {
-      this.newLashing.commit();
+      this.viewer.lashings.push(this.newLashing);
     }
+    console.log(this.viewer.lashings);
     this.fixedLashing = undefined;
     this.newLashing = undefined;
   }
