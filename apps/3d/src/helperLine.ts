@@ -7,6 +7,7 @@ export class HelperLine extends THREE.Line {
       color: 0x0000ff,
       dashSize: 0.05,
       gapSize: 0.05,
+      depthTest: false,
     });
   }
 
