@@ -2,8 +2,6 @@
 import React from "react";
 import { Route, Routes } from "react-router-dom";
 import SjorcraftEditor from "./components/SjorcraftEditor";
-
-// add browser router and route to the app
 //@ts-ignore
 const App = () => {
   return (

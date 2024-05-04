@@ -7,7 +7,6 @@ import { SaveTool } from "./saveTool";
 import { DetailsTool } from "./detailsTool";
 import { SelectionTool } from "./selectionTool";
 import { Floor } from "./floor";
-import "../../../script.ts";
 
 export class Viewer {
   canvas: HTMLElement;

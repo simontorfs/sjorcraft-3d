@@ -13,7 +13,6 @@ body {
 #webgl,
 .webgl {
   outline: none;
-  border: 3px solid blue;
 }
 
 .grid {
@@ -26,8 +25,27 @@ body {
   grid-template-columns: 80% 20%;
 }
 
-.sjorcraft-editor {
-  background-color: beige;
+.navbar {
+  background-color: #333;
+  color: white;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 20px;
   font-family: "Lucida Sans", "Lucida Sans Regular", "Lucida Grande",
     "Lucida Sans Unicode", Geneva, Verdana, sans-serif;
+  font-weight: bold;
+  font-size: x-large;
+}
+
+.nav-buttons {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 80rem;
+}
+
+.nav-button {
+  padding: 10px 20px;
+  cursor: pointer;
 }
