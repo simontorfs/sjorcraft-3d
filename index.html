@@ -14,7 +14,7 @@
     <script type="module" id="first" src="./apps/client/main.tsx"></script>
     <script type="module" id="first" src="./script.ts" defer></script>
     <!-- create a script to delete the browsercache of the current page 1 time-->
-    <script>
+    <script defer>
       if (localStorage.getItem("reloaded") === null) {
         localStorage.setItem("reloaded", "true");
         location.reload();
