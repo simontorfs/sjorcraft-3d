@@ -9,12 +9,21 @@ const root = ReactDOM.createRoot(
   document.getElementById("root") as HTMLElement
 );
 
-root.render(
-  <React.StrictMode>
-    <BrowserRouter>
-      <React.Suspense fallback="loading">
-        <App />
-      </React.Suspense>
-    </BrowserRouter>
-  </React.StrictMode>
-);
+try {
+  root.render(
+    <React.StrictMode>
+      <BrowserRouter>
+        <React.Suspense fallback="loading">
+          <App />
+        </React.Suspense>
+      </BrowserRouter>
+    </React.StrictMode>
+  );
+} catch (e) {
+  console.error(e);
+} finally {
+  const script = document.createElement("script");
+  script.type = "module";
+  script.src = "./script.ts";
+  document.body.appendChild(script);
+}
