@@ -17,6 +17,7 @@ export class BipodTool {
   firstGroundPoint: THREE.Vector3 = new THREE.Vector3();
   secondGroundPoint: THREE.Vector3 = new THREE.Vector3();
   lashPosition: THREE.Vector3 = new THREE.Vector3();
+  lashPositionProjectedOnFloor: THREE.Vector3 = new THREE.Vector3();
   defaultLashHeight: number = 2.8;
   lashHeight: number = this.defaultLashHeight;
 
@@ -49,6 +50,47 @@ export class BipodTool {
     this.lashHeight = this.defaultLashHeight;
   }
 
+  leftClick() {
+    if (!this.active) return;
+
+    if (!this.pole1Placed) {
+      this.pole1Placed = true;
+    } else if (!this.pole2Placed) {
+      this.pole2Placed = true;
+      this.AddHorizontalHelperLines();
+    } else if (!this.lashPositionPlaced) {
+      this.lashPositionPlaced = true;
+      this.removeHorizontalHelperLines();
+      this.addVerticalHelperLine();
+    } else {
+      this.removeVerticalHelperLine();
+      this.viewer.poles.push(this.pole1);
+      this.viewer.poles.push(this.pole2);
+      this.pole1 = new Pole();
+      this.pole2 = new Pole();
+      this.viewer.scene.add(this.pole1);
+      this.viewer.scene.add(this.pole2);
+      this.resetParameters();
+    }
+  }
+
+  rightClick() {
+    if (!this.active) return;
+
+    if (this.lashPositionPlaced) {
+      this.lashPositionPlaced = false;
+      this.removeVerticalHelperLine();
+      this.AddHorizontalHelperLines();
+    } else if (this.pole2Placed) {
+      this.pole2Placed = false;
+      this.removeHorizontalHelperLines();
+    } else if (this.pole1Placed) {
+      this.pole1Placed = false;
+    } else {
+      this.resetParameters();
+    }
+  }
+
   drawBipod(groundPosition: THREE.Vector3) {
     if (!this.pole1Placed) {
       this.drawFirstStep(groundPosition);
@@ -73,34 +115,39 @@ export class BipodTool {
 
   drawSecondStep(groundPosition: THREE.Vector3) {
     this.secondGroundPoint = groundPosition;
-    this.setLashingPosition(this.getCenter());
+    this.lashPositionProjectedOnFloor = this.getCenter();
+    this.calculatePositions();
   }
 
   drawThirdStep(groundPosition: THREE.Vector3) {
-    this.setLashingPosition(groundPosition);
+    this.lashPositionProjectedOnFloor = groundPosition;
+    this.calculatePositions();
   }
 
   drawFourthStep(groundPosition: THREE.Vector3) {
     this.setHelperPlane();
-    this.updateVerticalHelperLine();
-    const line = new THREE.Line3(this.viewer.camera.position, groundPosition);
-
+    const lineOfSightToMouse = new THREE.Line3(
+      this.viewer.camera.position,
+      groundPosition
+    );
     let target: THREE.Vector3 = new THREE.Vector3();
-    this.helperPlane.intersectLine(line, target);
+    this.helperPlane.intersectLine(lineOfSightToMouse, target);
     this.lashHeight = target.y;
-    this.setLashingPosition(this.lashPosition);
+
+    this.calculatePositions();
+    this.updateVerticalHelperLine();
   }
 
-  setLashingPosition(groundPosition: THREE.Vector3) {
+  calculatePositions() {
     const lashingOffset = new THREE.Vector3()
       .crossVectors(this.pole1.direction, this.pole2.direction)
       .normalize()
       .multiplyScalar((this.pole1.radius + this.pole2.radius) / 2.0);
 
     this.lashPosition = new THREE.Vector3(
-      groundPosition.x,
+      this.lashPositionProjectedOnFloor.x,
       this.lashHeight,
-      groundPosition.z
+      this.lashPositionProjectedOnFloor.z
     );
 
     const centerPole1 = this.lashPosition.clone().add(lashingOffset);
@@ -150,19 +197,12 @@ export class BipodTool {
   }
 
   addVerticalHelperLine() {
-    const points = [
-      this.lashPosition,
-      new THREE.Vector3(this.lashPosition.x, 0, this.lashPosition.z),
-    ];
-    this.verticalHelperLine.setBetweenPoints(points);
+    this.updateVerticalHelperLine();
     this.viewer.scene.add(this.verticalHelperLine);
   }
 
   updateVerticalHelperLine() {
-    const points = [
-      new THREE.Vector3(this.lashPosition.x, 0, this.lashPosition.z),
-      this.lashPosition,
-    ];
+    const points = [this.lashPositionProjectedOnFloor, this.lashPosition];
     this.verticalHelperLine.setBetweenPoints(points);
   }
 
@@ -171,55 +211,13 @@ export class BipodTool {
   }
 
   setHelperPlane() {
-    const lineOfSight = this.viewer.camera.position
+    const lineOfSightToLashing = this.viewer.camera.position
       .clone()
       .sub(this.lashPosition)
       .normalize();
     this.helperPlane.setFromNormalAndCoplanarPoint(
-      lineOfSight,
+      lineOfSightToLashing,
       this.lashPosition
     );
-  }
-
-  leftClick() {
-    if (!this.active) return;
-
-    if (!this.pole1Placed) {
-      this.pole1Placed = true;
-    } else if (!this.pole2Placed) {
-      this.pole2Placed = true;
-      this.AddHorizontalHelperLines();
-    } else if (!this.lashPositionPlaced) {
-      this.lashPositionPlaced = true;
-      this.removeHorizontalHelperLines();
-      this.addVerticalHelperLine();
-      this.setHelperPlane();
-    } else {
-      this.removeVerticalHelperLine();
-      this.viewer.poles.push(this.pole1);
-      this.viewer.poles.push(this.pole2);
-      this.pole1 = new Pole();
-      this.pole2 = new Pole();
-      this.viewer.scene.add(this.pole1);
-      this.viewer.scene.add(this.pole2);
-      this.resetParameters();
-    }
-  }
-
-  rightClick() {
-    if (!this.active) return;
-
-    if (this.lashPositionPlaced) {
-      this.lashPositionPlaced = false;
-      this.removeVerticalHelperLine();
-      this.AddHorizontalHelperLines();
-    } else if (this.pole2Placed) {
-      this.pole2Placed = false;
-      this.removeHorizontalHelperLines();
-    } else if (this.pole1Placed) {
-      this.pole1Placed = false;
-    } else {
-      this.resetParameters();
-    }
   }
 }
