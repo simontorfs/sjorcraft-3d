@@ -34,19 +34,17 @@ export class PoleTool {
     this.viewer.scene.add(demoPole1);
     this.viewer.poles.push(demoPole1);
     demoPole1.position.x = -0.07;
-    demoPole1.position.y = 0;
-    demoPole1.position.z = -0.8;
-    demoPole1.setPositionMesh(0, 2, 0);
+    demoPole1.position.y = 1.74;
+    demoPole1.position.z = 0.1;
     demoPole1.setDirection(new THREE.Vector3(0, 1.8, 1));
     demoPole1.name = "demoPole1";
 
     const demoPole2 = new Pole();
     this.viewer.scene.add(demoPole2);
     this.viewer.poles.push(demoPole2);
-    demoPole2.position.x = 1.8;
-    demoPole2.position.y = 0;
+    demoPole2.position.x = 0.9;
+    demoPole2.position.y = 1.74;
     demoPole2.position.z = 0.93;
-    demoPole2.setPositionMesh(0, 2, 0);
     demoPole2.setDirection(new THREE.Vector3(-1, 1.8, 0));
     demoPole2.name = "demoPole2";
 
@@ -54,19 +52,17 @@ export class PoleTool {
     this.viewer.scene.add(demoPole3);
     this.viewer.poles.push(demoPole3);
     demoPole3.position.x = 0.07;
-    demoPole3.position.y = 0;
-    demoPole3.position.z = 2.8;
-    demoPole3.setPositionMesh(0, 2, 0);
+    demoPole3.position.y = 1.74;
+    demoPole3.position.z = 1.9;
     demoPole3.setDirection(new THREE.Vector3(0, 1.8, -1));
     demoPole3.name = "demoPole3";
 
     const demoPole4 = new Pole();
     this.viewer.scene.add(demoPole4);
     this.viewer.poles.push(demoPole4);
-    demoPole4.position.x = -1.8;
-    demoPole4.position.y = 0;
+    demoPole4.position.x = -0.9;
+    demoPole4.position.y = 1.74;
     demoPole4.position.z = 1.07;
-    demoPole4.setPositionMesh(0, 2, 0);
     demoPole4.setDirection(new THREE.Vector3(1, 1.8, 0));
     demoPole4.name = "demoPole4";
   }
@@ -167,7 +163,6 @@ export class PoleTool {
       this.newLashing.centerLoosePole.y,
       this.newLashing.centerLoosePole.z
     );
-    this.activePole.setPositionMesh(0, 0, 0);
   }
 
   placePoleBetweenOneLashingAndGround(groundPosition: THREE.Vector3) {
