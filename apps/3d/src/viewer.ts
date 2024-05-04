@@ -46,7 +46,7 @@ export class Viewer {
         document.exitFullscreen();
       }
     });
-    this.canvas = document.querySelector("canvas.webgl")!;
+    this.canvas = document.querySelector("canvas#webgl")!;
     this.renderer = new THREE.WebGLRenderer({ canvas: this.canvas });
     this.renderer.setSize(this.sizes.width, this.sizes.height);
     this.scene = new THREE.Scene();
@@ -87,7 +87,6 @@ export class Viewer {
     // Save tool
     this.saveTool = new SaveTool(this);
 
-    // Poles
     this.poles = [];
 
     // Lashings

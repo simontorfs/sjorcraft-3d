@@ -6,12 +6,11 @@
 html,
 body {
   overflow: hidden;
+  /* background-color: #212121; */
+  background-color: azure;
 }
 
 .webgl {
-  position: fixed;
-  top: 0;
-  left: 0;
   outline: none;
 }
 
@@ -23,4 +22,29 @@ body {
   height: 100%;
   display: grid;
   grid-template-columns: 80% 20%;
+}
+
+.navbar {
+  background-color: #333;
+  color: white;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 20px;
+  font-family: "Lucida Sans", "Lucida Sans Regular", "Lucida Grande",
+    "Lucida Sans Unicode", Geneva, Verdana, sans-serif;
+  font-weight: bold;
+  font-size: x-large;
+}
+
+.nav-buttons {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 80rem;
+}
+
+.nav-button {
+  padding: 10px 20px;
+  cursor: pointer;
 }

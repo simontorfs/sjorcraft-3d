@@ -6,10 +6,12 @@
     <title>SjorCRAFT</title>
     <link rel="icon" href="./apps/3d/resources/favicon/favicon.ico" />
     <link rel="stylesheet" href="./style.css" />
-    <script type="module" src="./script.ts" defer></script>
   </head>
-  <body style="background-color: #212121">
-    <input type="file" id="file" accept=".sjor" />
-    <canvas class="webgl"></canvas>
+  <body>
+    <div id="root">
+      <input type="file" id="file" accept=".sjor" />
+    </div>
+    <script type="module" src="./apps/client/main.tsx"></script>
+    <script type="module" src="./script.ts"></script>
   </body>
 </html>
