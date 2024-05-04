@@ -8,7 +8,7 @@ export class Floor extends THREE.Object3D {
   constructor(viewer: Viewer) {
     super();
     this.viewer = viewer;
-    this.setNewFloor(50, 50, "green");
+    this.setNewFloor(50, 50, new THREE.Color("green"));
   }
   /**
    * @description This method removes the grid from the scene
@@ -23,7 +23,7 @@ export class Floor extends THREE.Object3D {
    * @param color if provided, this is the color of the floor, default is green
    * @description This method sets the floor of the scene
    */
-  setFloor(length: number, width: number, color?: string) {
+  setFloor(length: number, width: number, color?: THREE.Color) {
     const floorGeometry = new THREE.PlaneGeometry(length, width);
     const floorMaterial = new THREE.MeshBasicMaterial({
       opacity: 0.5,
@@ -69,7 +69,7 @@ export class Floor extends THREE.Object3D {
    * @param color if provided, this is the color of the floor, default is green
    * @description This method sets a completly new floor and grid
    */
-  setNewFloor(length: number, width: number, color?: string) {
+  setNewFloor(length: number, width: number, color?: THREE.Color) {
     this.viewer.scene.remove(this.mesh);
     this.viewer.scene.remove(this.grid);
     this.setFloor(length, width, color);

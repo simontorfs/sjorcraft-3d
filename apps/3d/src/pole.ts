@@ -119,8 +119,8 @@ export class Pole extends THREE.Object3D {
   setLength(minimumLength: number) {
     const allowedLengths: number[] = [1.0, 1.5, 2.0, 2.5, 3.0, 4.0, 5.0, 6.0];
     const colors: number[] = [
-      0xff5733, 0xffbd33, 0xffd633, 0x33ff7a, 0x337aff, 0x7933ff, 0xb733ff,
-      0xff33e6,
+      0xffa500, 0x00ff00, 0xff0000, 0x037c6e, 0xffffff, 0x0000ff, 0xffff00,
+      0x000000,
     ];
 
     // if the lenth is to big, just set it to the biggest lenght
