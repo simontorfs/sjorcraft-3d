@@ -18,7 +18,7 @@ export class BipodTool {
   secondGroundPoint: THREE.Vector3 = new THREE.Vector3();
   lashPosition: THREE.Vector3 = new THREE.Vector3();
   lashPositionProjectedOnFloor: THREE.Vector3 = new THREE.Vector3();
-  defaultLashHeight: number = 2.8;
+  defaultLashHeight: number = 3.0;
   lashHeight: number = this.defaultLashHeight;
 
   parallelHelperLine: HelperLine = new HelperLine();
