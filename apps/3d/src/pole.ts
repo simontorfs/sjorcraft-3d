@@ -7,7 +7,7 @@ export class Pole extends THREE.Object3D {
   capBottom: THREE.Mesh;
   direction: THREE.Vector3;
   length: number = 4.0;
-  radius: number = 0.07;
+  radius: number = 0.06;
   capLength: number = 0.2;
   capOffset: number = 0.001; //makes the render look great
   color: number = 0x0000ff;
