@@ -18,16 +18,3 @@ root.render(
     </BrowserRouter>
   </React.StrictMode>
 );
-
-const tick = () => {
-  setTimeout(() => {
-    const viewer = new Viewer();
-    viewer.controls.update();
-
-    viewer.renderer.render(viewer.scene, viewer.camera);
-
-    window.requestAnimationFrame(tick);
-  }, 10);
-};
-
-tick();

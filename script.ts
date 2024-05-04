@@ -1,5 +1,10 @@
 import { Viewer } from "./apps/3d/src/viewer";
 
+let firstViewer: Viewer;
+setTimeout(() => {
+  firstViewer = new Viewer();
+}, 10);
+
 const viewer = new Viewer();
 
 export const tick = () => {
