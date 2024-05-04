@@ -97,5 +97,14 @@ export class Viewer {
     this.selectionTool.activate();
     this.poleTool = new PoleTool(this);
     this.bipodTool = new BipodTool(this);
+    const tick = () => {
+      this.controls.update();
+
+      this.renderer.render(this.scene, this.camera);
+
+      window.requestAnimationFrame(tick);
+    };
+
+    tick();
   }
 }

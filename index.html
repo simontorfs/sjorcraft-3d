@@ -12,15 +12,6 @@
       <input type="file" id="file" accept=".sjor" />
     </div>
     <script type="module" id="first" src="./apps/client/main.tsx"></script>
-    <script type="module" id="first" src="./script.ts" defer></script>
-    <!-- create a script to delete the browsercache of the current page 1 time-->
-    <script defer>
-      if (localStorage.getItem("reloaded") === null) {
-        localStorage.setItem("reloaded", "true");
-        location.reload();
-      } else {
-        localStorage.removeItem("reloaded");
-      }
-    </script>
+    <!-- <script type="module" id="first" src="./script.ts" defer></script> -->
   </body>
 </html>
