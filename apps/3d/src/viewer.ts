@@ -87,8 +87,6 @@ export class Viewer {
     // Save tool
     this.saveTool = new SaveTool(this);
 
-    // Polesimport "../../script.ts";
-
     this.poles = [];
 
     // Lashings
