@@ -6,12 +6,21 @@
     <title>SjorCRAFT</title>
     <link rel="icon" href="./apps/3d/resources/favicon/favicon.ico" />
     <link rel="stylesheet" href="./style.css" />
-    <script type="module" src="./apps/client/main.tsx" async="false"></script>
-    <script type="module" src="./script.ts" async="false"></script>
   </head>
   <body>
     <div id="root">
       <input type="file" id="file" accept=".sjor" />
     </div>
+    <script type="module" id="first" src="./apps/client/main.tsx"></script>
+    <script type="module" id="first" src="./script.ts" defer></script>
+    <!-- create a script to delete the browsercache of the current page 1 time-->
+    <script>
+      if (localStorage.getItem("reloaded") === null) {
+        localStorage.setItem("reloaded", "true");
+        location.reload();
+      } else {
+        localStorage.removeItem("reloaded");
+      }
+    </script>
   </body>
 </html>
