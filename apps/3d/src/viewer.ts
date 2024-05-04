@@ -7,6 +7,8 @@ import { SaveTool } from "./saveTool";
 import { DetailsTool } from "./detailsTool";
 import { SelectionTool } from "./selectionTool";
 import { Floor } from "./floor";
+import { BipodTool } from "./bipodTool";
+import { Lashing } from "./lashing";
 
 export class Viewer {
   canvas: HTMLElement;
@@ -16,9 +18,13 @@ export class Viewer {
   camera: THREE.PerspectiveCamera;
   controls: OrbitControls;
   inputHandler: InputHandler;
-  poleTool: PoleTool;
+
   selectionTool: SelectionTool;
+  poleTool: PoleTool;
+  bipodTool: BipodTool;
+
   poles: Pole[];
+  lashings: Lashing[];
   saveTool: SaveTool;
   detailsTool: DetailsTool;
   floor: Floor;
@@ -67,7 +73,7 @@ export class Viewer {
 
     // Floor
     this.floor = new Floor(this);
-    this.floor.setNewFloor(50, 50, "green");
+    this.floor.setNewFloor(50, 50, new THREE.Color("green"));
     // Light
     const ambientLight = new THREE.AmbientLight();
     this.scene.add(ambientLight);
@@ -85,9 +91,13 @@ export class Viewer {
 
     this.poles = [];
 
+    // Lashings
+    this.lashings = [];
+
     // Tools
-    this.poleTool = new PoleTool(this);
     this.selectionTool = new SelectionTool(this);
     this.selectionTool.activate();
+    this.poleTool = new PoleTool(this);
+    this.bipodTool = new BipodTool(this);
   }
 }

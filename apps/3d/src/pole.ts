@@ -11,7 +11,6 @@ export class Pole extends THREE.Object3D {
   capLength: number = 0.2;
   capOffset: number = 0.001; //makes the render look great
   color: number = 0x0000ff;
-  lashings: Lashing[] = [];
   constructor() {
     super();
     const textureLoader = new THREE.TextureLoader();
@@ -58,6 +57,30 @@ export class Pole extends THREE.Object3D {
     this.direction = new THREE.Vector3(0, 1, 0);
   }
 
+  loadFromJson(pole: any) {
+    this.position.set(pole.position.x, pole.position.y, pole.position.z);
+    this.setDirection(
+      new THREE.Vector3(pole.direction.x, pole.direction.y, pole.direction.z)
+    );
+    this.name = pole.name;
+    this.setLength(pole.length);
+    this.setPositionMesh(pole.mesh.x, pole.mesh.y, pole.mesh.z);
+    this.rotation.set(pole.rotation._x, pole.rotation._y, pole.rotation._z);
+    this.uuid = pole.uuid;
+  }
+
+  saveToJson() {
+    return {
+      position: this.position,
+      direction: this.direction,
+      name: this.name,
+      mesh: this.mesh.position,
+      rotation: this.rotation,
+      length: this.length,
+      uuid: this.uuid,
+    };
+  }
+
   setDirection(direction: THREE.Vector3) {
     this.direction = direction.clone().normalize();
     const quaternion = new THREE.Quaternion();
@@ -85,20 +108,19 @@ export class Pole extends THREE.Object3D {
 
   setPositionBetweenTwoPoles(pointA: THREE.Vector3, pointB: THREE.Vector3) {
     const centerPoint = pointA.clone().add(pointB.clone()).divideScalar(2.0);
-    this.setPositionMesh(0, 0, 0);
     this.position.set(centerPoint.x, centerPoint.y, centerPoint.z);
     const targetOrientationVector = pointB.clone().sub(pointA.clone());
-
     const distance = targetOrientationVector.length();
     this.setLength(distance + 0.3);
+    this.setPositionMesh(0, 0, 0);
     this.setDirection(targetOrientationVector);
   }
 
   setLength(minimumLength: number) {
     const allowedLengths: number[] = [1.0, 1.5, 2.0, 2.5, 3.0, 4.0, 5.0, 6.0];
     const colors: number[] = [
-      0xff5733, 0xffbd33, 0xffd633, 0x33ff7a, 0x337aff, 0x7933ff, 0xb733ff,
-      0xff33e6,
+      0xffa500, 0x00ff00, 0xff0000, 0x037c6e, 0xffffff, 0x0000ff, 0xffff00,
+      0x000000,
     ];
 
     // if the lenth is to big, just set it to the biggest lenght
@@ -144,16 +166,6 @@ export class Pole extends THREE.Object3D {
       x,
       y + (this.length - this.capLength) / 2 + this.capOffset,
       z
-    );
-  }
-
-  addLashing(lashing: Lashing) {
-    this.lashings.push(lashing);
-  }
-
-  removeLashing(pole: Pole) {
-    this.lashings = this.lashings.filter(
-      (lashing) => lashing.fixedPole !== pole && lashing.loosePole !== pole
     );
   }
 

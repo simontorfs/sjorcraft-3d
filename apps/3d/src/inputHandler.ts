@@ -22,38 +22,67 @@ export class InputHandler {
 
   onKeyDown(event: any) {
     switch (event.key) {
-      case "b":
+      case "h":
+        this.viewer.poleTool.deactivate();
+        this.viewer.bipodTool.deactivate();
+
+        this.viewer.selectionTool.activate();
+        break;
+      case "j":
         this.viewer.selectionTool.deactivate();
+        this.viewer.bipodTool.deactivate();
+
         this.viewer.poleTool.activate();
         break;
-      case "n":
+      case "k":
+        this.viewer.selectionTool.deactivate();
         this.viewer.poleTool.deactivate();
-        this.viewer.selectionTool.activate();
+
+        this.viewer.bipodTool.activate();
+        break;
+      case "l":
+        this.viewer.selectionTool.deactivate();
+        this.viewer.poleTool.deactivate();
+        this.viewer.bipodTool.deactivate();
+
+        // Activate tripodTool
+        break;
+      case "m":
+        this.viewer.selectionTool.deactivate();
+        this.viewer.poleTool.deactivate();
+        this.viewer.bipodTool.deactivate();
+
+        // Activate polypedastraTool
         break;
       case "Delete":
         this.viewer.selectionTool.delete();
         break;
       case "e":
-        this.viewer.saveTool.exportPoles("demo");
+        this.viewer.saveTool.exportAll("demo");
         break;
       case "i":
-        this.viewer.saveTool.importPoles();
+        this.viewer.saveTool.importAll();
         break;
       case "c":
         this.viewer.detailsTool.getPolesGroupedByLength();
         break;
       case "r":
         this.viewer.saveTool.removeAllPoles();
+        this.viewer.saveTool.removeAllLashings();
         this.viewer.saveTool.clearLocalStorage();
         break;
       case "s":
         this.viewer.saveTool.savePolesToLocalStorage();
+        this.viewer.saveTool.saveLashingsToLocalStorage();
         break;
       case "f":
         const length = Number(prompt("Enter the length of the floor"));
         const width = Number(prompt("Enter the width of the floor"));
         this.viewer.floor.setDimensions(length, width);
         break;
+      case "q":
+        console.log(this.viewer.poles);
+        console.log(this.viewer.lashings);
       default:
         console.log(event.key);
         break;
@@ -77,6 +106,12 @@ export class InputHandler {
       } else if (this.viewer.selectionTool.active) {
         if (event.button === THREE.MOUSE.LEFT) {
           this.viewer.selectionTool.leftClick();
+        }
+      } else if (this.viewer.bipodTool.active) {
+        if (event.button === THREE.MOUSE.LEFT) {
+          this.viewer.bipodTool.leftClick();
+        } else {
+          this.viewer.bipodTool.rightClick();
         }
       }
     }
@@ -109,6 +144,8 @@ export class InputHandler {
       }
     } else if (this.viewer.selectionTool.active) {
       this.viewer.selectionTool.hoveredPole = hoveredPole;
+    } else if (this.viewer.bipodTool.active) {
+      this.viewer.bipodTool.drawBipod(groundPosition);
     }
   }
 
