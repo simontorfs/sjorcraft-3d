@@ -105,6 +105,8 @@ export class InputHandler {
       } else if (this.viewer.bipodTool.active) {
         if (event.button === THREE.MOUSE.LEFT) {
           this.viewer.bipodTool.leftClick();
+        } else {
+          this.viewer.bipodTool.rightClick();
         }
       }
     }

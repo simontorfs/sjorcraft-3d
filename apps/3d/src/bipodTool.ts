@@ -16,6 +16,8 @@ export class BipodTool {
   firstGroundPoint: THREE.Vector3;
   secondGroundPoint: THREE.Vector3;
   lashPosition: THREE.Vector3;
+  lashHeight: number;
+  defaultLashHeight: number = 2.8;
 
   parallelHelperLine: THREE.Line;
   perpendicularHelperLine: THREE.Line;
@@ -28,6 +30,7 @@ export class BipodTool {
     this.pole2 = new Pole();
     this.firstGroundPoint = new THREE.Vector3();
     this.secondGroundPoint = new THREE.Vector3();
+    this.lashHeight = this.defaultLashHeight;
   }
 
   activate() {
@@ -84,7 +87,7 @@ export class BipodTool {
 
     this.lashPosition = new THREE.Vector3(
       groundPosition.x,
-      2.8,
+      this.lashHeight,
       groundPosition.z
     );
 
@@ -187,6 +190,21 @@ export class BipodTool {
       this.pole1Placed = false;
       this.pole2Placed = false;
       this.lashPositionPlaced = false;
+    }
+  }
+
+  rightClick() {
+    if (!this.active) return;
+
+    if (this.lashPositionPlaced) {
+      this.lashPositionPlaced = false;
+      this.removeVerticalHelperLine();
+      this.AddHorizontalHelperLines();
+    } else if (this.pole2Placed) {
+      this.pole2Placed = false;
+      this.removeHorizontalHelperLines();
+    } else if (this.pole1Placed) {
+      this.pole1Placed = false;
     }
   }
 }
