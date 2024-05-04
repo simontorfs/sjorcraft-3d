@@ -1,8 +1,7 @@
-// import "../../../script.ts";
 import React from "react";
 
 export const SjorcraftCanvas = () => {
-  return <canvas className="webgl"></canvas>;
+  return <canvas className="webgl" id="webgl"></canvas>;
 };
 
 export default SjorcraftCanvas;
