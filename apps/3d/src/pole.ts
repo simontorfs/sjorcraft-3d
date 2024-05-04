@@ -1,5 +1,4 @@
 import * as THREE from "three";
-import { Lashing } from "./lashing";
 
 export class Pole extends THREE.Object3D {
   mesh: THREE.Mesh;
@@ -7,7 +6,7 @@ export class Pole extends THREE.Object3D {
   capBottom: THREE.Mesh;
   direction: THREE.Vector3;
   length: number = 4.0;
-  radius: number = 0.07;
+  radius: number = 0.06;
   capLength: number = 0.2;
   capOffset: number = 0.001; //makes the render look great
   color: number = 0x0000ff;
@@ -48,6 +47,7 @@ export class Pole extends THREE.Object3D {
     }); // Blue color
     this.capTop = new THREE.Mesh(capGeometry, capMaterial);
     this.capBottom = new THREE.Mesh(capGeometry, capMaterial);
+    this.setPositionCaps();
 
     // Add top and bottom caps to the pole
     this.add(this.capTop);
@@ -64,7 +64,6 @@ export class Pole extends THREE.Object3D {
     );
     this.name = pole.name;
     this.setLength(pole.length);
-    this.setPositionMesh(pole.mesh.x, pole.mesh.y, pole.mesh.z);
     this.rotation.set(pole.rotation._x, pole.rotation._y, pole.rotation._z);
     this.uuid = pole.uuid;
   }
@@ -89,8 +88,7 @@ export class Pole extends THREE.Object3D {
   }
 
   setPositionOnGround(position: THREE.Vector3) {
-    this.position.set(position.x, position.y, position.z);
-    this.setPositionMesh(0, 2, 0);
+    this.position.set(position.x, position.y + this.length / 2.0, position.z);
     this.setDirection(new THREE.Vector3(0, 1, 0));
   }
 
@@ -98,12 +96,14 @@ export class Pole extends THREE.Object3D {
     groundPoint: THREE.Vector3,
     polePoint: THREE.Vector3
   ) {
-    this.position.set(groundPoint.x, groundPoint.y, groundPoint.z);
     const targetOrientationVector = polePoint.clone().sub(groundPoint.clone());
     const distance = targetOrientationVector.length();
     this.setLength(distance + 0.15);
     this.setDirection(targetOrientationVector);
-    this.setPositionMesh(0, this.length / 2.0, 0);
+    const targetPosition = groundPoint
+      .clone()
+      .add(this.direction.clone().multiplyScalar(this.length / 2.0));
+    this.position.set(targetPosition.x, targetPosition.y, targetPosition.z);
   }
 
   setPositionBetweenTwoPoles(pointA: THREE.Vector3, pointB: THREE.Vector3) {
@@ -112,7 +112,6 @@ export class Pole extends THREE.Object3D {
     const targetOrientationVector = pointB.clone().sub(pointA.clone());
     const distance = targetOrientationVector.length();
     this.setLength(distance + 0.3);
-    this.setPositionMesh(0, 0, 0);
     this.setDirection(targetOrientationVector);
   }
 
@@ -153,20 +152,14 @@ export class Pole extends THREE.Object3D {
       transparent: true,
       opacity: 0.5,
     });
+    this.setPositionCaps();
   }
 
-  setPositionMesh(x: number, y: number, z: number) {
-    this.mesh.position.set(x, y, z);
-    this.capBottom.position.set(
-      x,
-      y - (this.length - this.capLength) / 2 - this.capOffset,
-      z
-    );
-    this.capTop.position.set(
-      x,
-      y + (this.length - this.capLength) / 2 + this.capOffset,
-      z
-    );
+  setPositionCaps() {
+    (this.capBottom.position.y =
+      -(this.length - this.capLength) / 2 - this.capOffset),
+      (this.capTop.position.y =
+        (this.length - this.capLength) / 2 + this.capOffset);
   }
 
   select() {

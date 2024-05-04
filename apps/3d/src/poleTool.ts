@@ -34,19 +34,17 @@ export class PoleTool {
     this.viewer.scene.add(demoPole1);
     this.viewer.poles.push(demoPole1);
     demoPole1.position.x = -0.07;
-    demoPole1.position.y = 0;
-    demoPole1.position.z = -0.8;
-    demoPole1.setPositionMesh(0, 2, 0);
+    demoPole1.position.y = 1.74;
+    demoPole1.position.z = 0.1;
     demoPole1.setDirection(new THREE.Vector3(0, 1.8, 1));
     demoPole1.name = "demoPole1";
 
     const demoPole2 = new Pole();
     this.viewer.scene.add(demoPole2);
     this.viewer.poles.push(demoPole2);
-    demoPole2.position.x = 1.8;
-    demoPole2.position.y = 0;
+    demoPole2.position.x = 0.9;
+    demoPole2.position.y = 1.74;
     demoPole2.position.z = 0.93;
-    demoPole2.setPositionMesh(0, 2, 0);
     demoPole2.setDirection(new THREE.Vector3(-1, 1.8, 0));
     demoPole2.name = "demoPole2";
 
@@ -54,19 +52,17 @@ export class PoleTool {
     this.viewer.scene.add(demoPole3);
     this.viewer.poles.push(demoPole3);
     demoPole3.position.x = 0.07;
-    demoPole3.position.y = 0;
-    demoPole3.position.z = 2.8;
-    demoPole3.setPositionMesh(0, 2, 0);
+    demoPole3.position.y = 1.74;
+    demoPole3.position.z = 1.9;
     demoPole3.setDirection(new THREE.Vector3(0, 1.8, -1));
     demoPole3.name = "demoPole3";
 
     const demoPole4 = new Pole();
     this.viewer.scene.add(demoPole4);
     this.viewer.poles.push(demoPole4);
-    demoPole4.position.x = -1.8;
-    demoPole4.position.y = 0;
+    demoPole4.position.x = -0.9;
+    demoPole4.position.y = 1.74;
     demoPole4.position.z = 1.07;
-    demoPole4.setPositionMesh(0, 2, 0);
     demoPole4.setDirection(new THREE.Vector3(1, 1.8, 0));
     demoPole4.name = "demoPole4";
   }
@@ -144,7 +140,7 @@ export class PoleTool {
     // Step 2: Use the pole's naive orientation to estimate the center coordinates of the lashings
     this.fixedLashing.calculatePositions();
     this.newLashing.calculatePositions();
-    // this.snapToHeight();
+    this.snapToHeight();
     // Step 3: Set the pole position with the estimated center coordinates
     this.activePole.setPositionBetweenTwoPoles(
       this.fixedLashing.centerLoosePole,
@@ -160,14 +156,13 @@ export class PoleTool {
     );
 
     this.activePole.setDirection(targetOrientationVector);
-    // this.snapToHeight();
+    this.snapToHeight();
 
     this.activePole.position.set(
       this.newLashing.centerLoosePole.x,
       this.newLashing.centerLoosePole.y,
       this.newLashing.centerLoosePole.z
     );
-    this.activePole.setPositionMesh(0, 0, 0);
   }
 
   placePoleBetweenOneLashingAndGround(groundPosition: THREE.Vector3) {
@@ -192,26 +187,31 @@ export class PoleTool {
     this.activePole.setPositionOnGround(groundPosition);
   }
 
-  // snapToHeight() {
-  //   if (!this.activePole || !this.newLashing) return;
+  snapToHeight() {
+    if (!this.activePole || !this.newLashing) return;
 
-  //   this.currentSnapHeight = undefined;
+    this.currentSnapHeight = undefined;
 
-  //   const snapHeights =
-  //     this.lastPole?.lashings
-  //       .filter((lashing) => lashing.fixedPole.isVertical())
-  //       .map((lashing) => lashing.centerLoosePole.y) || [];
-  //   if (this.fixedLashing)
-  //     snapHeights.push(this.fixedLashing.centerLoosePole.y);
+    const snapHeights = this.viewer.lashings
+      .filter(
+        (lashing) =>
+          lashing.fixedPole.isVertical() &&
+          lashing.anchorPoint.distanceTo(
+            this.newLashing?.anchorPoint || new THREE.Vector3() // Typescript complains newLashing could be undefined, even though WE LITERALLY JUST CHECKED THAT IT'S NOT
+          ) < 5
+      )
+      .map((lashing) => lashing.centerLoosePole.y);
+    if (this.fixedLashing)
+      snapHeights.push(this.fixedLashing.centerLoosePole.y);
 
-  //   for (const snapHeight of snapHeights) {
-  //     const snapped = this.newLashing.snapLoosePole(snapHeight);
-  //     if (snapped) {
-  //       this.currentSnapHeight = snapHeight;
-  //       break;
-  //     }
-  //   }
-  // }
+    for (const snapHeight of snapHeights) {
+      const snapped = this.newLashing.snapLoosePole(snapHeight);
+      if (snapped) {
+        this.currentSnapHeight = snapHeight;
+        break;
+      }
+    }
+  }
 
   snapToGrid(position: THREE.Vector3) {
     // Check if position x or z is close to a whole number.

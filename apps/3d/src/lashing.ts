@@ -64,12 +64,14 @@ export class Lashing {
   calculatePositions() {
     this.centerFixedPole = this.anchorPoint
       .clone()
-      .sub(this.anchorPointNormal.clone().multiplyScalar(0.07));
+      .sub(
+        this.anchorPointNormal.clone().multiplyScalar(this.fixedPole.radius)
+      );
 
     const centerDifference = new THREE.Vector3()
       .crossVectors(this.fixedPole.direction, this.loosePole.direction)
       .normalize()
-      .multiplyScalar(0.14);
+      .multiplyScalar(this.fixedPole.radius + this.loosePole.radius);
 
     const centerLoosePoleOption1 = this.centerFixedPole
       .clone()
