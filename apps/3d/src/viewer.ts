@@ -97,6 +97,8 @@ export class Viewer {
     this.selectionTool.activate();
     this.poleTool = new PoleTool(this);
     this.bipodTool = new BipodTool(this);
+
+    // neede to load canvas
     const tick = () => {
       this.controls.update();
 
