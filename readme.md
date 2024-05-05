@@ -76,4 +76,4 @@ Meet the minds behind SjorCRAFT:
 ## Disclaimer
 
 SjorCRAFT is a community project, not affiliated with any organization. Opinions expressed here are ours.
-The sjor-models created with the tool, are the resposabilty of the person or people who created the sjor-model. We, the SjorCRAFT-team, do not take any resposabilty for the construction or the durabilty.
+The sjor-models created with the tool, are the responsibility of the person or people who created the sjor-model. We, the SjorCRAFT-team, do not take any responsibility for the construction or the durabilty.
