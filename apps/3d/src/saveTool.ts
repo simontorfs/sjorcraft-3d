@@ -5,8 +5,30 @@ import { Lashing } from "./lashing";
 
 export class SaveTool {
   viewer: Viewer;
+  localSaveFile: string = "poles_lashings";
   constructor(viewer: Viewer) {
     this.viewer = viewer;
+  }
+  // loading
+  fromJSON(input: string) {
+    const data = JSON.parse(input);
+    this.removeAll();
+    data.poles.forEach((pole: any) => {
+      const newPole = new Pole();
+      newPole.loadFromJson(pole);
+      this.viewer.scene.add(newPole);
+      this.viewer.poles.push(newPole);
+    });
+    data.lashings.forEach((lashing: any) => {
+      const newLashing = new Lashing();
+      if (newLashing.loadFromJson(lashing, this.viewer.poles)) {
+        this.viewer.lashings.push(newLashing);
+      }
+    });
+  }
+
+  loadFromLocalStorage() {
+    this.fromJSON(localStorage.getItem(this.localSaveFile) as string);
   }
 
   importAll() {
@@ -20,68 +42,26 @@ export class SaveTool {
         if (file.name.split(".").pop() !== "sjor") {
           return;
         }
-        const data = JSON.parse(reader.result as string);
-        this.removeAllPoles();
-        data.poles.forEach((pole: any) => {
-          const newPole = new Pole();
-          newPole.loadFromJson(pole);
-          this.viewer.scene.add(newPole);
-          this.viewer.poles.push(newPole);
-        });
-        data.lashings.forEach((lashing: any) => {
-          const newLashing = new Lashing();
-          if (newLashing.loadFromJson(lashing, this.viewer.poles)) {
-            this.viewer.lashings.push(newLashing);
-          }
-        });
+        this.fromJSON(reader.result as string);
       };
       reader.readAsText(file);
     });
   }
-
-  importPoles() {
-    const fileInput = document.getElementById("file") as HTMLInputElement;
-    fileInput.click();
-    fileInput.addEventListener("change", () => {
-      const file = fileInput.files![0];
-      const reader = new FileReader();
-      reader.onload = () => {
-        // check if extension is .sjor otherwise ignore
-        if (file.name.split(".").pop() !== "sjor") {
-          return;
-        }
-        const data = JSON.parse(reader.result as string);
-        this.removeAllPoles();
-        data.forEach((pole: any) => {
-          const newPole = new Pole();
-          newPole.loadFromJson(pole);
-          this.viewer.scene.add(newPole);
-          this.viewer.poles.push(newPole);
-        });
-      };
-      reader.readAsText(file);
-    });
-  }
-
-  exportAll(name: string) {
+  // saving
+  toJSON(): string {
     const poles = this.viewer.poles.map((pole) => pole.saveToJson());
     const lashings = this.viewer.lashings.map((lashing) =>
       lashing.saveToJson()
     );
-    const data = JSON.stringify({ poles: poles, lashings: lashings }, null, 2);
-    const blob = new Blob([data], { type: "text/json" });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = `${new Date()
-      .toISOString()
-      .slice(0, 10)
-      .replace(/-/g, "")}-${name}_poles.sjor`;
-    a.click();
+    return JSON.stringify({ poles: poles, lashings: lashings }, null, 2);
   }
-  exportPoles(name: string) {
-    const poles = this.viewer.poles.map((pole) => pole.saveToJson());
-    const data = JSON.stringify(poles, null, 2);
+
+  saveToLocalStorage() {
+    localStorage.setItem(this.localSaveFile, this.toJSON());
+  }
+
+  exportAll(name: string) {
+    const data: string = this.toJSON();
     const blob = new Blob([data], { type: "text/json" });
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
@@ -93,51 +73,13 @@ export class SaveTool {
     a.click();
   }
 
-  removeAllPoles() {
+  // others
+  removeAll() {
     this.viewer.poles.forEach((pole) => {
       this.viewer.scene.remove(pole);
     });
     this.viewer.poles = [];
-  }
-
-  savePolesToLocalStorage() {
-    const poles = this.viewer.poles.map((pole) => pole.saveToJson());
-    localStorage.setItem("poles", JSON.stringify(poles));
-  }
-
-  loadPolesFromLocalStorage() {
-    const poles = JSON.parse(localStorage.getItem("poles") as string);
-    this.removeAllPoles();
-    poles.forEach((pole: any) => {
-      const newPole = new Pole();
-      newPole.loadFromJson(pole);
-      this.viewer.scene.add(newPole);
-      this.viewer.poles.push(newPole);
-    });
-  }
-  removeAllLashings() {
-    // this.viewer.lashings.forEach((lashing) => {
-    //   this.viewer.scene.remove(lashing);
-    // });
     this.viewer.lashings = [];
-  }
-
-  saveLashingsToLocalStorage() {
-    const lashings = this.viewer.lashings.map((lashing) =>
-      lashing.saveToJson()
-    );
-    localStorage.setItem("lashings", JSON.stringify(lashings));
-  }
-
-  loadLashingsFromLocalStorage() {
-    const lashings = JSON.parse(localStorage.getItem("lashings") as string);
-    this.removeAllLashings();
-    lashings.forEach((lashing: any) => {
-      const newLashing = new Lashing();
-      if (newLashing.loadFromJson(lashing, this.viewer.poles)) {
-        this.viewer.lashings.push(newLashing);
-      }
-    });
   }
 
   //clear local storage

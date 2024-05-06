@@ -22,16 +22,8 @@ export class TriangleTool {
       poles.get(lashing.loosePole.uuid)!.add(lashing.fixedPole.uuid);
     });
 
-    // // split between loose poles and candidates. candidates should have at least 2 poles connected
-    // const triangleCandidates: Map<string, Set<string>> = new Map();
-    // for (const [key, set] of poles.entries()) {
-    //   if (set.size > 1) {
-    //     triangleCandidates.set(key, set);
-    //   }
-    // }
-
+    // all poles that are part of at least one triangle
     const fixedPoles: Set<string> = new Set();
-    // for each set of each pole, check if this pole is in the set of the other poles
     for (const [key, set] of poles.entries()) {
       set.forEach((uuid) => {
         poles.get(uuid)?.forEach((uuid2) => {
@@ -43,8 +35,15 @@ export class TriangleTool {
         });
       });
     }
-    // TODO in plaats van driehoeken zoeken moeten we zoeken naar 2 balken die geen 3de balk hebben --> deze twee balken zijn dan ook niet goed verbonden!
-    // Eventueel kunnen we ze dan een tool geven die de paren van balken aanduiden die gene driehoek zijn.
+
+    // all poles which are not a part of a triangle
+    const loosePoles: Set<string> = new Set(
+      Array.from(poles.keys()).filter((key) => !fixedPoles.has(key))
+    );
+
+    // all sets of 2 poles which are not connected by a third pole; missing a triagle!
+    // This might be the most usefull for implementation as this can be visualised
+    // Auto-trianglification?
     const looseConnections: Set<Set<string>> = new Set();
     // for each set of each pole, check if this pole is in the set of the other poles
     for (const [key, set] of poles.entries()) {
@@ -63,8 +62,42 @@ export class TriangleTool {
         }
       });
     }
-
-    console.log(looseConnections);
+    console.log("fixedpoles:", fixedPoles);
+    console.log("loosepoles:", loosePoles);
+    console.log("looseConnections;", looseConnections);
     // console.log(fixedPoles);
   }
 }
+
+// class u {
+//   dictionary: { [key: string]: string[] };
+//   set: Set<string>;
+
+//   constructor() {
+//     this.dictionary = {};
+//     this.set = new Set();
+//   }
+
+//   // Method to add an element to the dictionary
+//   add(key: string, value: string): void {
+//     if (!this.dictionary[key]) {
+//       this.dictionary[key] = [];
+//     }
+//     this.dictionary[key].push(value);
+//   }
+
+//   // Method to add an element to the set
+//   addToSet(value: string): void {
+//     this.set.add(value);
+//   }
+
+//   // Method to check if an element exists in the dictionary for a given key
+//   isInDictionary(key: string, value: string): boolean {
+//     return this.dictionary[key] && this.dictionary[key].includes(value);
+//   }
+
+//   // Method to check if an element exists in the set
+//   isInSet(value: string): boolean {
+//     return this.set.has(value);
+//   }
+// }

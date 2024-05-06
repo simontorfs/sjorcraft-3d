@@ -43,13 +43,11 @@ export class InputHandler {
         this.viewer.detailsTool.getPolesGroupedByLength();
         break;
       case "r":
-        this.viewer.saveTool.removeAllPoles();
-        this.viewer.saveTool.removeAllLashings();
+        this.viewer.saveTool.removeAll();
         this.viewer.saveTool.clearLocalStorage();
         break;
       case "s":
-        this.viewer.saveTool.savePolesToLocalStorage();
-        this.viewer.saveTool.saveLashingsToLocalStorage();
+        this.viewer.saveTool.saveToLocalStorage();
         break;
       case "f":
         const length = Number(prompt("Enter the length of the floor"));
@@ -57,8 +55,8 @@ export class InputHandler {
         this.viewer.floor.setDimensions(length, width);
         break;
       case "q":
-        console.log(this.viewer.poles);
-        console.log(this.viewer.lashings);
+        console.log("poles:", this.viewer.poles);
+        console.log("lashings:", this.viewer.lashings);
         break;
       case "t":
         this.viewer.triangleTool.getTriangles();

@@ -82,17 +82,18 @@ export class Viewer {
     // Details tool
     this.detailsTool = new DetailsTool(this);
 
-    // Save tool
-    this.saveTool = new SaveTool(this);
-
-    // Save tool
-    this.triangleTool = new TriangleTool(this);
-
     // Poles
     this.poles = [];
 
     // Lashings
     this.lashings = [];
+
+    // Save tool
+    this.saveTool = new SaveTool(this);
+    this.saveTool.loadFromLocalStorage();
+
+    // Save tool
+    this.triangleTool = new TriangleTool(this);
 
     // Tools
     this.poleTool = new PoleTool(this);

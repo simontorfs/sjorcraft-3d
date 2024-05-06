@@ -18,14 +18,8 @@ export class PoleTool {
     this.active = false;
     this.hoveringGround = false;
 
-    // load poles from local storage if available else add demo poles
-    if (localStorage.getItem("poles") !== null) {
-      this.viewer.saveTool.loadPolesFromLocalStorage();
-    } else if (this.viewer.poles.length === 0) {
+    if (this.viewer.poles.length === 0) {
       this.addDemoPoles();
-    }
-    if (localStorage.getItem("lashes") !== null) {
-      this.viewer.saveTool.loadLashingsFromLocalStorage();
     }
   }
 
