@@ -2,6 +2,7 @@ import { Pole } from "./pole";
 import * as THREE from "three";
 import { Viewer } from "./viewer";
 import { Lashing } from "./lashing";
+import { string } from "three/examples/jsm/nodes/Nodes.js";
 
 interface IPoles {
   [key: string]: Set<string>;
@@ -43,8 +44,7 @@ export class TriangleTool {
 
     // all sets of 2 poles which are not connected by a third pole; missing a triagle!
     // This might be the most usefull for implementation as this can be visualised
-    // Auto-trianglification?
-    const looseConnections: Set<Set<string>> = new Set();
+    const looseConnections: arraySet<string> = new arraySet();
     // for each set of each pole, check if this pole is in the set of the other poles
     for (const [key, set] of poles.entries()) {
       set.forEach((uuid) => {
@@ -54,18 +54,51 @@ export class TriangleTool {
             temp_set.add(uuid3);
           });
         });
-        // Need to do some string manipulaiton for the tuples; I have duplicates ;(
+
         if (!temp_set.has(key)) {
-          const tempString: string[] = [key, uuid];
-          tempString.sort();
-          looseConnections.add(new Set(tempString));
+          looseConnections.add([key, uuid]);
         }
       });
     }
     console.log("fixedpoles:", fixedPoles);
     console.log("loosepoles:", loosePoles);
-    console.log("looseConnections;", looseConnections);
-    // console.log(fixedPoles);
+    console.log("looseConnections;", looseConnections.dataSet);
+  }
+}
+
+class arraySet<T> {
+  keySet: Set<String> = new Set();
+  dataSet: Set<T[]> = new Set();
+
+  getkey(data: T[]): string {
+    return data.sort().map(String).join("");
+  }
+
+  add(data: T[]): void {
+    const key: string = this.getkey(data);
+    if (!this.keySet.has(key)) {
+      this.keySet.add(key);
+      this.dataSet.add(data);
+    }
+  }
+  has(data: T[]): boolean {
+    return this.keySet.has(this.getkey(data));
+  }
+  size(): number {
+    return this.keySet.size;
+  }
+  clear(): void {
+    this.keySet = new Set();
+    this.dataSet = new Set();
+  }
+  delete(data: T[]): void {
+    const key: string = this.getkey(data);
+    for (const d of this.dataSet) {
+      if (this.getkey(d) == key) {
+        this.dataSet.delete(d);
+      }
+    }
+    this.keySet.delete(key);
   }
 }
 
