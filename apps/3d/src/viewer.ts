@@ -30,10 +30,17 @@ export class Viewer {
   floor: Floor;
 
   constructor() {
-    this.sizes = { width: window.innerWidth, height: window.innerHeight };
+    this.canvas = document.querySelector("canvas#webgl")!;
+
+    // load the sizes of the canvas and update them on resize
+
+    this.sizes = {
+      width: window.innerWidth,
+      height: window.innerHeight,
+    };
     window.addEventListener("resize", () => {
-      this.sizes.width = window.innerWidth;
-      this.sizes.height = window.innerHeight;
+      this.sizes.width = this.canvas.clientWidth;
+      this.sizes.height = this.canvas.clientHeight;
 
       this.camera.aspect = this.sizes.width / this.sizes.height;
       this.camera.updateProjectionMatrix();
@@ -46,7 +53,6 @@ export class Viewer {
         document.exitFullscreen();
       }
     });
-    this.canvas = document.querySelector("canvas#webgl")!;
     this.renderer = new THREE.WebGLRenderer({ canvas: this.canvas });
     this.renderer.setSize(this.sizes.width, this.sizes.height);
     this.scene = new THREE.Scene();

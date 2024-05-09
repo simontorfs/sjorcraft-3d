@@ -2,11 +2,14 @@
 import React from "react";
 import { Route, Routes } from "react-router-dom";
 import SjorcraftEditor from "./components/SjorcraftEditor";
+import SjorcraftCanvas from "./components/SjorcraftCanvas";
+import Navbar from "./components/Navbar";
 //@ts-ignore
 const App = () => {
   return (
     <Routes>
       <Route path="/" element={<SjorcraftEditor />} />
+      <Route path="editor" element={<Navbar />} />
     </Routes>
   );
 };

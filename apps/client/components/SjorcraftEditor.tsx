@@ -2,12 +2,21 @@
 import React from "react";
 import { SjorcraftCanvas } from "./SjorcraftCanvas";
 import Navbar from "./Navbar";
+import EditorSidebar from "./EditorSidebar";
+import { Grid } from "@mui/material";
 
 const SjorcraftEditor = () => {
   return (
     <div className="sjorcraft-editor">
       <Navbar />
-      <SjorcraftCanvas />
+      <Grid container spacing={2}>
+        <Grid item xs={9}>
+          <SjorcraftCanvas />
+        </Grid>
+        <Grid item xs={3}>
+          <EditorSidebar />
+        </Grid>
+      </Grid>
     </div>
   );
 };
