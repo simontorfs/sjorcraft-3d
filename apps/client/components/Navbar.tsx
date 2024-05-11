@@ -7,7 +7,7 @@ const Navbar = () => {
       <div className="nav-buttons">
         <NavButton
           text="poletool"
-          onClick={() => alert("Should trigger poletool")}
+          onClick={() => window.dispatchEvent(new Event("activate_poletool"))}
         />
       </div>
       <div className="profile"></div>
