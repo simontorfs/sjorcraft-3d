@@ -119,8 +119,10 @@ export class InputHandler {
 
   onMouseMove(event: any) {
     this.mouseHasMoved = true;
-    this.cursor.x = event.clientX / this.viewer.sizes.width - 0.5;
-    this.cursor.y = -event.clientY / this.viewer.sizes.height + 0.5;
+    const rect = this.viewer.renderer.domElement.getBoundingClientRect();
+    this.cursor.x = (event.clientX - rect.left) / this.viewer.sizes.width - 0.5;
+    this.cursor.y =
+      -(event.clientY - rect.top) / this.viewer.sizes.height + 0.5;
     const groundPosition = this.getGroundPosition();
     const intersect = this.getPoleIntersect();
     const hoveredPole = intersect?.object.parent as Pole;
