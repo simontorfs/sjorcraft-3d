@@ -6,7 +6,6 @@ export class InputHandler {
   viewer: Viewer;
   cursor: { x: number; y: number };
   mouseHasMoved: boolean;
-  hoveredObject: Pole | undefined;
 
   constructor(viewer: Viewer) {
     this.viewer = viewer;
@@ -122,20 +121,21 @@ export class InputHandler {
     this.cursor.x = event.clientX / this.viewer.sizes.width - 0.5;
     this.cursor.y = -event.clientY / this.viewer.sizes.height + 0.5;
     const groundPosition = this.getGroundPosition();
-    const intersect = this.getPoleIntersect();
-    const hoveredPole = intersect?.object.parent as Pole;
+    const poleIntersect = this.getPoleIntersect();
+    const hoveredPole = poleIntersect?.object.parent as Pole;
+
     if (this.viewer.poleTool.active) {
-      if (intersect?.normal) {
+      if (poleIntersect?.normal) {
         const rotationMatrix = new THREE.Matrix4();
         rotationMatrix.extractRotation(hoveredPole.matrix);
 
-        const transformedNormal = intersect.normal
+        const transformedNormal = poleIntersect.normal
           .clone()
           .applyMatrix4(rotationMatrix)
           .normalize();
 
         this.viewer.poleTool.drawPoleWhileHoveringOtherPole(
-          intersect.point,
+          poleIntersect.point,
           hoveredPole,
           transformedNormal
         );

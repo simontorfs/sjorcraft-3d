@@ -1,5 +1,4 @@
 import * as THREE from "three";
-import { TranslationHandle } from "./translationHandle";
 
 export class Pole extends THREE.Object3D {
   mesh: THREE.Mesh;
@@ -12,7 +11,6 @@ export class Pole extends THREE.Object3D {
   capOffset: number = 0.001; //makes the render look great
   color: THREE.Color = new THREE.Color(0x0000ff);
 
-  translationHandle: TranslationHandle;
   constructor() {
     super();
     const textureLoader = new THREE.TextureLoader();
@@ -58,9 +56,6 @@ export class Pole extends THREE.Object3D {
     this.add(this.mesh);
 
     this.direction = new THREE.Vector3(0, 1, 0);
-
-    this.translationHandle = new TranslationHandle();
-    this.add(this.translationHandle);
   }
 
   loadFromJson(pole: any) {
@@ -159,7 +154,6 @@ export class Pole extends THREE.Object3D {
     // @ts-ignore
     this.capTop.material.color = this.color;
     this.setPositionCaps();
-    this.translationHandle.setColor(this.color);
   }
 
   setPositionCaps() {
@@ -187,13 +181,5 @@ export class Pole extends THREE.Object3D {
 
   isVertical() {
     return this.isParallelTo(new THREE.Vector3(0, 1, 0));
-  }
-
-  addTransformer() {
-    this.translationHandle.makeVisible();
-  }
-
-  removeTransformer() {
-    this.translationHandle.makeInvisible();
   }
 }
