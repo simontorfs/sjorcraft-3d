@@ -1,4 +1,5 @@
 import * as THREE from "three";
+import { PoleTransformer } from "./poleTransformer";
 
 export class Pole extends THREE.Object3D {
   mesh: THREE.Mesh;
@@ -10,6 +11,8 @@ export class Pole extends THREE.Object3D {
   capLength: number = 0.2;
   capOffset: number = 0.001; //makes the render look great
   color: number = 0x0000ff;
+
+  transformer: PoleTransformer;
   constructor() {
     super();
     const textureLoader = new THREE.TextureLoader();
@@ -55,6 +58,10 @@ export class Pole extends THREE.Object3D {
     this.add(this.mesh);
 
     this.direction = new THREE.Vector3(0, 1, 0);
+
+    this.transformer = new PoleTransformer();
+    this.transformer.setLength(this.length);
+    this.add(this.transformer);
   }
 
   loadFromJson(pole: any) {
@@ -153,6 +160,7 @@ export class Pole extends THREE.Object3D {
       opacity: 0.5,
     });
     this.setPositionCaps();
+    this.transformer.setLength(this.length);
   }
 
   setPositionCaps() {
