@@ -140,6 +140,7 @@ export class InputHandler {
           transformedNormal
         );
         this.viewer.poleTransformer.setActivePole(hoveredPole);
+        this.setHoveredHandle();
       } else {
         this.viewer.poleTool.drawPoleWhileHoveringGound(groundPosition);
         this.viewer.poleTransformer.setActivePole(undefined);
@@ -179,5 +180,20 @@ export class InputHandler {
       return intersect[0].point;
     }
     return new THREE.Vector3(0, 0, 0);
+  }
+
+  setHoveredHandle() {
+    const raycaster = new THREE.Raycaster();
+    raycaster.setFromCamera(
+      new THREE.Vector2(this.cursor.x * 2, this.cursor.y * 2),
+      this.viewer.camera
+    );
+
+    const intersect = raycaster.intersectObject(this.viewer.poleTransformer);
+    let hoveredHandle: THREE.Mesh | undefined = undefined;
+    if (intersect.length) {
+      hoveredHandle = intersect[0].object as THREE.Mesh;
+    }
+    this.viewer.poleTransformer.setHoveredHandle(hoveredHandle);
   }
 }
