@@ -9,6 +9,7 @@ import { SelectionTool } from "./selectionTool";
 import { Floor } from "./floor";
 import { BipodTool } from "./bipodTool";
 import { Lashing } from "./lashing";
+import { PoleTransformer } from "./poleTransformer";
 
 export class Viewer {
   canvas: HTMLElement;
@@ -22,6 +23,7 @@ export class Viewer {
   selectionTool: SelectionTool;
   poleTool: PoleTool;
   bipodTool: BipodTool;
+  poleTransformer: PoleTransformer;
 
   poles: Pole[];
   lashings: Lashing[];
@@ -97,6 +99,9 @@ export class Viewer {
     this.selectionTool.activate();
     this.poleTool = new PoleTool(this);
     this.bipodTool = new BipodTool(this);
+    this.poleTransformer = new PoleTransformer();
+    this.scene.add(this.poleTransformer);
+
     const tick = () => {
       this.controls.update();
 

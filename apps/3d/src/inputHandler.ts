@@ -139,8 +139,10 @@ export class InputHandler {
           hoveredPole,
           transformedNormal
         );
+        this.viewer.poleTransformer.setActivePole(hoveredPole);
       } else {
         this.viewer.poleTool.drawPoleWhileHoveringGound(groundPosition);
+        this.viewer.poleTransformer.setActivePole(undefined);
       }
     } else if (this.viewer.selectionTool.active) {
       this.viewer.selectionTool.hoveredPole = hoveredPole;
