@@ -1,5 +1,5 @@
 import * as THREE from "three";
-import { PoleTransformer } from "./poleTransformer";
+import { TranslationHandle } from "./translationHandle";
 
 export class Pole extends THREE.Object3D {
   mesh: THREE.Mesh;
@@ -10,9 +10,9 @@ export class Pole extends THREE.Object3D {
   radius: number = 0.06;
   capLength: number = 0.2;
   capOffset: number = 0.001; //makes the render look great
-  color: number = 0x0000ff;
+  color: THREE.Color = new THREE.Color(0x0000ff);
 
-  transformer: PoleTransformer;
+  translationHandle: TranslationHandle;
   constructor() {
     super();
     const textureLoader = new THREE.TextureLoader();
@@ -59,9 +59,8 @@ export class Pole extends THREE.Object3D {
 
     this.direction = new THREE.Vector3(0, 1, 0);
 
-    this.transformer = new PoleTransformer();
-    this.transformer.setLength(this.length);
-    this.add(this.transformer);
+    this.translationHandle = new TranslationHandle();
+    this.add(this.translationHandle);
   }
 
   loadFromJson(pole: any) {
@@ -124,9 +123,15 @@ export class Pole extends THREE.Object3D {
 
   setLength(minimumLength: number) {
     const allowedLengths: number[] = [1.0, 1.5, 2.0, 2.5, 3.0, 4.0, 5.0, 6.0];
-    const colors: number[] = [
-      0xffa500, 0x00ff00, 0xff0000, 0x037c6e, 0xffffff, 0x0000ff, 0xffff00,
-      0x000000,
+    const colors: THREE.Color[] = [
+      new THREE.Color(0xffa500),
+      new THREE.Color(0x00ff00),
+      new THREE.Color(0xff0000),
+      new THREE.Color(0x037c6e),
+      new THREE.Color(0xffffff),
+      new THREE.Color(0x0000ff),
+      new THREE.Color(0xffff00),
+      new THREE.Color(0x000000),
     ];
 
     // if the lenth is to big, just set it to the biggest lenght
@@ -149,18 +154,12 @@ export class Pole extends THREE.Object3D {
     );
     // @ts-ignore
     this.mesh.material.map.repeat.y = this.length * 2;
-    this.capBottom.material = new THREE.MeshStandardMaterial({
-      color: this.color,
-      transparent: true,
-      opacity: 0.5,
-    });
-    this.capTop.material = new THREE.MeshStandardMaterial({
-      color: this.color,
-      transparent: true,
-      opacity: 0.5,
-    });
+    // @ts-ignore
+    this.capBottom.material.color = this.color;
+    // @ts-ignore
+    this.capTop.material.color = this.color;
     this.setPositionCaps();
-    this.transformer.setLength(this.length);
+    this.translationHandle.setColor(this.color);
   }
 
   setPositionCaps() {
@@ -188,5 +187,13 @@ export class Pole extends THREE.Object3D {
 
   isVertical() {
     return this.isParallelTo(new THREE.Vector3(0, 1, 0));
+  }
+
+  addTransformer() {
+    this.translationHandle.makeVisible();
+  }
+
+  removeTransformer() {
+    this.translationHandle.makeInvisible();
   }
 }

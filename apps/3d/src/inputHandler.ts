@@ -156,7 +156,9 @@ export class InputHandler {
       this.viewer.camera
     );
 
-    const intersects = raycaster.intersectObjects(this.viewer.poles);
+    const intersects = raycaster.intersectObjects(
+      this.viewer.poles.map((pole) => pole.mesh)
+    );
     if (intersects.length) {
       return intersects[0];
     }

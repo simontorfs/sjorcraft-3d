@@ -6,6 +6,7 @@ import { Lashing } from "./lashing";
 export class PoleTool {
   active: boolean;
   activePole: Pole | undefined;
+  transformablePole: Pole | undefined;
   viewer: Viewer;
   hoveringGround: boolean;
   fixedLashing: Lashing | undefined;
@@ -82,6 +83,7 @@ export class PoleTool {
     }
     this.viewer.scene.remove(this.activePole);
     this.activePole = undefined;
+    this.transformablePole = undefined;
     this.active = false;
     this.fixedLashing = undefined;
     this.newLashing = undefined;
@@ -90,6 +92,7 @@ export class PoleTool {
 
   drawPoleWhileHoveringGound(groundPosition: THREE.Vector3) {
     if (!this.activePole) return;
+    this.setTransformablePole(undefined);
 
     this.newLashing = undefined;
     this.hoveringGround = true;
@@ -124,8 +127,10 @@ export class PoleTool {
 
     if (this.fixedLashing) {
       if (this.fixedLashing.fixedPole === hoveredPole) return;
+      this.setTransformablePole(undefined);
       this.placePoleBetweenTwoLashings();
     } else {
+      this.setTransformablePole(hoveredPole);
       this.placePoleOnOneLashing();
     }
   }
@@ -224,6 +229,13 @@ export class PoleTool {
     }
   }
 
+  setTransformablePole(pole: Pole | undefined) {
+    if (pole === this.transformablePole) return;
+    if (this.transformablePole) this.transformablePole.removeTransformer();
+    if (pole) pole.addTransformer();
+    this.transformablePole = pole;
+  }
+
   leftClick() {
     if (!this.activePole) return;
     if (this.fixedLashing || this.hoveringGround) {
@@ -250,7 +262,6 @@ export class PoleTool {
     if (this.newLashing) {
       this.viewer.lashings.push(this.newLashing);
     }
-    console.log(this.viewer.lashings);
     this.fixedLashing = undefined;
     this.newLashing = undefined;
   }
