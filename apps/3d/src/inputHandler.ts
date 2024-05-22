@@ -1,6 +1,7 @@
 import * as THREE from "three";
 import { Pole } from "./pole";
 import { Viewer } from "./viewer";
+import { ButtonType } from "../../client/components/NavButton";
 
 export class InputHandler {
   viewer: Viewer;
@@ -18,27 +19,30 @@ export class InputHandler {
     window.addEventListener("mousedown", this.onMouseDown.bind(this));
     window.addEventListener("mouseup", this.onMouseUp.bind(this));
     window.addEventListener("mousemove", this.onMouseMove.bind(this));
+    window.addEventListener(
+      "activate_selectiontool",
+      this.onActivateTool.bind(this, "selectiontool")
+    );
+    window.addEventListener(
+      "activate_poletool",
+      this.onActivateTool.bind(this, "poletool")
+    );
+    window.addEventListener(
+      "activate_bipodtool",
+      this.onActivateTool.bind(this, "bipodtool")
+    );
   }
 
   onKeyDown(event: any) {
     switch (event.key) {
       case "h":
-        this.viewer.poleTool.deactivate();
-        this.viewer.bipodTool.deactivate();
-
-        this.viewer.selectionTool.activate();
+        this.onActivateTool("selectiontool");
         break;
       case "j":
-        this.viewer.selectionTool.deactivate();
-        this.viewer.bipodTool.deactivate();
-
-        this.viewer.poleTool.activate();
+        this.onActivateTool("poletool");
         break;
       case "k":
-        this.viewer.selectionTool.deactivate();
-        this.viewer.poleTool.deactivate();
-
-        this.viewer.bipodTool.activate();
+        this.onActivateTool("bipodtool");
         break;
       case "l":
         this.viewer.selectionTool.deactivate();
@@ -119,8 +123,10 @@ export class InputHandler {
 
   onMouseMove(event: any) {
     this.mouseHasMoved = true;
-    this.cursor.x = event.clientX / this.viewer.sizes.width - 0.5;
-    this.cursor.y = -event.clientY / this.viewer.sizes.height + 0.5;
+    const rect = this.viewer.renderer.domElement.getBoundingClientRect();
+    this.cursor.x = (event.clientX - rect.left) / this.viewer.sizes.width - 0.5;
+    this.cursor.y =
+      -(event.clientY - rect.top) / this.viewer.sizes.height + 0.5;
     const groundPosition = this.getGroundPosition();
     const intersect = this.getPoleIntersect();
     const hoveredPole = intersect?.object.parent as Pole;
@@ -175,5 +181,39 @@ export class InputHandler {
       return intersect[0].point;
     }
     return new THREE.Vector3(0, 0, 0);
+  }
+
+  onActivateTool(tool: ButtonType) {
+    switch (tool) {
+      case "selectiontool":
+        this.viewer.poleTool.deactivate();
+        this.viewer.bipodTool.deactivate();
+
+        this.viewer.selectionTool.activate();
+        break;
+      case "poletool":
+        this.viewer.selectionTool.deactivate();
+        this.viewer.bipodTool.deactivate();
+
+        this.viewer.poleTool.activate();
+        break;
+      case "bipodtool":
+        this.viewer.selectionTool.deactivate();
+        this.viewer.poleTool.deactivate();
+
+        this.viewer.bipodTool.activate();
+        break;
+      case "tripodtool":
+        // Activate tripodTool
+        break;
+      case "polytool":
+        // Activate polypedastraTool
+        break;
+      case "lashingtool":
+        // Activate lashingTool
+        break;
+      default:
+        break;
+    }
   }
 }

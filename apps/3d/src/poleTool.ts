@@ -2,6 +2,7 @@ import { Pole } from "./pole";
 import * as THREE from "three";
 import { Viewer } from "./viewer";
 import { Lashing } from "./lashing";
+import { HelperLine } from "./helperLine";
 
 export class PoleTool {
   active: boolean;
@@ -12,11 +13,15 @@ export class PoleTool {
   newLashing: Lashing | undefined;
   lastPole: Pole | undefined;
   currentSnapHeight: number | undefined;
+  snapHelperLine: HelperLine;
 
   constructor(viewer: Viewer) {
     this.viewer = viewer;
     this.active = false;
     this.hoveringGround = false;
+    this.snapHelperLine = new HelperLine();
+    this.snapHelperLine.visible = false;
+    this.viewer.scene.add(this.snapHelperLine);
 
     // load poles from local storage if available else add demo poles
     if (localStorage.getItem("poles") !== null) {
@@ -93,6 +98,7 @@ export class PoleTool {
 
     this.newLashing = undefined;
     this.hoveringGround = true;
+    this.snapHelperLine.visible = false;
 
     this.snapToGrid(groundPosition);
 
@@ -192,25 +198,30 @@ export class PoleTool {
 
     this.currentSnapHeight = undefined;
 
-    const snapHeights = this.viewer.lashings
-      .filter(
-        (lashing) =>
-          lashing.fixedPole.isVertical() &&
-          lashing.anchorPoint.distanceTo(
-            this.newLashing?.anchorPoint || new THREE.Vector3() // Typescript complains newLashing could be undefined, even though WE LITERALLY JUST CHECKED THAT IT'S NOT
-          ) < 5
-      )
-      .map((lashing) => lashing.centerLoosePole.y);
-    if (this.fixedLashing)
-      snapHeights.push(this.fixedLashing.centerLoosePole.y);
+    const snapLashings = this.viewer.lashings.filter(
+      (lashing) =>
+        lashing.fixedPole.isVertical() &&
+        lashing.anchorPoint.distanceTo(
+          this.newLashing?.anchorPoint || new THREE.Vector3() // Typescript complains newLashing could be undefined, even though WE LITERALLY JUST CHECKED THAT IT'S NOT
+        ) < 5
+    );
+    if (this.fixedLashing) snapLashings.push(this.fixedLashing);
 
-    for (const snapHeight of snapHeights) {
-      const snapped = this.newLashing.snapLoosePole(snapHeight);
+    for (const snapLashing of snapLashings) {
+      const snapped = this.newLashing.snapLoosePole(
+        snapLashing.centerLoosePole.y
+      );
       if (snapped) {
-        this.currentSnapHeight = snapHeight;
-        break;
+        this.currentSnapHeight = snapLashing.centerLoosePole.y;
+        this.snapHelperLine.setBetweenPoints([
+          snapLashing.centerLoosePole,
+          this.newLashing.centerLoosePole,
+        ]);
+        this.snapHelperLine.visible = true;
+        return;
       }
     }
+    this.snapHelperLine.visible = false;
   }
 
   snapToGrid(position: THREE.Vector3) {

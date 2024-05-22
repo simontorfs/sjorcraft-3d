@@ -11,6 +11,7 @@ import { BipodTool } from "./bipodTool";
 import { Lashing } from "./lashing";
 
 export class Viewer {
+  domElement: HTMLElement;
   canvas: HTMLElement;
   renderer: THREE.WebGLRenderer;
   scene: THREE.Scene;
@@ -29,15 +30,19 @@ export class Viewer {
   detailsTool: DetailsTool;
   floor: Floor;
 
-  constructor() {
-    this.canvas = document.querySelector("canvas#webgl")!;
-
-    // load the sizes of the canvas and update them on resize
+  constructor(domElement: HTMLElement) {
+    this.domElement = domElement;
+    this.canvas = document.createElement("canvas");
+    this.domElement.appendChild(this.canvas);
+    this.renderer = new THREE.WebGLRenderer({ canvas: this.canvas });
+    this.scene = new THREE.Scene();
 
     this.sizes = {
       width: window.innerWidth,
       height: window.innerHeight,
     };
+    this.renderer.setSize(this.sizes.width, this.sizes.height);
+
     window.addEventListener("resize", () => {
       this.sizes.width = this.canvas.clientWidth;
       this.sizes.height = this.canvas.clientHeight;
@@ -53,9 +58,6 @@ export class Viewer {
         document.exitFullscreen();
       }
     });
-    this.renderer = new THREE.WebGLRenderer({ canvas: this.canvas });
-    this.renderer.setSize(this.sizes.width, this.sizes.height);
-    this.scene = new THREE.Scene();
 
     // Camera
     this.camera = new THREE.PerspectiveCamera(

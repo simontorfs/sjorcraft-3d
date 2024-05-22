@@ -15,29 +15,19 @@ import MenuItem from "@mui/material/MenuItem";
 const tools = [
   {
     name: "Selection",
-    action: () => {
-      /*  viewer.poleTool.deactivate();
-      viewer.bipodTool.deactivate();
-      viewer.selectionTool.activate(); */
-    },
+    action: () => window.dispatchEvent(new Event("activate_selectiontool")),
   },
   {
     name: "Poletool",
-    action: () => {
-      alert(`should be implemented`);
-    },
+    action: () => window.dispatchEvent(new Event("activate_poletool")),
   },
   {
     name: "Bipodtool",
-    action: () => {
-      alert(`should be implemented`);
-    },
+    action: () => window.dispatchEvent(new Event("activate_bipodtool")),
   },
   {
     name: "Tripodtool",
-    action: () => {
-      alert(`should be implemented`);
-    },
+    action: () => window.dispatchEvent(new Event("activate_tripodtool")),
   },
 ];
 const settings = ["Profile", "Account", "Dashboard", "Logout"];

@@ -1,6 +1,6 @@
 import React from "react";
 
-type ButtonType =
+export type ButtonType =
   | "selectiontool"
   | "poletool"
   | "bipodtool"

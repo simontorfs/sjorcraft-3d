@@ -9,6 +9,7 @@ export class HelperLine extends THREE.Line {
       gapSize: 0.05,
       depthTest: false,
     });
+    this.renderOrder = 999;
   }
 
   setBetweenPoints(points: THREE.Vector3[]) {

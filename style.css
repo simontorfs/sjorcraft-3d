@@ -38,9 +38,10 @@ body {
 
 .nav-buttons {
   display: flex;
-  justify-content: space-between;
-  align-items: center;
-  width: 80rem;
+  justify-content: left;
+  width: 70%;
+  padding: 0 2rem;
+  gap: 2rem;
 }
 
 .nav-button {
