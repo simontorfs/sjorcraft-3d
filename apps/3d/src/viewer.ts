@@ -12,6 +12,7 @@ import { Lashing } from "./lashing";
 import { PoleTransformer } from "./poleTransformer";
 
 export class Viewer {
+  domElement: HTMLElement;
   canvas: HTMLElement;
   renderer: THREE.WebGLRenderer;
   scene: THREE.Scene;
@@ -31,8 +32,19 @@ export class Viewer {
   detailsTool: DetailsTool;
   floor: Floor;
 
-  constructor() {
-    this.sizes = { width: window.innerWidth, height: window.innerHeight };
+  constructor(domElement: HTMLElement) {
+    this.domElement = domElement;
+    this.canvas = document.createElement("canvas");
+    this.domElement.appendChild(this.canvas);
+    this.renderer = new THREE.WebGLRenderer({ canvas: this.canvas });
+    this.scene = new THREE.Scene();
+
+    this.sizes = {
+      width: window.innerWidth,
+      height: window.innerHeight,
+    };
+    this.renderer.setSize(this.sizes.width, this.sizes.height);
+
     window.addEventListener("resize", () => {
       this.sizes.width = window.innerWidth;
       this.sizes.height = window.innerHeight;
@@ -48,10 +60,6 @@ export class Viewer {
         document.exitFullscreen();
       }
     });
-    this.canvas = document.querySelector("canvas#webgl")!;
-    this.renderer = new THREE.WebGLRenderer({ canvas: this.canvas });
-    this.renderer.setSize(this.sizes.width, this.sizes.height);
-    this.scene = new THREE.Scene();
 
     // Camera
     this.camera = new THREE.PerspectiveCamera(

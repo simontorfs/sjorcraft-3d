@@ -3,7 +3,6 @@ import ReactDOM from "react-dom/client";
 import App from "./App";
 import "../../style.css";
 import { BrowserRouter } from "react-router-dom";
-import { Viewer } from "../3d/src/viewer";
 
 const root = ReactDOM.createRoot(
   document.getElementById("root") as HTMLElement
@@ -21,9 +20,4 @@ try {
   );
 } catch (e) {
   console.error(e);
-} finally {
-  const script = document.createElement("script");
-  script.type = "module";
-  script.src = "./script.ts";
-  document.body.appendChild(script);
 }
