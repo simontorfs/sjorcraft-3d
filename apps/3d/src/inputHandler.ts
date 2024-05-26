@@ -13,14 +13,15 @@ export class InputHandler {
 
   constructor(viewer: Viewer) {
     this.viewer = viewer;
+    const domElement = this.viewer.domElement;
 
     this.mouseHasMoved = false;
 
     this.cursor = { x: 0, y: 0 };
     window.addEventListener("keydown", this.onKeyDown.bind(this));
-    window.addEventListener("mousedown", this.onMouseDown.bind(this));
-    window.addEventListener("mouseup", this.onMouseUp.bind(this));
-    window.addEventListener("mousemove", this.onMouseMove.bind(this));
+    domElement.addEventListener("mousedown", this.onMouseDown.bind(this));
+    domElement.addEventListener("mouseup", this.onMouseUp.bind(this));
+    domElement.addEventListener("mousemove", this.onMouseMove.bind(this));
     window.addEventListener(
       "activate_selectiontool",
       this.onActivateTool.bind(this, "selectiontool")
