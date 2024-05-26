@@ -138,31 +138,31 @@ export class InputHandler {
 
     if (this.viewer.poleTool.active) {
       if (poleIntersect?.normal) {
-        if (this.hoveredHandle && this.mouseDown) {
-          console.log("dragging handle");
-        } else {
-          const rotationMatrix = new THREE.Matrix4();
-          rotationMatrix.extractRotation(hoveredPole.matrix);
+        const rotationMatrix = new THREE.Matrix4();
+        rotationMatrix.extractRotation(hoveredPole.matrix);
 
-          const transformedNormal = poleIntersect.normal
-            .clone()
-            .applyMatrix4(rotationMatrix)
-            .normalize();
+        const transformedNormal = poleIntersect.normal
+          .clone()
+          .applyMatrix4(rotationMatrix)
+          .normalize();
 
-          this.viewer.poleTool.drawPoleWhileHoveringOtherPole(
-            poleIntersect.point,
-            hoveredPole,
-            transformedNormal
-          );
-          this.viewer.poleTransformer.setActivePole(hoveredPole);
-          this.setHoveredHandle();
-        }
+        this.viewer.poleTool.drawPoleWhileHoveringOtherPole(
+          poleIntersect.point,
+          hoveredPole,
+          transformedNormal
+        );
       } else {
         this.viewer.poleTool.drawPoleWhileHoveringGound(groundPosition);
         this.viewer.poleTransformer.setActivePole(undefined);
       }
     } else if (this.viewer.selectionTool.active) {
-      this.viewer.selectionTool.hoveredPole = hoveredPole;
+      if (this.hoveredHandle && this.mouseDown) {
+        console.log("dragging handle");
+      } else {
+        this.viewer.selectionTool.hoveredPole = hoveredPole;
+        this.viewer.poleTransformer.setActivePole(hoveredPole);
+        this.setHoveredHandle();
+      }
     } else if (this.viewer.bipodTool.active) {
       this.viewer.bipodTool.drawBipod(groundPosition);
     }
@@ -209,10 +209,10 @@ export class InputHandler {
     const intersect = raycaster.intersectObject(this.viewer.poleTransformer);
     if (intersect.length) {
       this.hoveredHandle = intersect[0].object as THREE.Mesh;
-      this.viewer.controls.enabled = false;
+      this.viewer.controls.enableRotate = false;
     } else {
       this.hoveredHandle = undefined;
-      this.viewer.controls.enabled = true;
+      this.viewer.controls.enableRotate = true;
     }
     this.viewer.poleTransformer.setHoveredHandle(this.hoveredHandle);
   }

@@ -7,7 +7,6 @@ import { HelperLine } from "./helperLine";
 export class PoleTool {
   active: boolean;
   activePole: Pole | undefined;
-  transformablePole: Pole | undefined;
   viewer: Viewer;
   hoveringGround: boolean;
   fixedLashing: Lashing | undefined;
@@ -88,7 +87,6 @@ export class PoleTool {
     }
     this.viewer.scene.remove(this.activePole);
     this.activePole = undefined;
-    this.transformablePole = undefined;
     this.active = false;
     this.fixedLashing = undefined;
     this.newLashing = undefined;
