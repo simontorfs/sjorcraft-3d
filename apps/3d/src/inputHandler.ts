@@ -2,11 +2,14 @@ import * as THREE from "three";
 import { Pole } from "./pole";
 import { Viewer } from "./viewer";
 import { ButtonType } from "../../client/components/NavButton";
+import { OrbitControls } from "three/examples/jsm/Addons.js";
 
 export class InputHandler {
   viewer: Viewer;
   cursor: { x: number; y: number };
   mouseHasMoved: boolean;
+  mouseDown: boolean;
+  hoveredHandle: THREE.Mesh | undefined = undefined;
 
   constructor(viewer: Viewer) {
     this.viewer = viewer;
@@ -94,9 +97,11 @@ export class InputHandler {
 
   onMouseDown(event: any) {
     this.mouseHasMoved = false;
+    this.mouseDown = true;
   }
 
   onMouseUp(event: any) {
+    this.mouseDown = false;
     if (this.mouseHasMoved) {
       // drop after drag
     } else {
@@ -132,21 +137,25 @@ export class InputHandler {
 
     if (this.viewer.poleTool.active) {
       if (poleIntersect?.normal) {
-        const rotationMatrix = new THREE.Matrix4();
-        rotationMatrix.extractRotation(hoveredPole.matrix);
+        if (this.hoveredHandle && this.mouseDown) {
+          console.log("dragging handle");
+        } else {
+          const rotationMatrix = new THREE.Matrix4();
+          rotationMatrix.extractRotation(hoveredPole.matrix);
 
-        const transformedNormal = poleIntersect.normal
-          .clone()
-          .applyMatrix4(rotationMatrix)
-          .normalize();
+          const transformedNormal = poleIntersect.normal
+            .clone()
+            .applyMatrix4(rotationMatrix)
+            .normalize();
 
-        this.viewer.poleTool.drawPoleWhileHoveringOtherPole(
-          poleIntersect.point,
-          hoveredPole,
-          transformedNormal
-        );
-        this.viewer.poleTransformer.setActivePole(hoveredPole);
-        this.setHoveredHandle();
+          this.viewer.poleTool.drawPoleWhileHoveringOtherPole(
+            poleIntersect.point,
+            hoveredPole,
+            transformedNormal
+          );
+          this.viewer.poleTransformer.setActivePole(hoveredPole);
+          this.setHoveredHandle();
+        }
       } else {
         this.viewer.poleTool.drawPoleWhileHoveringGound(groundPosition);
         this.viewer.poleTransformer.setActivePole(undefined);
@@ -189,6 +198,7 @@ export class InputHandler {
   }
 
   setHoveredHandle() {
+    if (this.mouseDown) return;
     const raycaster = new THREE.Raycaster();
     raycaster.setFromCamera(
       new THREE.Vector2(this.cursor.x * 2, this.cursor.y * 2),
@@ -196,11 +206,14 @@ export class InputHandler {
     );
 
     const intersect = raycaster.intersectObject(this.viewer.poleTransformer);
-    let hoveredHandle: THREE.Mesh | undefined = undefined;
     if (intersect.length) {
-      hoveredHandle = intersect[0].object as THREE.Mesh;
+      this.hoveredHandle = intersect[0].object as THREE.Mesh;
+      this.viewer.controls.enabled = false;
+    } else {
+      this.hoveredHandle = undefined;
+      this.viewer.controls.enabled = true;
     }
-    this.viewer.poleTransformer.setHoveredHandle(hoveredHandle);
+    this.viewer.poleTransformer.setHoveredHandle(this.hoveredHandle);
   }
 
   onActivateTool(tool: ButtonType) {

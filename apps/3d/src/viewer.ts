@@ -107,7 +107,7 @@ export class Viewer {
     this.selectionTool.activate();
     this.poleTool = new PoleTool(this);
     this.bipodTool = new BipodTool(this);
-    this.poleTransformer = new PoleTransformer();
+    this.poleTransformer = new PoleTransformer(this);
     this.scene.add(this.poleTransformer);
 
     const tick = () => {
