@@ -1,13 +1,35 @@
 // add sjorcraftcanvas with a right panel that is collapsable
-import React from "react";
+import React, { useEffect } from "react";
 import { SjorcraftCanvas } from "./SjorcraftCanvas";
 import Navbar from "./Navbar";
+import { Viewer } from "../../3d/src/viewer";
+import {
+  RendererContext,
+  RendererContextType,
+} from "../contexts/rendererContext";
 
 const SjorcraftEditor = () => {
+  const [rendererContext, setRendererContext] =
+    React.useState<RendererContextType>({});
+
+  let initialised = false;
+  useEffect(() => {
+    if (initialised) return;
+    const element = document.getElementById("render_area");
+    if (!element) return;
+
+    const viewer = new Viewer(element);
+    setRendererContext({ viewer });
+
+    initialised = true;
+  }, []);
+
   return (
     <div className="sjorcraft-editor">
-      <Navbar />
-      <SjorcraftCanvas />
+      <RendererContext.Provider value={rendererContext}>
+        <Navbar />
+        <SjorcraftCanvas />
+      </RendererContext.Provider>
     </div>
   );
 };
