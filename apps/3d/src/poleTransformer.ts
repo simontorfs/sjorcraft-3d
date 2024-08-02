@@ -42,10 +42,7 @@ export class PoleTransformer extends THREE.Object3D {
     this.activePole = pole;
     if (pole) {
       this.visible = true;
-      this.position.set(pole.position.x, pole.position.y, pole.position.z);
-      this.rotation.set(pole.rotation.x, pole.rotation.y, pole.rotation.z);
-      this.scaleHandleTop.position.y = pole.length / 2 - 0.25;
-      this.scaleHandleBottom.position.y = -pole.length / 2 + 0.25;
+      this.setHandlePositions();
       for (const handle of this.handles) {
         // @ts-ignore
         handle.material.color = pole.color;
@@ -55,12 +52,20 @@ export class PoleTransformer extends THREE.Object3D {
     }
   }
 
+  setHandlePositions() {
+    if (!this.activePole) return;
+    const pole = this.activePole;
+    this.position.set(pole.position.x, pole.position.y, pole.position.z);
+    this.rotation.set(pole.rotation.x, pole.rotation.y, pole.rotation.z);
+    this.scaleHandleTop.position.y = pole.length / 2 - 0.25;
+    this.scaleHandleBottom.position.y = -pole.length / 2 + 0.25;
+  }
+
   setHoveredHandle(hoveredHandle: THREE.Mesh | undefined) {
     for (const handle of this.handles) {
       if (handle === hoveredHandle) {
         // @ts-ignore
         handle.material.opacity = 0.5;
-        this.attachHelperPlaneToHandle(handle);
       } else {
         // @ts-ignore
         handle.material.opacity = 0.2;
@@ -68,24 +73,21 @@ export class PoleTransformer extends THREE.Object3D {
     }
   }
 
-  attachHelperPlaneToHandle(handle: THREE.Mesh) {
-    const lineOfSightToHandle = this.viewer.camera.position
-      .clone()
-      .sub(handle.position)
-      .normalize();
-    this.helperPlane.setFromNormalAndCoplanarPoint(
-      lineOfSightToHandle,
-      handle.position
-    );
-  }
+  dragTranslationHandle(dragPositionOnActivePole: THREE.Vector3) {
+    if (!this.activePole) return;
 
-  dragTranslationHandle(groundPosition: THREE.Vector3) {
-    const lineOfSightToMouse = new THREE.Line3(
-      this.viewer.camera.position,
-      groundPosition
-    );
+    const start = this.activePole.position
+      .clone()
+      .sub(this.activePole.direction.clone().multiplyScalar(10));
+    const end = this.activePole.position
+      .clone()
+      .add(this.activePole.direction.clone().multiplyScalar(10));
+    const activePoleAxis = new THREE.Line3(start, end);
+
     let target: THREE.Vector3 = new THREE.Vector3();
-    this.helperPlane.intersectLine(lineOfSightToMouse, target);
-    console.log(target);
+    activePoleAxis.closestPointToPoint(dragPositionOnActivePole, true, target);
+
+    this.activePole.position.set(target.x, target.y, target.z);
+    this.setHandlePositions();
   }
 }

@@ -145,7 +145,11 @@ export class InputHandler {
       }
     } else if (this.viewer.selectionTool.active) {
       if (this.hoveredHandle && this.mouseDown) {
-        console.log("dragging handle");
+        if (poleIntersect) {
+          this.viewer.poleTransformer.dragTranslationHandle(
+            poleIntersect.point
+          );
+        }
       } else {
         this.viewer.selectionTool.hoveredPole = hoveredPole;
         this.viewer.poleTransformer.setActivePole(hoveredPole);
