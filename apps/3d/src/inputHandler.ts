@@ -22,18 +22,6 @@ export class InputHandler {
     domElement.addEventListener("mousedown", this.onMouseDown.bind(this));
     domElement.addEventListener("mouseup", this.onMouseUp.bind(this));
     domElement.addEventListener("mousemove", this.onMouseMove.bind(this));
-    window.addEventListener(
-      "activate_selectiontool",
-      this.onActivateTool.bind(this, "selectiontool")
-    );
-    window.addEventListener(
-      "activate_poletool",
-      this.onActivateTool.bind(this, "poletool")
-    );
-    window.addEventListener(
-      "activate_bipodtool",
-      this.onActivateTool.bind(this, "bipodtool")
-    );
   }
 
   onKeyDown(event: any) {
