@@ -20,6 +20,10 @@ const Navbar = () => {
           text="bipodtool"
           onClick={() => viewer?.inputHandler.onActivateTool("bipodtool")}
         />
+        <NavButton
+          text="tripodtool"
+          onClick={() => viewer?.inputHandler.onActivateTool("tripodtool")}
+        />
       </div>
       <div className="profile"></div>
     </nav>
