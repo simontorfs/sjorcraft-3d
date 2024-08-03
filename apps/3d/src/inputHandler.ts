@@ -146,7 +146,8 @@ export class InputHandler {
     } else if (this.viewer.selectionTool.active) {
       if (this.hoveredHandle && this.mouseDown) {
         if (poleIntersect) {
-          this.viewer.poleTransformer.dragTranslationHandle(
+          this.viewer.poleTransformer.dragHandle(
+            this.hoveredHandle,
             poleIntersect.point
           );
         }
