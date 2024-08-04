@@ -1,6 +1,7 @@
 import * as THREE from "three";
 import { Pole } from "./pole";
 import { Viewer } from "./viewer";
+import { HelperLine } from "./helperLine";
 
 export class TripodTool {
   active: boolean = false;
@@ -22,6 +23,10 @@ export class TripodTool {
   lashPositionProjectedOnFloor: THREE.Vector3 = new THREE.Vector3();
   defaultLashHeight: number = 3.0;
   lashHeight: number = this.defaultLashHeight;
+
+  boundaryHelperLine12: HelperLine = new HelperLine();
+  boundaryHelperLine23: HelperLine = new HelperLine();
+  boundaryHelperLine31: HelperLine = new HelperLine();
 
   constructor(viewer: Viewer) {
     this.viewer = viewer;
@@ -55,7 +60,11 @@ export class TripodTool {
       this.pole1Placed = true;
     } else if (!this.pole2Placed) {
       this.pole2Placed = true;
+    } else if (!this.pole3Placed) {
+      this.pole3Placed = true;
+      this.addHorizontalHelperLines();
     } else {
+      this.removeHorizontalHelperLines();
       this.viewer.poles.push(this.pole1);
       this.viewer.poles.push(this.pole2);
       this.viewer.poles.push(this.pole3);
@@ -72,7 +81,10 @@ export class TripodTool {
   rightClick() {
     if (!this.active) return;
 
-    if (this.pole2Placed) {
+    if (this.pole3Placed) {
+      this.pole3Placed = false;
+      this.removeHorizontalHelperLines();
+    } else if (this.pole2Placed) {
       this.pole2Placed = false;
     } else if (this.pole1Placed) {
       this.pole1Placed = false;
@@ -88,6 +100,8 @@ export class TripodTool {
       this.drawSecondStep(groundPosition);
     } else if (!this.pole3Placed) {
       this.drawThirdStep(groundPosition);
+    } else if (!this.lashPositionPlaced) {
+      this.drawFourthStep(groundPosition);
     }
   }
 
@@ -136,10 +150,40 @@ export class TripodTool {
     this.optimisePositions();
   }
 
+  drawFourthStep(groundPosition: THREE.Vector3) {
+    this.lashPositionProjectedOnFloor = groundPosition;
+    this.calculatePositions();
+    this.optimisePositions();
+  }
+
   getCenter(p1: THREE.Vector3, p2: THREE.Vector3, p3?: THREE.Vector3) {
     return p3
       ? p1.clone().add(p2).add(p3).divideScalar(3.0)
       : p1.clone().add(p2).divideScalar(2.0);
+  }
+
+  addHorizontalHelperLines() {
+    this.boundaryHelperLine12.setBetweenPoints([
+      this.firstGroundPoint,
+      this.secondGroundPoint,
+    ]);
+    this.viewer.scene.add(this.boundaryHelperLine12);
+    this.boundaryHelperLine23.setBetweenPoints([
+      this.secondGroundPoint,
+      this.thirdGroundPoint,
+    ]);
+    this.viewer.scene.add(this.boundaryHelperLine23);
+    this.boundaryHelperLine31.setBetweenPoints([
+      this.thirdGroundPoint,
+      this.firstGroundPoint,
+    ]);
+    this.viewer.scene.add(this.boundaryHelperLine31);
+  }
+
+  removeHorizontalHelperLines() {
+    this.viewer.scene.remove(this.boundaryHelperLine12);
+    this.viewer.scene.remove(this.boundaryHelperLine23);
+    this.viewer.scene.remove(this.boundaryHelperLine31);
   }
 
   calculatePositions() {
