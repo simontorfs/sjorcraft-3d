@@ -47,6 +47,8 @@ export class TripodTool {
     this.viewer.scene.remove(this.pole1);
     this.viewer.scene.remove(this.pole2);
     this.viewer.scene.remove(this.pole3);
+    this.removeHorizontalHelperLines();
+    this.removeVerticalHelperLine();
     this.resetParameters();
   }
 
