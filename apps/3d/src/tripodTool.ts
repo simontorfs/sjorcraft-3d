@@ -28,6 +28,9 @@ export class TripodTool {
   boundaryHelperLine23: HelperLine = new HelperLine();
   boundaryHelperLine31: HelperLine = new HelperLine();
 
+  verticalHelperLine: HelperLine = new HelperLine();
+  helperPlane: THREE.Plane = new THREE.Plane();
+
   constructor(viewer: Viewer) {
     this.viewer = viewer;
   }
@@ -63,8 +66,12 @@ export class TripodTool {
     } else if (!this.pole3Placed) {
       this.pole3Placed = true;
       this.addHorizontalHelperLines();
-    } else {
+    } else if (!this.lashPositionPlaced) {
+      this.lashPositionPlaced = true;
       this.removeHorizontalHelperLines();
+      this.addVerticalHelperLine();
+    } else {
+      this.removeVerticalHelperLine();
       this.viewer.poles.push(this.pole1);
       this.viewer.poles.push(this.pole2);
       this.viewer.poles.push(this.pole3);
@@ -81,7 +88,11 @@ export class TripodTool {
   rightClick() {
     if (!this.active) return;
 
-    if (this.pole3Placed) {
+    if (this.lashPositionPlaced) {
+      this.lashPositionPlaced = false;
+      this.removeVerticalHelperLine();
+      this.addHorizontalHelperLines();
+    } else if (this.pole3Placed) {
       this.pole3Placed = false;
       this.removeHorizontalHelperLines();
     } else if (this.pole2Placed) {
@@ -102,6 +113,8 @@ export class TripodTool {
       this.drawThirdStep(groundPosition);
     } else if (!this.lashPositionPlaced) {
       this.drawFourthStep(groundPosition);
+    } else {
+      this.drawFifthStep(groundPosition);
     }
   }
 
@@ -156,34 +169,19 @@ export class TripodTool {
     this.optimisePositions();
   }
 
-  getCenter(p1: THREE.Vector3, p2: THREE.Vector3, p3?: THREE.Vector3) {
-    return p3
-      ? p1.clone().add(p2).add(p3).divideScalar(3.0)
-      : p1.clone().add(p2).divideScalar(2.0);
-  }
+  drawFifthStep(groundPosition: THREE.Vector3) {
+    this.setHelperPlane();
+    const lineOfSightToMouse = new THREE.Line3(
+      this.viewer.camera.position,
+      groundPosition
+    );
+    let target: THREE.Vector3 = new THREE.Vector3();
+    this.helperPlane.intersectLine(lineOfSightToMouse, target);
+    this.lashHeight = target.y;
 
-  addHorizontalHelperLines() {
-    this.boundaryHelperLine12.setBetweenPoints([
-      this.firstGroundPoint,
-      this.secondGroundPoint,
-    ]);
-    this.viewer.scene.add(this.boundaryHelperLine12);
-    this.boundaryHelperLine23.setBetweenPoints([
-      this.secondGroundPoint,
-      this.thirdGroundPoint,
-    ]);
-    this.viewer.scene.add(this.boundaryHelperLine23);
-    this.boundaryHelperLine31.setBetweenPoints([
-      this.thirdGroundPoint,
-      this.firstGroundPoint,
-    ]);
-    this.viewer.scene.add(this.boundaryHelperLine31);
-  }
-
-  removeHorizontalHelperLines() {
-    this.viewer.scene.remove(this.boundaryHelperLine12);
-    this.viewer.scene.remove(this.boundaryHelperLine23);
-    this.viewer.scene.remove(this.boundaryHelperLine31);
+    this.calculatePositions();
+    this.optimisePositions();
+    this.updateVerticalHelperLine();
   }
 
   calculatePositions() {
@@ -289,6 +287,61 @@ export class TripodTool {
     return (
       Math.abs(dist1 - this.pole1.radius - this.pole3.radius) +
       Math.abs(dist2 - this.pole2.radius - this.pole3.radius)
+    );
+  }
+
+  getCenter(p1: THREE.Vector3, p2: THREE.Vector3, p3?: THREE.Vector3) {
+    return p3
+      ? p1.clone().add(p2).add(p3).divideScalar(3.0)
+      : p1.clone().add(p2).divideScalar(2.0);
+  }
+
+  addHorizontalHelperLines() {
+    this.boundaryHelperLine12.setBetweenPoints([
+      this.firstGroundPoint,
+      this.secondGroundPoint,
+    ]);
+    this.viewer.scene.add(this.boundaryHelperLine12);
+    this.boundaryHelperLine23.setBetweenPoints([
+      this.secondGroundPoint,
+      this.thirdGroundPoint,
+    ]);
+    this.viewer.scene.add(this.boundaryHelperLine23);
+    this.boundaryHelperLine31.setBetweenPoints([
+      this.thirdGroundPoint,
+      this.firstGroundPoint,
+    ]);
+    this.viewer.scene.add(this.boundaryHelperLine31);
+  }
+
+  removeHorizontalHelperLines() {
+    this.viewer.scene.remove(this.boundaryHelperLine12);
+    this.viewer.scene.remove(this.boundaryHelperLine23);
+    this.viewer.scene.remove(this.boundaryHelperLine31);
+  }
+
+  addVerticalHelperLine() {
+    this.updateVerticalHelperLine();
+    this.viewer.scene.add(this.verticalHelperLine);
+  }
+
+  updateVerticalHelperLine() {
+    const points = [this.lashPositionProjectedOnFloor, this.lashPosition];
+    this.verticalHelperLine.setBetweenPoints(points);
+  }
+
+  removeVerticalHelperLine() {
+    this.viewer.scene.remove(this.verticalHelperLine);
+  }
+
+  setHelperPlane() {
+    const lineOfSightToLashing = this.viewer.camera.position
+      .clone()
+      .sub(this.lashPosition)
+      .normalize();
+    this.helperPlane.setFromNormalAndCoplanarPoint(
+      lineOfSightToLashing,
+      this.lashPosition
     );
   }
 }
