@@ -133,6 +133,13 @@ export class TripodTool {
       this.thirdGroundPoint
     );
     this.calculatePositions();
+    this.optimisePositions();
+  }
+
+  getCenter(p1: THREE.Vector3, p2: THREE.Vector3, p3?: THREE.Vector3) {
+    return p3
+      ? p1.clone().add(p2).add(p3).divideScalar(3.0)
+      : p1.clone().add(p2).divideScalar(2.0);
   }
 
   calculatePositions() {
@@ -178,9 +185,79 @@ export class TripodTool {
     );
   }
 
-  getCenter(p1: THREE.Vector3, p2: THREE.Vector3, p3?: THREE.Vector3) {
-    return p3
-      ? p1.clone().add(p2).add(p3).divideScalar(3.0)
-      : p1.clone().add(p2).divideScalar(2.0);
+  optimisePositions() {
+    const direction3 = this.pole3.direction.clone();
+
+    const tolerance = 0.001;
+    for (let i = 0; i < 1000; i++) {
+      let stepSize = 0.0001;
+      if (i < 800) stepSize = 0.0003;
+      if (i < 600) stepSize = 0.001;
+      if (i < 400) stepSize = 0.003;
+      if (i < 200) stepSize = 0.01;
+      const intitialBadness = this.getPole3PositionBadness(direction3.clone());
+      const gradient = new THREE.Vector3(
+        this.getPole3PositionBadness(
+          direction3.clone().add(new THREE.Vector3(stepSize, 0, 0))
+        ) - intitialBadness,
+        this.getPole3PositionBadness(
+          direction3.clone().add(new THREE.Vector3(0, stepSize, 0))
+        ) - intitialBadness,
+        this.getPole3PositionBadness(
+          direction3.clone().add(new THREE.Vector3(0, 0, stepSize))
+        ) - intitialBadness
+      );
+
+      direction3.add(gradient.multiplyScalar(-stepSize));
+      if (this.getPole3PositionBadness(direction3.clone()) < tolerance) {
+        break;
+      }
+    }
+
+    const lengthPole3 = this.thirdGroundPoint
+      .clone()
+      .sub(this.lashPosition)
+      .length();
+
+    const topPositionPole3 = this.thirdGroundPoint
+      .clone()
+      .add(direction3.clone().normalize().multiplyScalar(lengthPole3));
+
+    this.pole3.setPositionBetweenGroundAndPole(
+      this.thirdGroundPoint,
+      topPositionPole3
+    );
+  }
+
+  getPole3PositionBadness(pole3Direction: THREE.Vector3) {
+    const dist1 = distanceBetweenLines(
+      this.firstGroundPoint,
+      this.pole1.direction,
+      this.thirdGroundPoint,
+      pole3Direction
+    );
+    const dist2 = distanceBetweenLines(
+      this.secondGroundPoint,
+      this.pole2.direction,
+      this.thirdGroundPoint,
+      pole3Direction
+    );
+    return (
+      Math.abs(dist1 - this.pole1.radius - this.pole3.radius) +
+      Math.abs(dist2 - this.pole2.radius - this.pole3.radius)
+    );
   }
 }
+
+const distanceBetweenLines = (
+  Pa: THREE.Vector3,
+  Da: THREE.Vector3,
+  Pb: THREE.Vector3,
+  Db: THREE.Vector3
+) => {
+  const PaPb = new THREE.Vector3().subVectors(Pb, Pa);
+  const crossD = new THREE.Vector3().crossVectors(Da, Db);
+  const numerator = Math.abs(PaPb.dot(crossD));
+  const denominator = crossD.length();
+  return numerator / denominator;
+};
