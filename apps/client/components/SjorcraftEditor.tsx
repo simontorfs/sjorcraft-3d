@@ -1,7 +1,7 @@
 // add sjorcraftcanvas with a right panel that is collapsable
 import React, { useEffect } from "react";
 import { SjorcraftCanvas } from "./SjorcraftCanvas";
-import Navbar from "./Navbar";
+import Toolbar from "./Toolbar";
 import { Viewer } from "../../3d/src/viewer";
 import {
   RendererContext,
@@ -27,7 +27,7 @@ const SjorcraftEditor = () => {
   return (
     <div className="sjorcraft-editor">
       <RendererContext.Provider value={rendererContext}>
-        <Navbar />
+        <Toolbar />
         <SjorcraftCanvas />
       </RendererContext.Provider>
     </div>
