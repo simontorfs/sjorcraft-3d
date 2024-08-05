@@ -92,6 +92,11 @@ export class PoleTool {
     this.fixedLashing = undefined;
     this.newLashing = undefined;
     this.lastPole = undefined;
+
+    for (const pole of this.viewer.poles) {
+      //@ts-ignore
+      pole.mesh.material.color = new THREE.Color(1, 1, 1);
+    }
   }
 
   drawPoleWhileHoveringGound(groundPosition: THREE.Vector3) {
