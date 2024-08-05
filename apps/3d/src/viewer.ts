@@ -9,6 +9,7 @@ import { SelectionTool } from "./selectionTool";
 import { Floor } from "./floor";
 import { BipodTool } from "./bipodTool";
 import { Lashing } from "./lashing";
+import { TripodTool } from "./tripodTool";
 import { PoleTransformer } from "./poleTransformer";
 
 export class Viewer {
@@ -24,6 +25,7 @@ export class Viewer {
   selectionTool: SelectionTool;
   poleTool: PoleTool;
   bipodTool: BipodTool;
+  tripodTool: TripodTool;
   poleTransformer: PoleTransformer;
 
   poles: Pole[];
@@ -107,6 +109,7 @@ export class Viewer {
     this.selectionTool.activate();
     this.poleTool = new PoleTool(this);
     this.bipodTool = new BipodTool(this);
+    this.tripodTool = new TripodTool(this);
     this.poleTransformer = new PoleTransformer(this);
     this.scene.add(this.poleTransformer);
 

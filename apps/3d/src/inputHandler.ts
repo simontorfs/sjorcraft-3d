@@ -110,6 +110,12 @@ export class InputHandler {
         } else {
           this.viewer.bipodTool.rightClick();
         }
+      } else if (this.viewer.tripodTool.active) {
+        if (event.button === THREE.MOUSE.LEFT) {
+          this.viewer.tripodTool.leftClick();
+        } else {
+          this.viewer.tripodTool.rightClick();
+        }
       }
     }
   }
@@ -158,6 +164,8 @@ export class InputHandler {
       }
     } else if (this.viewer.bipodTool.active) {
       this.viewer.bipodTool.drawBipod(groundPosition);
+    } else if (this.viewer.tripodTool.active) {
+      this.viewer.tripodTool.drawTripod(groundPosition);
     }
   }
 
@@ -215,23 +223,30 @@ export class InputHandler {
       case "selectiontool":
         this.viewer.poleTool.deactivate();
         this.viewer.bipodTool.deactivate();
+        this.viewer.tripodTool.deactivate();
 
         this.viewer.selectionTool.activate();
         break;
       case "poletool":
         this.viewer.selectionTool.deactivate();
         this.viewer.bipodTool.deactivate();
+        this.viewer.tripodTool.deactivate();
 
         this.viewer.poleTool.activate();
         break;
       case "bipodtool":
         this.viewer.selectionTool.deactivate();
         this.viewer.poleTool.deactivate();
+        this.viewer.tripodTool.deactivate();
 
         this.viewer.bipodTool.activate();
         break;
       case "tripodtool":
-        // Activate tripodTool
+        this.viewer.selectionTool.deactivate();
+        this.viewer.poleTool.deactivate();
+        this.viewer.bipodTool.deactivate();
+
+        this.viewer.tripodTool.activate();
         break;
       case "polytool":
         // Activate polypedastraTool
