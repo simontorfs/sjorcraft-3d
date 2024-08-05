@@ -138,7 +138,7 @@ export class InputHandler {
         this.viewer.poleTool.drawPoleWhileHoveringGound(groundPosition);
       }
     } else if (this.viewer.selectionTool.active) {
-      this.viewer.selectionTool.hoveredPole = hoveredPole;
+      this.viewer.selectionTool.setHoveredPole(hoveredPole);
     } else if (this.viewer.bipodTool.active) {
       this.viewer.bipodTool.drawBipod(groundPosition);
     }
