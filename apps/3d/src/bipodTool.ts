@@ -42,6 +42,8 @@ export class BipodTool {
     this.active = false;
     this.viewer.scene.remove(this.pole1);
     this.viewer.scene.remove(this.pole2);
+    this.removeHorizontalHelperLines();
+    this.removeVerticalHelperLine();
     this.resetParameters();
     for (const pole of this.viewer.poles) {
       //@ts-ignore

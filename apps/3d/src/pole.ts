@@ -7,9 +7,10 @@ export class Pole extends THREE.Object3D {
   direction: THREE.Vector3;
   length: number = 4.0;
   radius: number = 0.06;
-  capLength: number = 0.2;
+  capLength: number = 0.1;
   capOffset: number = 0.001; //makes the render look great
-  color: number = 0x0000ff;
+  color: THREE.Color = new THREE.Color(0x0000ff);
+
   constructor() {
     super();
     const textureLoader = new THREE.TextureLoader();
@@ -117,9 +118,15 @@ export class Pole extends THREE.Object3D {
 
   setLength(minimumLength: number) {
     const allowedLengths: number[] = [1.0, 1.5, 2.0, 2.5, 3.0, 4.0, 5.0, 6.0];
-    const colors: number[] = [
-      0xffa500, 0x00ff00, 0xff0000, 0x037c6e, 0xffffff, 0x0000ff, 0xffff00,
-      0x000000,
+    const colors: THREE.Color[] = [
+      new THREE.Color(0xffa500),
+      new THREE.Color(0x00ff00),
+      new THREE.Color(0xff0000),
+      new THREE.Color(0x037c6e),
+      new THREE.Color(0xffffff),
+      new THREE.Color(0x0000ff),
+      new THREE.Color(0xffff00),
+      new THREE.Color(0x000000),
     ];
 
     // if the lenth is to big, just set it to the biggest lenght
@@ -142,17 +149,28 @@ export class Pole extends THREE.Object3D {
     );
     // @ts-ignore
     this.mesh.material.map.repeat.y = this.length * 2;
-    this.capBottom.material = new THREE.MeshStandardMaterial({
-      color: this.color,
-      transparent: true,
-      opacity: 0.5,
-    });
-    this.capTop.material = new THREE.MeshStandardMaterial({
-      color: this.color,
-      transparent: true,
-      opacity: 0.5,
-    });
+    // @ts-ignore
+    this.capBottom.material.color = this.color;
+    // @ts-ignore
+    this.capTop.material.color = this.color;
     this.setPositionCaps();
+  }
+
+  resize(resizeAtTop: boolean, newMinimumLength: number) {
+    const oldLength = this.length;
+    this.setLength(newMinimumLength);
+    const lengthDifference = this.length - oldLength;
+    const positionOffset = this.direction
+      .clone()
+      .multiplyScalar(lengthDifference / 2);
+
+    if (resizeAtTop) {
+      const newPosition = this.position.clone().add(positionOffset);
+      this.position.set(newPosition.x, newPosition.y, newPosition.z);
+    } else {
+      const newPosition = this.position.clone().sub(positionOffset);
+      this.position.set(newPosition.x, newPosition.y, newPosition.z);
+    }
   }
 
   setPositionCaps() {

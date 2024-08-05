@@ -271,7 +271,6 @@ export class PoleTool {
     if (this.newLashing) {
       this.viewer.lashings.push(this.newLashing);
     }
-    console.log(this.viewer.lashings);
     this.fixedLashing = undefined;
     this.newLashing = undefined;
   }

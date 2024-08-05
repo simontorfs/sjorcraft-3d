@@ -1,5 +1,6 @@
 import ArrowIcon from "../assets/icons/arrow.svg?react";
 import BipodIcon from "../assets/icons/bipod.svg?react";
+import PoleIcon from "../assets/icons/pole.svg?react";
 import TripodIcon from "../assets/icons/tripod.svg?react";
 import React, { useContext, useState } from "react";
 import { ToolbarItem } from "./ToolbarItem";
@@ -24,7 +25,7 @@ const Toolbar = () => {
         <ToolbarItem
           active={selectedTool === "poletool"}
           disabled={false}
-          icon={TripodIcon} // TODO: replace with PoleIcon when we have one
+          icon={PoleIcon}
           onClick={() => {
             viewer?.inputHandler.onActivateTool("poletool");
             setSelectedTool("poletool");
@@ -37,6 +38,15 @@ const Toolbar = () => {
           onClick={() => {
             viewer?.inputHandler.onActivateTool("bipodtool");
             setSelectedTool("bipodtool");
+          }}
+        />
+        <ToolbarItem
+          active={selectedTool === "tripodtool"}
+          disabled={false}
+          icon={TripodIcon}
+          onClick={() => {
+            viewer?.inputHandler.onActivateTool("tripodtool");
+            setSelectedTool("tripodtool");
           }}
         />
       </div>
