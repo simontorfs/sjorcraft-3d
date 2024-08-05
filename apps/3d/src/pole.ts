@@ -191,10 +191,8 @@ export class Pole extends THREE.Object3D {
       .clone()
       .sub(otherPole.direction.clone().multiplyScalar(otherPole.length / 2));
 
-    // Vector from start of line1 to start of line2
     const v12 = new THREE.Vector3().subVectors(p1, p2);
 
-    // Direction vectors of line1 and line2
     const d2 = otherPole.direction.clone().multiplyScalar(otherPole.length);
     const d1 = this.direction.clone().multiplyScalar(this.length);
 
