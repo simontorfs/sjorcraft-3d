@@ -1,4 +1,5 @@
-import React, { useEffect } from "react";
+import { useEffect, useState } from "react";
+import * as React from "react";
 import { SjorcraftCanvas } from "./SjorcraftCanvas";
 import Navbar from "./Navbar";
 import EditorSidebar from "./EditorSidebar";
@@ -11,8 +12,9 @@ import {
 } from "../contexts/rendererContext";
 
 const SjorcraftEditor = () => {
-  const [rendererContext, setRendererContext] =
-    React.useState<RendererContextType>({});
+  const [rendererContext, setRendererContext] = useState<RendererContextType>(
+    {}
+  );
 
   let initialised = false;
   useEffect(() => {
