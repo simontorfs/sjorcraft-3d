@@ -199,4 +199,51 @@ export class Pole extends THREE.Object3D {
   isVertical() {
     return this.isParallelTo(new THREE.Vector3(0, 1, 0));
   }
+
+  overlaps(otherPole: Pole) {
+    const p1 = this.position
+      .clone()
+      .sub(this.direction.clone().multiplyScalar(this.length / 2));
+
+    const p2 = otherPole.position
+      .clone()
+      .sub(otherPole.direction.clone().multiplyScalar(otherPole.length / 2));
+
+    const v12 = new THREE.Vector3().subVectors(p1, p2);
+
+    const d2 = otherPole.direction.clone().multiplyScalar(otherPole.length);
+    const d1 = this.direction.clone().multiplyScalar(this.length);
+
+    const d1343 = v12.dot(d2);
+    const d4321 = d2.dot(d1);
+    const d1321 = v12.dot(d1);
+    const d4343 = d2.dot(d2);
+    const d2121 = d1.dot(d1);
+
+    const denom = d2121 * d4343 - d4321 * d4321;
+    if (Math.abs(denom) < Number.EPSILON) {
+      // The poles are parallel
+      return false; // TODO: implement this
+    }
+
+    const numer = d1343 * d4321 - d1321 * d4343;
+    let mu1 = numer / denom;
+    if (mu1 > 1) mu1 = 1;
+    if (mu1 < 0) mu1 = 0;
+    let mu2 = (d1343 + d4321 * mu1) / d4343;
+    if (mu2 > 1) mu2 = 1;
+    if (mu2 < 0) mu2 = 0;
+
+    const closestPoint1 = new THREE.Vector3()
+      .copy(p1)
+      .add(d1.multiplyScalar(mu1));
+    const closestPoint2 = new THREE.Vector3()
+      .copy(p2)
+      .add(d2.multiplyScalar(mu2));
+
+    const poleSeparation = closestPoint1.clone().sub(closestPoint2).length();
+
+    const collision = poleSeparation < 0.9 * (this.radius + otherPole.radius);
+    return collision;
+  }
 }

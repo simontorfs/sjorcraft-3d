@@ -26,6 +26,8 @@ export class BipodTool {
   verticalHelperLine: HelperLine = new HelperLine();
   helperPlane: THREE.Plane = new THREE.Plane();
 
+  bipodIsColliding: boolean = false;
+
   constructor(viewer: Viewer) {
     this.viewer = viewer;
   }
@@ -43,6 +45,10 @@ export class BipodTool {
     this.removeHorizontalHelperLines();
     this.removeVerticalHelperLine();
     this.resetParameters();
+    for (const pole of this.viewer.poles) {
+      //@ts-ignore
+      pole.mesh.material.color = new THREE.Color(1, 1, 1);
+    }
   }
 
   resetParameters() {
@@ -65,6 +71,7 @@ export class BipodTool {
       this.removeHorizontalHelperLines();
       this.addVerticalHelperLine();
     } else {
+      if (this.bipodIsColliding) return;
       this.removeVerticalHelperLine();
       this.viewer.poles.push(this.pole1);
       this.viewer.poles.push(this.pole2);
@@ -103,6 +110,7 @@ export class BipodTool {
     } else {
       this.drawFourthStep(groundPosition);
     }
+    this.checkCollisions();
   }
 
   drawFirstStep(groundPosition: THREE.Vector3) {
@@ -221,5 +229,24 @@ export class BipodTool {
       lineOfSightToLashing,
       this.lashPosition
     );
+  }
+
+  checkCollisions() {
+    this.bipodIsColliding = false;
+    document.body.style.cursor = "default";
+
+    for (const pole of this.viewer.poles) {
+      if (this.pole1.overlaps(pole) || this.pole2.overlaps(pole)) {
+        // @ts-ignore
+        pole.mesh.material.color = new THREE.Color(1, 0, 0);
+        if (this.lashPositionPlaced) {
+          this.bipodIsColliding = true;
+          document.body.style.cursor = "not-allowed";
+        }
+      } else {
+        // @ts-ignore
+        pole.mesh.material.color = new THREE.Color(1, 1, 1);
+      }
+    }
   }
 }

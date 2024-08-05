@@ -150,6 +150,7 @@ export class InputHandler {
         this.viewer.poleTransformer.setActivePole(undefined);
       }
     } else if (this.viewer.selectionTool.active) {
+      this.viewer.selectionTool.setHoveredPole(hoveredPole);
       if (this.hoveredHandle && this.mouseDown) {
         if (poleIntersect) {
           this.viewer.poleTransformer.dragHandle(
