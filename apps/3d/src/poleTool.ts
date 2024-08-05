@@ -283,6 +283,7 @@ export class PoleTool {
   checkCollisions() {
     if (!this.activePole) return;
     this.activePoleIsColliding = false;
+    document.body.style.cursor = "default";
 
     const polesToCheck = this.viewer.poles.filter(
       (p) =>
@@ -293,6 +294,7 @@ export class PoleTool {
         // @ts-ignore
         pole.mesh.material.color = new THREE.Color(1, 0, 0);
         this.activePoleIsColliding = true;
+        document.body.style.cursor = "not-allowed";
       } else {
         // @ts-ignore
         pole.mesh.material.color = new THREE.Color(1, 1, 1);
