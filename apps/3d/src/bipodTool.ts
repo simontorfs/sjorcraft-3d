@@ -34,6 +34,8 @@ export class BipodTool {
 
   activate() {
     this.active = true;
+    this.pole1.position.y = 200;
+    this.pole2.position.y = 200;
     this.viewer.scene.add(this.pole1);
     this.viewer.scene.add(this.pole2);
   }

@@ -37,6 +37,9 @@ export class TripodTool {
 
   activate() {
     this.active = true;
+    this.pole1.position.y = 200;
+    this.pole2.position.y = 200;
+    this.pole3.position.y = 200;
     this.viewer.scene.add(this.pole1);
     this.viewer.scene.add(this.pole2);
     this.viewer.scene.add(this.pole3);
