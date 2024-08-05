@@ -1,7 +1,7 @@
 import * as THREE from "three";
 import { Pole } from "./pole";
 import { Viewer } from "./viewer";
-import { ButtonType } from "../../client/components/NavButton";
+import { ButtonType } from "../../client/components/ToolbarItem";
 import { OrbitControls } from "three/examples/jsm/Addons.js";
 
 export class InputHandler {
