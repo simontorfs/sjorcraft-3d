@@ -39,6 +39,15 @@ const Toolbar = () => {
             setSelectedTool("bipodtool");
           }}
         />
+        <ToolbarItem
+          active={selectedTool === "tripodtool"}
+          disabled={false}
+          icon={TripodIcon}
+          onClick={() => {
+            viewer?.inputHandler.onActivateTool("tripodtool");
+            setSelectedTool("tripodtool");
+          }}
+        />
       </div>
       <div className="profile"></div>
     </nav>
