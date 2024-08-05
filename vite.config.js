@@ -1,3 +1,6 @@
+import svgr from "vite-plugin-svgr";
+import react from "@vitejs/plugin-react";
+
 export default {
   root: "./",
   publicDir: "apps/3d/resources/textures",
@@ -11,4 +14,5 @@ export default {
     emptyOutDir: true, // Empty the folder first
     sourcemap: true, // Add sourcemap
   },
+  plugins: [react(), svgr()],
 };

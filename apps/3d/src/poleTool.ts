@@ -14,6 +14,7 @@ export class PoleTool {
   lastPole: Pole | undefined;
   currentSnapHeight: number | undefined;
   snapHelperLine: HelperLine;
+  activePoleIsColliding: boolean = false;
 
   constructor(viewer: Viewer) {
     this.viewer = viewer;
@@ -91,6 +92,11 @@ export class PoleTool {
     this.fixedLashing = undefined;
     this.newLashing = undefined;
     this.lastPole = undefined;
+
+    for (const pole of this.viewer.poles) {
+      //@ts-ignore
+      pole.mesh.material.color = new THREE.Color(1, 1, 1);
+    }
   }
 
   drawPoleWhileHoveringGound(groundPosition: THREE.Vector3) {
@@ -152,6 +158,7 @@ export class PoleTool {
       this.fixedLashing.centerLoosePole,
       this.newLashing.centerLoosePole
     );
+    this.checkCollisions();
   }
 
   placePoleOnOneLashing() {
@@ -186,11 +193,13 @@ export class PoleTool {
       groundPosition,
       this.fixedLashing.centerLoosePole
     );
+    this.checkCollisions();
   }
 
   placePoleOnGround(groundPosition: THREE.Vector3) {
     if (!this.activePole) return;
     this.activePole.setPositionOnGround(groundPosition);
+    this.checkCollisions();
   }
 
   snapToHeight() {
@@ -237,6 +246,7 @@ export class PoleTool {
 
   leftClick() {
     if (!this.activePole) return;
+    if (this.activePoleIsColliding) return;
     if (this.fixedLashing || this.hoveringGround) {
       this.commitLashings();
       this.viewer.poles.push(this.activePole);
@@ -261,7 +271,6 @@ export class PoleTool {
     if (this.newLashing) {
       this.viewer.lashings.push(this.newLashing);
     }
-    console.log(this.viewer.lashings);
     this.fixedLashing = undefined;
     this.newLashing = undefined;
   }
@@ -273,5 +282,27 @@ export class PoleTool {
 
     this.newLashing = undefined;
     this.fixedLashing = undefined;
+  }
+
+  checkCollisions() {
+    if (!this.activePole) return;
+    this.activePoleIsColliding = false;
+    document.body.style.cursor = "default";
+
+    const polesToCheck = this.viewer.poles.filter(
+      (p) =>
+        p !== this.fixedLashing?.fixedPole && p !== this.newLashing?.fixedPole
+    );
+    for (const pole of polesToCheck) {
+      if (this.activePole.overlaps(pole)) {
+        // @ts-ignore
+        pole.mesh.material.color = new THREE.Color(1, 0, 0);
+        this.activePoleIsColliding = true;
+        document.body.style.cursor = "not-allowed";
+      } else {
+        // @ts-ignore
+        pole.mesh.material.color = new THREE.Color(1, 1, 1);
+      }
+    }
   }
 }
