@@ -25,7 +25,7 @@ const Toolbar = () => {
         <ToolbarItem
           active={selectedTool === "poletool"}
           disabled={false}
-          icon={PoleIcon} // TODO: replace with PoleIcon when we have one
+          icon={PoleIcon}
           onClick={() => {
             viewer?.inputHandler.onActivateTool("poletool");
             setSelectedTool("poletool");
