@@ -113,6 +113,7 @@ export class PoleTool {
     } else {
       this.placePoleOnGround(groundPosition);
     }
+    this.checkCollisions(true);
   }
 
   drawPoleWhileHoveringOtherPole(
@@ -137,8 +138,10 @@ export class PoleTool {
     if (this.fixedLashing) {
       if (this.fixedLashing.fixedPole === hoveredPole) return;
       this.placePoleBetweenTwoLashings();
+      this.checkCollisions(true);
     } else {
       this.placePoleOnOneLashing();
+      this.checkCollisions(false);
     }
   }
 
@@ -158,7 +161,6 @@ export class PoleTool {
       this.fixedLashing.centerLoosePole,
       this.newLashing.centerLoosePole
     );
-    this.checkCollisions();
   }
 
   placePoleOnOneLashing() {
@@ -193,13 +195,11 @@ export class PoleTool {
       groundPosition,
       this.fixedLashing.centerLoosePole
     );
-    this.checkCollisions();
   }
 
   placePoleOnGround(groundPosition: THREE.Vector3) {
     if (!this.activePole) return;
     this.activePole.setPositionOnGround(groundPosition);
-    this.checkCollisions();
   }
 
   snapToHeight() {
@@ -284,7 +284,7 @@ export class PoleTool {
     this.fixedLashing = undefined;
   }
 
-  checkCollisions() {
+  checkCollisions(blockPlacement: boolean) {
     if (!this.activePole) return;
     this.activePoleIsColliding = false;
     document.body.style.cursor = "default";
@@ -297,8 +297,10 @@ export class PoleTool {
       if (this.activePole.overlaps(pole)) {
         // @ts-ignore
         pole.mesh.material.color = new THREE.Color(1, 0, 0);
-        this.activePoleIsColliding = true;
-        document.body.style.cursor = "not-allowed";
+        if (blockPlacement) {
+          this.activePoleIsColliding = true;
+          document.body.style.cursor = "not-allowed";
+        }
       } else {
         // @ts-ignore
         pole.mesh.material.color = new THREE.Color(1, 1, 1);
