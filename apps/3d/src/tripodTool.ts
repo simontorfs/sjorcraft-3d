@@ -88,7 +88,7 @@ export class TripodTool {
       this.scaffold3 = new Scaffold();
       this.scaffold1.addToScene(this.viewer.scene);
       this.scaffold2.addToScene(this.viewer.scene);
-      this.scaffold2.addToScene(this.viewer.scene);
+      this.scaffold3.addToScene(this.viewer.scene);
       this.resetParameters();
     }
   }
