@@ -8,12 +8,16 @@ export class Scaffold {
   splintPoles: Pole[] = [];
 
   length: number = 0.0;
+  mainRadius: number = 0.0;
+  direction: THREE.Vector3 = new THREE.Vector3();
 
   constructor() {
     this.mainPole = new Pole();
+    this.mainRadius = this.mainPole.radius;
   }
 
   setDirection(direction: THREE.Vector3) {
+    this.direction = direction.clone().normalize();
     for (const pole of [
       this.mainPole,
       ...this.extensionPoles,
@@ -74,11 +78,11 @@ export class Scaffold {
     } else {
       this.changeLengthTox4(this.length / 4);
     }
+    this.mainRadius = this.mainPole.radius;
   }
 
   changeLengthToSinglePole() {
     const scene = this.mainPole.parent as THREE.Scene;
-    this.removeFromScene(scene);
     this.mainPole.setLength(this.length);
     this.extensionPoles = [];
     this.splintPoles = [];
@@ -158,7 +162,7 @@ export class Scaffold {
   }
 
   isParallelTo(direction: THREE.Vector3) {
-    this.mainPole.isParallelTo(direction);
+    return this.mainPole.isParallelTo(direction);
   }
 
   isVertical() {
@@ -180,7 +184,6 @@ export class Scaffold {
   }
 
   removeFromScene(scene: THREE.Scene) {
-    scene.remove(this.mainPole);
     for (const pole of [
       this.mainPole,
       ...this.extensionPoles,

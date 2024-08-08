@@ -122,7 +122,7 @@ export class BipodTool {
         .clone()
         .add(
           new THREE.Vector3(
-            this.scaffold1.mainPole.radius + this.scaffold2.mainPole.radius,
+            this.scaffold1.mainRadius + this.scaffold2.mainRadius,
             0,
             0
           )
@@ -158,13 +158,10 @@ export class BipodTool {
 
   calculatePositions() {
     const lashingOffset = new THREE.Vector3()
-      .crossVectors(
-        this.scaffold1.mainPole.direction,
-        this.scaffold2.mainPole.direction
-      )
+      .crossVectors(this.scaffold1.direction, this.scaffold2.direction)
       .normalize()
       .multiplyScalar(
-        (this.scaffold1.mainPole.radius + this.scaffold2.mainPole.radius) / 2.0
+        (this.scaffold1.mainRadius + this.scaffold2.mainRadius) / 2.0
       );
 
     this.lashPosition = new THREE.Vector3(

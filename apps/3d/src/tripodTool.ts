@@ -1,5 +1,5 @@
 import * as THREE from "three";
-import { Pole } from "./pole";
+import { Scaffold } from "./scaffold";
 import { Viewer } from "./viewer";
 import { HelperLine } from "./helperLine";
 
@@ -7,13 +7,13 @@ export class TripodTool {
   active: boolean = false;
   viewer: Viewer;
 
-  pole1: Pole = new Pole();
-  pole2: Pole = new Pole();
-  pole3: Pole = new Pole();
+  scaffold1: Scaffold = new Scaffold();
+  scaffold2: Scaffold = new Scaffold();
+  scaffold3: Scaffold = new Scaffold();
 
-  pole1Placed: boolean = false;
-  pole2Placed: boolean = false;
-  pole3Placed: boolean = false;
+  scaffold1Placed: boolean = false;
+  scaffold2Placed: boolean = false;
+  scaffold3Placed: boolean = false;
   lashPositionPlaced: boolean = false;
 
   firstGroundPoint: THREE.Vector3 = new THREE.Vector3();
@@ -39,39 +39,39 @@ export class TripodTool {
 
   activate() {
     this.active = true;
-    this.pole1.position.y = 200;
-    this.pole2.position.y = 200;
-    this.pole3.position.y = 200;
-    this.viewer.scene.add(this.pole1);
-    this.viewer.scene.add(this.pole2);
-    this.viewer.scene.add(this.pole3);
+    this.scaffold1.setPositions(new THREE.Vector3(0, 200, 0));
+    this.scaffold2.setPositions(new THREE.Vector3(0, 200, 0));
+    this.scaffold2.setPositions(new THREE.Vector3(0, 200, 0));
+    this.scaffold1.addToScene(this.viewer.scene);
+    this.scaffold2.addToScene(this.viewer.scene);
+    this.scaffold3.addToScene(this.viewer.scene);
   }
 
   deactivate() {
     this.active = false;
-    this.viewer.scene.remove(this.pole1);
-    this.viewer.scene.remove(this.pole2);
-    this.viewer.scene.remove(this.pole3);
+    this.scaffold1.removeFromScene(this.viewer.scene);
+    this.scaffold2.removeFromScene(this.viewer.scene);
+    this.scaffold3.removeFromScene(this.viewer.scene);
     this.removeHorizontalHelperLines();
     this.removeVerticalHelperLine();
     this.resetParameters();
   }
 
   resetParameters() {
-    this.pole1Placed = false;
-    this.pole2Placed = false;
-    this.pole3Placed = false;
+    this.scaffold1Placed = false;
+    this.scaffold2Placed = false;
+    this.scaffold3Placed = false;
     this.lashPositionPlaced = false;
     this.lashHeight = this.defaultLashHeight;
   }
 
   leftClick() {
-    if (!this.pole1Placed) {
-      this.pole1Placed = true;
-    } else if (!this.pole2Placed) {
-      this.pole2Placed = true;
-    } else if (!this.pole3Placed) {
-      this.pole3Placed = true;
+    if (!this.scaffold1Placed) {
+      this.scaffold1Placed = true;
+    } else if (!this.scaffold2Placed) {
+      this.scaffold2Placed = true;
+    } else if (!this.scaffold3Placed) {
+      this.scaffold3Placed = true;
       this.addHorizontalHelperLines();
     } else if (!this.lashPositionPlaced) {
       this.lashPositionPlaced = true;
@@ -80,15 +80,15 @@ export class TripodTool {
     } else {
       if (this.tripodIsColliding) return;
       this.removeVerticalHelperLine();
-      this.viewer.poles.push(this.pole1);
-      this.viewer.poles.push(this.pole2);
-      this.viewer.poles.push(this.pole3);
-      this.pole1 = new Pole();
-      this.pole2 = new Pole();
-      this.pole3 = new Pole();
-      this.viewer.scene.add(this.pole1);
-      this.viewer.scene.add(this.pole2);
-      this.viewer.scene.add(this.pole3);
+      this.scaffold1.addToViewer(this.viewer);
+      this.scaffold2.addToViewer(this.viewer);
+      this.scaffold3.addToViewer(this.viewer);
+      this.scaffold1 = new Scaffold();
+      this.scaffold2 = new Scaffold();
+      this.scaffold3 = new Scaffold();
+      this.scaffold1.addToScene(this.viewer.scene);
+      this.scaffold2.addToScene(this.viewer.scene);
+      this.scaffold2.addToScene(this.viewer.scene);
       this.resetParameters();
     }
   }
@@ -100,24 +100,24 @@ export class TripodTool {
       this.lashPositionPlaced = false;
       this.removeVerticalHelperLine();
       this.addHorizontalHelperLines();
-    } else if (this.pole3Placed) {
-      this.pole3Placed = false;
+    } else if (this.scaffold3Placed) {
+      this.scaffold3Placed = false;
       this.removeHorizontalHelperLines();
-    } else if (this.pole2Placed) {
-      this.pole2Placed = false;
-    } else if (this.pole1Placed) {
-      this.pole1Placed = false;
+    } else if (this.scaffold2Placed) {
+      this.scaffold2Placed = false;
+    } else if (this.scaffold1Placed) {
+      this.scaffold1Placed = false;
     } else {
       this.resetParameters();
     }
   }
 
   drawTripod(groundPosition: THREE.Vector3) {
-    if (!this.pole1Placed) {
+    if (!this.scaffold1Placed) {
       this.drawFirstStep(groundPosition);
-    } else if (!this.pole2Placed) {
+    } else if (!this.scaffold2Placed) {
       this.drawSecondStep(groundPosition);
-    } else if (!this.pole3Placed) {
+    } else if (!this.scaffold3Placed) {
       this.drawThirdStep(groundPosition);
     } else if (!this.lashPositionPlaced) {
       this.drawFourthStep(groundPosition);
@@ -128,16 +128,28 @@ export class TripodTool {
   }
 
   drawFirstStep(groundPosition: THREE.Vector3) {
-    this.pole1.setPositionOnGround(groundPosition);
-    this.pole2.setPositionOnGround(
+    this.scaffold1.setPositionOnGround(groundPosition);
+    this.scaffold2.setPositionOnGround(
       groundPosition
         .clone()
-        .add(new THREE.Vector3(this.pole1.radius + this.pole2.radius, 0, 0))
+        .add(
+          new THREE.Vector3(
+            this.scaffold1.mainRadius + this.scaffold2.mainRadius,
+            0,
+            0
+          )
+        )
     );
-    this.pole3.setPositionOnGround(
+    this.scaffold3.setPositionOnGround(
       groundPosition
         .clone()
-        .sub(new THREE.Vector3(this.pole1.radius + this.pole3.radius, 0, 0))
+        .sub(
+          new THREE.Vector3(
+            this.scaffold1.mainRadius + this.scaffold3.mainRadius,
+            0,
+            0
+          )
+        )
     );
     this.firstGroundPoint = groundPosition;
   }
@@ -150,7 +162,7 @@ export class TripodTool {
         new THREE.Vector3(0, 1, 0)
       )
       .normalize()
-      .multiplyScalar(this.pole1.radius + this.pole3.radius);
+      .multiplyScalar(this.scaffold1.mainRadius + this.scaffold3.mainRadius);
     this.thirdGroundPoint = this.firstGroundPoint
       .clone()
       .sub(thirdGroundPointOffset);
@@ -195,21 +207,21 @@ export class TripodTool {
 
   calculatePositions() {
     const lashingOffset12 = new THREE.Vector3()
-      .crossVectors(this.pole1.direction, this.pole2.direction)
+      .crossVectors(this.scaffold1.direction, this.scaffold2.direction)
       .normalize()
-      .multiplyScalar(this.pole1.radius + this.pole2.radius);
+      .multiplyScalar(this.scaffold1.mainRadius + this.scaffold2.mainRadius);
 
     let lashingOffset13 = new THREE.Vector3();
-    if (this.pole3.isParallelTo(this.pole1.direction)) {
+    if (this.scaffold3.isParallelTo(this.scaffold1.direction)) {
       lashingOffset13
-        .crossVectors(this.pole1.direction, this.pole2.direction)
+        .crossVectors(this.scaffold1.direction, this.scaffold2.direction)
         .normalize()
-        .multiplyScalar(this.pole1.radius + this.pole3.radius);
+        .multiplyScalar(this.scaffold1.mainRadius + this.scaffold3.mainRadius);
     } else {
       lashingOffset13
-        .crossVectors(this.pole1.direction, this.pole3.direction)
+        .crossVectors(this.scaffold1.direction, this.scaffold3.direction)
         .normalize()
-        .multiplyScalar(this.pole1.radius + this.pole3.radius);
+        .multiplyScalar(this.scaffold1.mainRadius + this.scaffold3.mainRadius);
     }
 
     this.lashPosition = new THREE.Vector3(
@@ -218,26 +230,26 @@ export class TripodTool {
       this.lashPositionProjectedOnFloor.z
     );
 
-    const centerPole1 = this.lashPosition.clone();
-    const centerPole2 = this.lashPosition.clone().sub(lashingOffset12);
-    const centerPole3 = this.lashPosition.clone().add(lashingOffset13);
+    const centerScaffold1 = this.lashPosition.clone();
+    const centerScaffold2 = this.lashPosition.clone().sub(lashingOffset12);
+    const centerScaffold3 = this.lashPosition.clone().add(lashingOffset13);
 
-    this.pole1.setPositionBetweenGroundAndPole(
+    this.scaffold1.setPositionBetweenGroundAndPole(
       this.firstGroundPoint,
-      centerPole1
+      centerScaffold1
     );
-    this.pole2.setPositionBetweenGroundAndPole(
+    this.scaffold2.setPositionBetweenGroundAndPole(
       this.secondGroundPoint,
-      centerPole2
+      centerScaffold2
     );
-    this.pole3.setPositionBetweenGroundAndPole(
+    this.scaffold3.setPositionBetweenGroundAndPole(
       this.thirdGroundPoint,
-      centerPole3
+      centerScaffold3
     );
   }
 
   optimisePositions() {
-    const direction3 = this.pole3.direction.clone();
+    const direction3 = this.scaffold3.direction.clone();
 
     const tolerance = 0.001;
     for (let i = 0; i < 1000; i++) {
@@ -246,56 +258,58 @@ export class TripodTool {
       if (i < 600) stepSize = 0.001;
       if (i < 400) stepSize = 0.003;
       if (i < 200) stepSize = 0.01;
-      const intitialBadness = this.getPole3PositionBadness(direction3.clone());
+      const intitialBadness = this.getScaffold3PositionBadness(
+        direction3.clone()
+      );
       const gradient = new THREE.Vector3(
-        this.getPole3PositionBadness(
+        this.getScaffold3PositionBadness(
           direction3.clone().add(new THREE.Vector3(stepSize, 0, 0))
         ) - intitialBadness,
-        this.getPole3PositionBadness(
+        this.getScaffold3PositionBadness(
           direction3.clone().add(new THREE.Vector3(0, stepSize, 0))
         ) - intitialBadness,
-        this.getPole3PositionBadness(
+        this.getScaffold3PositionBadness(
           direction3.clone().add(new THREE.Vector3(0, 0, stepSize))
         ) - intitialBadness
       );
 
       direction3.add(gradient.multiplyScalar(-stepSize));
-      if (this.getPole3PositionBadness(direction3.clone()) < tolerance) {
+      if (this.getScaffold3PositionBadness(direction3.clone()) < tolerance) {
         break;
       }
     }
 
-    const lengthPole3 = this.thirdGroundPoint
+    const lengthScaffold3 = this.thirdGroundPoint
       .clone()
       .sub(this.lashPosition)
       .length();
 
-    const topPositionPole3 = this.thirdGroundPoint
+    const topPositionScaffold3 = this.thirdGroundPoint
       .clone()
-      .add(direction3.clone().normalize().multiplyScalar(lengthPole3));
+      .add(direction3.clone().normalize().multiplyScalar(lengthScaffold3));
 
-    this.pole3.setPositionBetweenGroundAndPole(
+    this.scaffold3.setPositionBetweenGroundAndPole(
       this.thirdGroundPoint,
-      topPositionPole3
+      topPositionScaffold3
     );
   }
 
-  getPole3PositionBadness(pole3Direction: THREE.Vector3) {
+  getScaffold3PositionBadness(scaffold3Direction: THREE.Vector3) {
     const dist1 = distanceBetweenLines(
       this.firstGroundPoint,
-      this.pole1.direction,
+      this.scaffold1.direction,
       this.thirdGroundPoint,
-      pole3Direction
+      scaffold3Direction
     );
     const dist2 = distanceBetweenLines(
       this.secondGroundPoint,
-      this.pole2.direction,
+      this.scaffold2.direction,
       this.thirdGroundPoint,
-      pole3Direction
+      scaffold3Direction
     );
     return (
-      Math.abs(dist1 - this.pole1.radius - this.pole3.radius) +
-      Math.abs(dist2 - this.pole2.radius - this.pole3.radius)
+      Math.abs(dist1 - this.scaffold1.mainRadius - this.scaffold3.mainRadius) +
+      Math.abs(dist2 - this.scaffold2.mainRadius - this.scaffold3.mainRadius)
     );
   }
 
@@ -360,9 +374,9 @@ export class TripodTool {
 
     for (const pole of this.viewer.poles) {
       if (
-        this.pole1.overlaps(pole) ||
-        this.pole2.overlaps(pole) ||
-        this.pole3.overlaps(pole)
+        this.scaffold1.overlaps(pole) ||
+        this.scaffold2.overlaps(pole) ||
+        this.scaffold3.overlaps(pole)
       ) {
         // @ts-ignore
         pole.mesh.material.color = new THREE.Color(1, 0, 0);
