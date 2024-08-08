@@ -6,7 +6,7 @@ import { HelperLine } from "./helperLine";
 
 export class PoleTool {
   active: boolean;
-  activePole: Pole | undefined;
+  activePole: Pole;
   viewer: Viewer;
   hoveringGround: boolean;
   fixedLashing: Lashing | undefined;
@@ -82,12 +82,7 @@ export class PoleTool {
   }
 
   deactivate() {
-    if (this.activePole === undefined) {
-      this.active = false;
-      return;
-    }
     this.viewer.scene.remove(this.activePole);
-    this.activePole = undefined;
     this.active = false;
     this.fixedLashing = undefined;
     this.newLashing = undefined;
@@ -100,8 +95,6 @@ export class PoleTool {
   }
 
   drawPoleWhileHoveringGound(groundPosition: THREE.Vector3) {
-    if (!this.activePole) return;
-
     this.newLashing = undefined;
     this.hoveringGround = true;
     this.snapHelperLine.visible = false;
@@ -121,8 +114,6 @@ export class PoleTool {
     hoveredPole: Pole,
     normal: THREE.Vector3
   ) {
-    if (!this.activePole) return;
-
     this.hoveringGround = false;
 
     if (!this.newLashing) {
@@ -146,7 +137,7 @@ export class PoleTool {
   }
 
   placePoleBetweenTwoLashings() {
-    if (!this.activePole || !this.fixedLashing || !this.newLashing) return;
+    if (!this.fixedLashing || !this.newLashing) return;
     // Step 1: Set naive pole position based on the anchorPoints
     this.activePole.setPositionBetweenTwoPoles(
       this.fixedLashing.anchorPoint,
@@ -164,7 +155,7 @@ export class PoleTool {
   }
 
   placePoleOnOneLashing() {
-    if (!this.activePole || !this.newLashing) return;
+    if (!this.newLashing) return;
     const targetOrientationVector = new THREE.Vector3().crossVectors(
       this.newLashing.anchorPointNormal,
       this.newLashing.fixedPole.direction
@@ -181,7 +172,7 @@ export class PoleTool {
   }
 
   placePoleBetweenOneLashingAndGround(groundPosition: THREE.Vector3) {
-    if (!this.activePole || !this.fixedLashing) return;
+    if (!this.fixedLashing) return;
 
     // Step 1: Set naive pole position based on the anchorPoint
     this.activePole.setPositionBetweenGroundAndPole(
@@ -198,12 +189,11 @@ export class PoleTool {
   }
 
   placePoleOnGround(groundPosition: THREE.Vector3) {
-    if (!this.activePole) return;
     this.activePole.setPositionOnGround(groundPosition);
   }
 
   snapToHeight() {
-    if (!this.activePole || !this.newLashing) return;
+    if (!this.newLashing) return;
 
     this.currentSnapHeight = undefined;
 
@@ -245,7 +235,6 @@ export class PoleTool {
   }
 
   leftClick() {
-    if (!this.activePole) return;
     if (this.activePoleIsColliding) return;
     if (this.fixedLashing || this.hoveringGround) {
       this.commitLashings();
@@ -276,7 +265,6 @@ export class PoleTool {
   }
 
   rightClick() {
-    if (!this.activePole) return;
     this.activePole.setLength(4.0);
     this.activePole.position.y = 200;
 
@@ -285,7 +273,6 @@ export class PoleTool {
   }
 
   checkCollisions(blockPlacement: boolean) {
-    if (!this.activePole) return;
     this.activePoleIsColliding = false;
     document.body.style.cursor = "default";
 
