@@ -3,11 +3,10 @@ import * as THREE from "three";
 import { Viewer } from "./viewer";
 import { Lashing } from "./lashing";
 import { HelperLine } from "./helperLine";
-import { Scaffold } from "./scaffold";
 
 export class PoleTool {
   active: boolean;
-  activePole: Pole;
+  activePole: Pole | undefined;
   viewer: Viewer;
   hoveringGround: boolean;
   fixedLashing: Lashing | undefined;
@@ -16,8 +15,6 @@ export class PoleTool {
   currentSnapHeight: number | undefined;
   snapHelperLine: HelperLine;
   activePoleIsColliding: boolean = false;
-  scaffolding: boolean = false;
-  scaffold: Scaffold;
 
   constructor(viewer: Viewer) {
     this.viewer = viewer;
@@ -26,8 +23,6 @@ export class PoleTool {
     this.snapHelperLine = new HelperLine();
     this.snapHelperLine.visible = false;
     this.viewer.scene.add(this.snapHelperLine);
-    this.activePole = new Pole();
-    this.scaffold = new Scaffold(this.activePole);
 
     // load poles from local storage if available else add demo poles
     if (localStorage.getItem("poles") !== null) {
@@ -80,13 +75,19 @@ export class PoleTool {
 
   activate() {
     if (this.active) return;
+    this.activePole = new Pole();
     this.activePole.position.y = 200;
     this.viewer.scene.add(this.activePole);
     this.active = true;
   }
 
   deactivate() {
+    if (this.activePole === undefined) {
+      this.active = false;
+      return;
+    }
     this.viewer.scene.remove(this.activePole);
+    this.activePole = undefined;
     this.active = false;
     this.fixedLashing = undefined;
     this.newLashing = undefined;
@@ -99,6 +100,8 @@ export class PoleTool {
   }
 
   drawPoleWhileHoveringGound(groundPosition: THREE.Vector3) {
+    if (!this.activePole) return;
+
     this.newLashing = undefined;
     this.hoveringGround = true;
     this.snapHelperLine.visible = false;
@@ -118,6 +121,8 @@ export class PoleTool {
     hoveredPole: Pole,
     normal: THREE.Vector3
   ) {
+    if (!this.activePole) return;
+
     this.hoveringGround = false;
 
     if (!this.newLashing) {
@@ -141,7 +146,7 @@ export class PoleTool {
   }
 
   placePoleBetweenTwoLashings() {
-    if (!this.fixedLashing || !this.newLashing) return;
+    if (!this.activePole || !this.fixedLashing || !this.newLashing) return;
     // Step 1: Set naive pole position based on the anchorPoints
     this.activePole.setPositionBetweenTwoPoles(
       this.fixedLashing.anchorPoint,
@@ -159,7 +164,7 @@ export class PoleTool {
   }
 
   placePoleOnOneLashing() {
-    if (!this.newLashing) return;
+    if (!this.activePole || !this.newLashing) return;
     const targetOrientationVector = new THREE.Vector3().crossVectors(
       this.newLashing.anchorPointNormal,
       this.newLashing.fixedPole.direction
@@ -176,7 +181,7 @@ export class PoleTool {
   }
 
   placePoleBetweenOneLashingAndGround(groundPosition: THREE.Vector3) {
-    if (!this.fixedLashing) return;
+    if (!this.activePole || !this.fixedLashing) return;
 
     // Step 1: Set naive pole position based on the anchorPoint
     this.activePole.setPositionBetweenGroundAndPole(
@@ -186,29 +191,19 @@ export class PoleTool {
     // Step 2: Use the pole's naive orientation to estimate the center coordinates of the lashing
     this.fixedLashing.calculatePositions();
     // Step 3: Set the pole position with the estimated center coordinates
-    const distance =
-      groundPosition.clone().sub(this.fixedLashing.centerLoosePole).length() +
-      0.15;
-    this.setScaffoldingMode(distance);
-    if (!this.scaffolding) {
-      this.activePole.setPositionBetweenGroundAndPole(
-        groundPosition,
-        this.fixedLashing.centerLoosePole
-      );
-    } else {
-      this.scaffold.setPositionBetweenGroundAndPole(
-        groundPosition,
-        this.fixedLashing.centerLoosePole
-      );
-    }
+    this.activePole.setPositionBetweenGroundAndPole(
+      groundPosition,
+      this.fixedLashing.centerLoosePole
+    );
   }
 
   placePoleOnGround(groundPosition: THREE.Vector3) {
+    if (!this.activePole) return;
     this.activePole.setPositionOnGround(groundPosition);
   }
 
   snapToHeight() {
-    if (!this.newLashing) return;
+    if (!this.activePole || !this.newLashing) return;
 
     this.currentSnapHeight = undefined;
 
@@ -250,21 +245,14 @@ export class PoleTool {
   }
 
   leftClick() {
+    if (!this.activePole) return;
     if (this.activePoleIsColliding) return;
     if (this.fixedLashing || this.hoveringGround) {
       this.commitLashings();
-
-      if (this.scaffolding) {
-        this.viewer.poles.push(this.scaffold.pole2);
-        this.viewer.poles.push(this.scaffold.splint);
-      }
-      this.scaffolding = false;
-
       this.viewer.poles.push(this.activePole);
       this.lastPole = this.activePole;
 
       this.activePole = new Pole();
-      this.scaffold = new Scaffold(this.activePole);
       this.activePole.position.y = 200;
       this.viewer.scene.add(this.activePole);
     } else {
@@ -288,8 +276,8 @@ export class PoleTool {
   }
 
   rightClick() {
+    if (!this.activePole) return;
     this.activePole.setLength(4.0);
-    this.setScaffoldingMode(this.activePole.length);
     this.activePole.position.y = 200;
 
     this.newLashing = undefined;
@@ -297,6 +285,7 @@ export class PoleTool {
   }
 
   checkCollisions(blockPlacement: boolean) {
+    if (!this.activePole) return;
     this.activePoleIsColliding = false;
     document.body.style.cursor = "default";
 
@@ -316,16 +305,6 @@ export class PoleTool {
         // @ts-ignore
         pole.mesh.material.color = new THREE.Color(1, 1, 1);
       }
-    }
-  }
-
-  setScaffoldingMode(distance: number) {
-    if (distance > 6.0 && !this.scaffolding) {
-      this.scaffolding = true;
-      this.scaffold.addToScene(this.viewer.scene);
-    } else if (distance <= 6.0 && this.scaffolding) {
-      this.scaffolding = false;
-      this.scaffold.removeFromScene(this.viewer.scene);
     }
   }
 }
