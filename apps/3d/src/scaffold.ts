@@ -83,6 +83,7 @@ export class Scaffold {
 
   changeLengthToSinglePole() {
     const scene = this.mainPole.parent as THREE.Scene;
+    this.removeFromScene(scene);
     this.mainPole.setLength(this.length);
     this.extensionPoles = [];
     this.splintPoles = [];
