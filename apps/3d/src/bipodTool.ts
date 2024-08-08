@@ -1,4 +1,5 @@
 import { Pole } from "./pole";
+import { Scaffold } from "./scaffold";
 import * as THREE from "three";
 import { Viewer } from "./viewer";
 import { HelperLine } from "./helperLine";
@@ -7,8 +8,8 @@ export class BipodTool {
   active: boolean = false;
   viewer: Viewer;
 
-  pole1: Pole = new Pole();
-  pole2: Pole = new Pole();
+  pole1: Scaffold = new Scaffold();
+  pole2: Scaffold = new Scaffold();
 
   pole1Placed: boolean = false;
   pole2Placed: boolean = false;
@@ -34,16 +35,16 @@ export class BipodTool {
 
   activate() {
     this.active = true;
-    this.pole1.position.y = 200;
-    this.pole2.position.y = 200;
-    this.viewer.scene.add(this.pole1);
-    this.viewer.scene.add(this.pole2);
+    this.pole1.mainPole.position.y = 200;
+    this.pole2.mainPole.position.y = 200;
+    this.pole1.addToScene(this.viewer.scene);
+    this.pole2.addToScene(this.viewer.scene);
   }
 
   deactivate() {
     this.active = false;
-    this.viewer.scene.remove(this.pole1);
-    this.viewer.scene.remove(this.pole2);
+    this.pole1.removeFromScene(this.viewer.scene);
+    this.pole2.removeFromScene(this.viewer.scene);
     this.removeHorizontalHelperLines();
     this.removeVerticalHelperLine();
     this.resetParameters();
@@ -75,12 +76,12 @@ export class BipodTool {
     } else {
       if (this.bipodIsColliding) return;
       this.removeVerticalHelperLine();
-      this.viewer.poles.push(this.pole1);
-      this.viewer.poles.push(this.pole2);
-      this.pole1 = new Pole();
-      this.pole2 = new Pole();
-      this.viewer.scene.add(this.pole1);
-      this.viewer.scene.add(this.pole2);
+      this.viewer.poles.push(this.pole1.mainPole);
+      this.viewer.poles.push(this.pole2.mainPole);
+      this.pole1 = new Scaffold();
+      this.pole2 = new Scaffold();
+      this.pole1.addToScene(this.viewer.scene);
+      this.pole2.addToScene(this.viewer.scene);
       this.resetParameters();
     }
   }
@@ -120,7 +121,13 @@ export class BipodTool {
     this.pole2.setPositionOnGround(
       groundPosition
         .clone()
-        .add(new THREE.Vector3(this.pole1.radius + this.pole2.radius, 0, 0))
+        .add(
+          new THREE.Vector3(
+            this.pole1.mainPole.radius + this.pole2.mainPole.radius,
+            0,
+            0
+          )
+        )
     );
     this.firstGroundPoint = groundPosition;
   }
@@ -152,9 +159,14 @@ export class BipodTool {
 
   calculatePositions() {
     const lashingOffset = new THREE.Vector3()
-      .crossVectors(this.pole1.direction, this.pole2.direction)
+      .crossVectors(
+        this.pole1.mainPole.direction,
+        this.pole2.mainPole.direction
+      )
       .normalize()
-      .multiplyScalar((this.pole1.radius + this.pole2.radius) / 2.0);
+      .multiplyScalar(
+        (this.pole1.mainPole.radius + this.pole2.mainPole.radius) / 2.0
+      );
 
     this.lashPosition = new THREE.Vector3(
       this.lashPositionProjectedOnFloor.x,
