@@ -1,4 +1,3 @@
-import { Pole } from "./pole";
 import { Scaffold } from "./scaffold";
 import * as THREE from "three";
 import { Viewer } from "./viewer";
@@ -8,11 +7,11 @@ export class BipodTool {
   active: boolean = false;
   viewer: Viewer;
 
-  pole1: Scaffold = new Scaffold();
-  pole2: Scaffold = new Scaffold();
+  scaffold1: Scaffold = new Scaffold();
+  scaffold2: Scaffold = new Scaffold();
 
-  pole1Placed: boolean = false;
-  pole2Placed: boolean = false;
+  scaffold1Placed: boolean = false;
+  scaffold2Placed: boolean = false;
   lashPositionPlaced: boolean = false;
 
   firstGroundPoint: THREE.Vector3 = new THREE.Vector3();
@@ -35,16 +34,16 @@ export class BipodTool {
 
   activate() {
     this.active = true;
-    this.pole1.mainPole.position.y = 200;
-    this.pole2.mainPole.position.y = 200;
-    this.pole1.addToScene(this.viewer.scene);
-    this.pole2.addToScene(this.viewer.scene);
+    this.scaffold1.setPositions(new THREE.Vector3(0, 200, 0));
+    this.scaffold2.setPositions(new THREE.Vector3(0, 200, 0));
+    this.scaffold1.addToScene(this.viewer.scene);
+    this.scaffold2.addToScene(this.viewer.scene);
   }
 
   deactivate() {
     this.active = false;
-    this.pole1.removeFromScene(this.viewer.scene);
-    this.pole2.removeFromScene(this.viewer.scene);
+    this.scaffold1.removeFromScene(this.viewer.scene);
+    this.scaffold2.removeFromScene(this.viewer.scene);
     this.removeHorizontalHelperLines();
     this.removeVerticalHelperLine();
     this.resetParameters();
@@ -55,8 +54,8 @@ export class BipodTool {
   }
 
   resetParameters() {
-    this.pole1Placed = false;
-    this.pole2Placed = false;
+    this.scaffold1Placed = false;
+    this.scaffold2Placed = false;
     this.lashPositionPlaced = false;
     this.lashHeight = this.defaultLashHeight;
   }
@@ -64,10 +63,10 @@ export class BipodTool {
   leftClick() {
     if (!this.active) return;
 
-    if (!this.pole1Placed) {
-      this.pole1Placed = true;
-    } else if (!this.pole2Placed) {
-      this.pole2Placed = true;
+    if (!this.scaffold1Placed) {
+      this.scaffold1Placed = true;
+    } else if (!this.scaffold2Placed) {
+      this.scaffold2Placed = true;
       this.AddHorizontalHelperLines();
     } else if (!this.lashPositionPlaced) {
       this.lashPositionPlaced = true;
@@ -76,12 +75,12 @@ export class BipodTool {
     } else {
       if (this.bipodIsColliding) return;
       this.removeVerticalHelperLine();
-      this.viewer.poles.push(this.pole1.mainPole);
-      this.viewer.poles.push(this.pole2.mainPole);
-      this.pole1 = new Scaffold();
-      this.pole2 = new Scaffold();
-      this.pole1.addToScene(this.viewer.scene);
-      this.pole2.addToScene(this.viewer.scene);
+      this.scaffold1.addToViewer(this.viewer);
+      this.scaffold2.addToViewer(this.viewer);
+      this.scaffold1 = new Scaffold();
+      this.scaffold2 = new Scaffold();
+      this.scaffold1.addToScene(this.viewer.scene);
+      this.scaffold2.addToScene(this.viewer.scene);
       this.resetParameters();
     }
   }
@@ -93,20 +92,20 @@ export class BipodTool {
       this.lashPositionPlaced = false;
       this.removeVerticalHelperLine();
       this.AddHorizontalHelperLines();
-    } else if (this.pole2Placed) {
-      this.pole2Placed = false;
+    } else if (this.scaffold2Placed) {
+      this.scaffold2Placed = false;
       this.removeHorizontalHelperLines();
-    } else if (this.pole1Placed) {
-      this.pole1Placed = false;
+    } else if (this.scaffold1Placed) {
+      this.scaffold1Placed = false;
     } else {
       this.resetParameters();
     }
   }
 
   drawBipod(groundPosition: THREE.Vector3) {
-    if (!this.pole1Placed) {
+    if (!this.scaffold1Placed) {
       this.drawFirstStep(groundPosition);
-    } else if (!this.pole2Placed) {
+    } else if (!this.scaffold2Placed) {
       this.drawSecondStep(groundPosition);
     } else if (!this.lashPositionPlaced) {
       this.drawThirdStep(groundPosition);
@@ -117,13 +116,13 @@ export class BipodTool {
   }
 
   drawFirstStep(groundPosition: THREE.Vector3) {
-    this.pole1.setPositionOnGround(groundPosition);
-    this.pole2.setPositionOnGround(
+    this.scaffold1.setPositionOnGround(groundPosition);
+    this.scaffold2.setPositionOnGround(
       groundPosition
         .clone()
         .add(
           new THREE.Vector3(
-            this.pole1.mainPole.radius + this.pole2.mainPole.radius,
+            this.scaffold1.mainPole.radius + this.scaffold2.mainPole.radius,
             0,
             0
           )
@@ -160,12 +159,12 @@ export class BipodTool {
   calculatePositions() {
     const lashingOffset = new THREE.Vector3()
       .crossVectors(
-        this.pole1.mainPole.direction,
-        this.pole2.mainPole.direction
+        this.scaffold1.mainPole.direction,
+        this.scaffold2.mainPole.direction
       )
       .normalize()
       .multiplyScalar(
-        (this.pole1.mainPole.radius + this.pole2.mainPole.radius) / 2.0
+        (this.scaffold1.mainPole.radius + this.scaffold2.mainPole.radius) / 2.0
       );
 
     this.lashPosition = new THREE.Vector3(
@@ -174,16 +173,16 @@ export class BipodTool {
       this.lashPositionProjectedOnFloor.z
     );
 
-    const centerPole1 = this.lashPosition.clone().add(lashingOffset);
-    const centerPole2 = this.lashPosition.clone().sub(lashingOffset);
+    const centerScaffold1 = this.lashPosition.clone().add(lashingOffset);
+    const centerScaffold2 = this.lashPosition.clone().sub(lashingOffset);
 
-    this.pole1.setPositionBetweenGroundAndPole(
+    this.scaffold1.setPositionBetweenGroundAndPole(
       this.firstGroundPoint,
-      centerPole1
+      centerScaffold1
     );
-    this.pole2.setPositionBetweenGroundAndPole(
+    this.scaffold2.setPositionBetweenGroundAndPole(
       this.secondGroundPoint,
-      centerPole2
+      centerScaffold2
     );
   }
 
@@ -250,7 +249,7 @@ export class BipodTool {
     document.body.style.cursor = "default";
 
     for (const pole of this.viewer.poles) {
-      if (this.pole1.overlaps(pole) || this.pole2.overlaps(pole)) {
+      if (this.scaffold1.overlaps(pole) || this.scaffold2.overlaps(pole)) {
         // @ts-ignore
         pole.mesh.material.color = new THREE.Color(1, 0, 0);
         if (this.lashPositionPlaced) {

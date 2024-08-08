@@ -1,5 +1,6 @@
 import * as THREE from "three";
 import { Pole } from "./pole";
+import { Viewer } from "./viewer";
 
 export class Scaffold {
   mainPole: Pole;
@@ -186,6 +187,16 @@ export class Scaffold {
       ...this.splintPoles,
     ]) {
       scene.remove(pole);
+    }
+  }
+
+  addToViewer(viewer: Viewer) {
+    for (const pole of [
+      this.mainPole,
+      ...this.extensionPoles,
+      ...this.splintPoles,
+    ]) {
+      viewer.poles.push(pole);
     }
   }
 }
