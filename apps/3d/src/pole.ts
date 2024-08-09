@@ -88,34 +88,6 @@ export class Pole extends THREE.Object3D {
     this.setRotationFromQuaternion(quaternion);
   }
 
-  setPositionOnGround(position: THREE.Vector3) {
-    this.position.set(position.x, position.y + this.length / 2.0, position.z);
-    this.setDirection(new THREE.Vector3(0, 1, 0));
-  }
-
-  setPositionBetweenGroundAndPole(
-    groundPoint: THREE.Vector3,
-    polePoint: THREE.Vector3
-  ) {
-    const targetOrientationVector = polePoint.clone().sub(groundPoint.clone());
-    const distance = targetOrientationVector.length();
-    this.setLength(distance + 0.15);
-    this.setDirection(targetOrientationVector);
-    const targetPosition = groundPoint
-      .clone()
-      .add(this.direction.clone().multiplyScalar(this.length / 2.0));
-    this.position.set(targetPosition.x, targetPosition.y, targetPosition.z);
-  }
-
-  setPositionBetweenTwoPoles(pointA: THREE.Vector3, pointB: THREE.Vector3) {
-    const centerPoint = pointA.clone().add(pointB.clone()).divideScalar(2.0);
-    this.position.set(centerPoint.x, centerPoint.y, centerPoint.z);
-    const targetOrientationVector = pointB.clone().sub(pointA.clone());
-    const distance = targetOrientationVector.length();
-    this.setLength(distance + 0.3);
-    this.setDirection(targetOrientationVector);
-  }
-
   setLength(minimumLength: number) {
     const allowedLengths: number[] = [1.0, 1.5, 2.0, 2.5, 3.0, 4.0, 5.0, 6.0];
     const colors: THREE.Color[] = [

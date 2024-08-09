@@ -16,6 +16,12 @@ export class Scaffold {
     this.mainRadius = this.mainPole.radius;
   }
 
+  reset() {
+    this.setDirection(new THREE.Vector3(0, 1, 0));
+    this.setLength(4.0);
+    this.setPositions(new THREE.Vector3(0, 200, 0));
+  }
+
   setDirection(direction: THREE.Vector3) {
     this.direction = direction.clone().normalize();
     for (const pole of [
@@ -27,8 +33,13 @@ export class Scaffold {
     }
   }
 
-  setPositionOnGround(position: THREE.Vector3) {
-    this.mainPole.setPositionOnGround(position);
+  setPositionOnGround(groundPosition: THREE.Vector3) {
+    this.setDirection(new THREE.Vector3(0, 1, 0));
+    this.setLength(4.0);
+    const targetPosition = groundPosition
+      .clone()
+      .add(new THREE.Vector3(0, this.mainPole.length / 2.0, 0));
+    this.setPositions(targetPosition);
   }
 
   setPositionBetweenGroundAndPole(

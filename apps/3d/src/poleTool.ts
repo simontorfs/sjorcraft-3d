@@ -267,8 +267,7 @@ export class PoleTool {
   }
 
   rightClick() {
-    this.activeScaffold.setLength(4.0);
-    this.activeScaffold.setPositions(new THREE.Vector3(0, 200, 0));
+    this.activeScaffold.reset();
 
     this.newLashing = undefined;
     this.fixedLashing = undefined;
