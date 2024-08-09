@@ -178,7 +178,26 @@ export class Scaffold {
             .clone()
             .multiplyScalar(this.mainPole.length * (index + 0.5))
         );
-      this.splintPoles[index].position.set(pos.x, pos.y - 0.12, pos.z);
+      const splintOffset = this.mainRadius + this.splintPoles[index].radius;
+      if (this.splintPoles[index].isVertical()) {
+        this.splintPoles[index].position.set(
+          pos.x - splintOffset,
+          pos.y,
+          pos.z
+        );
+      } else {
+        const offsetPosition = new THREE.Vector3(0, 1, 0)
+          .cross(this.direction)
+          .cross(this.direction)
+          .normalize()
+          .multiplyScalar(splintOffset)
+          .add(pos);
+        this.splintPoles[index].position.set(
+          offsetPosition.x,
+          offsetPosition.y,
+          offsetPosition.z
+        );
+      }
     }
   }
 
