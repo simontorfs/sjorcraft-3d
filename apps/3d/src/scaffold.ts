@@ -50,7 +50,20 @@ export class Scaffold {
   }
 
   setPositionBetweenTwoPoles(pointA: THREE.Vector3, pointB: THREE.Vector3) {
-    this.mainPole.setPositionBetweenTwoPoles(pointA, pointB);
+    const targetOrientationVector = pointB.clone().sub(pointA.clone());
+    const distance = targetOrientationVector.length();
+    this.setLength(distance + 0.3);
+    this.setDirection(targetOrientationVector);
+
+    const centerPoint = pointA.clone().add(pointB.clone()).divideScalar(2.0);
+    const targetPosition = centerPoint
+      .clone()
+      .sub(
+        this.direction
+          .clone()
+          .multiplyScalar((this.length - this.mainPole.length) / 2.0)
+      );
+    this.setPositions(targetPosition);
   }
 
   setLength(minimumLength: number) {
