@@ -184,7 +184,15 @@ export class Scaffold {
   }
 
   overlaps(otherPole: Pole) {
-    return this.mainPole.overlaps(otherPole);
+    let overlaps = false;
+    for (const pole of [
+      this.mainPole,
+      ...this.extensionPoles,
+      ...this.splintPoles,
+    ]) {
+      overlaps ||= pole.overlaps(otherPole);
+    }
+    return overlaps;
   }
 
   addToScene(scene: THREE.Scene) {
