@@ -5,7 +5,7 @@ import { Scaffold } from "./scaffold";
 
 export class PoleTransformer extends THREE.Object3D {
   viewer: Viewer;
-  activePole: Scaffold | undefined = undefined;
+  activeScaffold: Scaffold | undefined = undefined;
 
   translationHandle: THREE.Mesh;
   scaleHandleTop: THREE.Mesh;
@@ -41,21 +41,21 @@ export class PoleTransformer extends THREE.Object3D {
 
   setActivePole(pole: Pole | undefined) {
     if (pole) {
-      this.activePole = new Scaffold();
-      this.activePole.setMainPole(pole);
+      this.activeScaffold = new Scaffold();
+      this.activeScaffold.setMainPole(pole);
       this.visible = true;
       this.setHandlePositions();
       this.setHandleColor();
     } else {
-      this.activePole = undefined;
+      this.activeScaffold = undefined;
       this.visible = false;
     }
   }
 
   setHandlePositions() {
-    if (!this.activePole) return;
-    const pole = this.activePole;
-    const scaffoldCenter = this.activePole.getCenter();
+    if (!this.activeScaffold) return;
+    const pole = this.activeScaffold;
+    const scaffoldCenter = this.activeScaffold.getCenter();
     this.position.set(scaffoldCenter.x, scaffoldCenter.y, scaffoldCenter.z);
     this.rotation.set(
       pole.mainPole.rotation.x,
@@ -67,10 +67,10 @@ export class PoleTransformer extends THREE.Object3D {
   }
 
   setHandleColor() {
-    if (!this.activePole) return;
+    if (!this.activeScaffold) return;
     for (const handle of this.handles) {
       // @ts-ignore
-      handle.material.color = this.activePole.color;
+      handle.material.color = this.activeScaffold.color;
     }
   }
 
@@ -101,33 +101,33 @@ export class PoleTransformer extends THREE.Object3D {
   }
 
   dragTranslationHandle(dragPositionOnActivePole: THREE.Vector3) {
-    if (!this.activePole) return;
+    if (!this.activeScaffold) return;
 
     const target = this.getTargetOnPoleAxis(dragPositionOnActivePole);
 
-    this.activePole.mainPole.position.set(target.x, target.y, target.z);
+    this.activeScaffold.mainPole.position.set(target.x, target.y, target.z);
     this.setHandlePositions();
   }
 
   dragScaleHandle(topHandle: boolean, dragPositionOnActivePole: THREE.Vector3) {
-    if (!this.activePole) return;
+    if (!this.activeScaffold) return;
 
     const target = this.getTargetOnPoleAxis(dragPositionOnActivePole);
 
-    const distTargetToPoleCenter = this.activePole
+    const distTargetToPoleCenter = this.activeScaffold
       .getCenter()
       .distanceTo(target);
 
-    this.activePole.resize(
+    this.activeScaffold.resize(
       topHandle,
-      distTargetToPoleCenter + 0.2 + this.activePole.length / 2
+      distTargetToPoleCenter + 0.2 + this.activeScaffold.length / 2
     );
 
-    const newPosition = this.activePole.getCenter();
+    const newPosition = this.activeScaffold.getCenter();
     this.position.set(newPosition.x, newPosition.y, newPosition.z);
     this.setHandlePositions();
     this.setHandleColor();
-    const newDistTargetToPoleCenter = this.activePole
+    const newDistTargetToPoleCenter = this.activeScaffold
       .getCenter()
       .distanceTo(target);
     if (topHandle) {
@@ -138,16 +138,16 @@ export class PoleTransformer extends THREE.Object3D {
   }
 
   getTargetOnPoleAxis(dragPositionOnActivePole: THREE.Vector3) {
-    if (!this.activePole) return new THREE.Vector3();
+    if (!this.activeScaffold) return new THREE.Vector3();
 
-    const start = this.activePole
+    const start = this.activeScaffold
       .getCenter()
       .clone()
-      .sub(this.activePole.direction.clone().multiplyScalar(20));
-    const end = this.activePole
+      .sub(this.activeScaffold.direction.clone().multiplyScalar(20));
+    const end = this.activeScaffold
       .getCenter()
       .clone()
-      .add(this.activePole.direction.clone().multiplyScalar(20));
+      .add(this.activeScaffold.direction.clone().multiplyScalar(20));
     const activePoleAxis = new THREE.Line3(start, end);
 
     let target: THREE.Vector3 = new THREE.Vector3();
