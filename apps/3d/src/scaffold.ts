@@ -16,6 +16,12 @@ export class Scaffold {
     this.mainRadius = this.mainPole.radius;
   }
 
+  setMainPole(pole: Pole) {
+    this.mainPole = pole;
+    this.length = pole.length;
+    this.direction = pole.direction;
+  }
+
   reset() {
     this.setDirection(new THREE.Vector3(0, 1, 0));
     this.setLength(4.0);
@@ -211,6 +217,13 @@ export class Scaffold {
 
   isVertical() {
     return this.isParallelTo(new THREE.Vector3(0, 1, 0));
+  }
+
+  getCenter() {
+    return this.mainPole.position
+      .clone()
+      .sub(this.direction.clone().multiplyScalar(this.mainPole.length / 2.0))
+      .add(this.direction.clone().multiplyScalar(this.length / 2.0));
   }
 
   overlaps(otherPole: Pole) {
