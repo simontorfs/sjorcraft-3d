@@ -92,7 +92,9 @@ export class InputHandler {
   onMouseUp(event: any) {
     this.mouseDown = false;
     if (this.mouseHasMoved) {
-      // drop after drag
+      if (this.viewer.selectionTool.active && this.hoveredHandle) {
+        this.viewer.poleTransformer.dropHandle(this.hoveredHandle);
+      }
     } else {
       if (this.viewer.poleTool.active) {
         if (event.button === THREE.MOUSE.LEFT) {

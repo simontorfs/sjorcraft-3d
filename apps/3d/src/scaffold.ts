@@ -208,7 +208,21 @@ export class Scaffold {
   }
 
   resize(resizeAtTop: boolean, newMinimumLength: number) {
-    this.mainPole.resize(resizeAtTop, newMinimumLength);
+    const oldLength = this.length;
+    this.setLength(newMinimumLength);
+    const lengthDifference = this.length - oldLength;
+    this.setDirection(this.direction);
+    const positionOffset = this.direction
+      .clone()
+      .multiplyScalar(lengthDifference / 2);
+
+    if (resizeAtTop) {
+      const newPosition = this.mainPole.position.clone().add(positionOffset);
+      this.setPositions(newPosition);
+    } else {
+      const newPosition = this.mainPole.position.clone().sub(positionOffset);
+      this.setPositions(newPosition);
+    }
   }
 
   isParallelTo(direction: THREE.Vector3) {
@@ -264,6 +278,12 @@ export class Scaffold {
       ...this.extensionPoles,
       ...this.splintPoles,
     ]) {
+      viewer.poles.push(pole);
+    }
+  }
+
+  addExtensionToViewer(viewer: Viewer) {
+    for (const pole of [...this.extensionPoles, ...this.splintPoles]) {
       viewer.poles.push(pole);
     }
   }

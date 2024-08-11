@@ -128,23 +128,6 @@ export class Pole extends THREE.Object3D {
     this.setPositionCaps();
   }
 
-  resize(resizeAtTop: boolean, newMinimumLength: number) {
-    const oldLength = this.length;
-    this.setLength(newMinimumLength);
-    const lengthDifference = this.length - oldLength;
-    const positionOffset = this.direction
-      .clone()
-      .multiplyScalar(lengthDifference / 2);
-
-    if (resizeAtTop) {
-      const newPosition = this.position.clone().add(positionOffset);
-      this.position.set(newPosition.x, newPosition.y, newPosition.z);
-    } else {
-      const newPosition = this.position.clone().sub(positionOffset);
-      this.position.set(newPosition.x, newPosition.y, newPosition.z);
-    }
-  }
-
   setPositionCaps() {
     (this.capBottom.position.y =
       -(this.length - this.capLength) / 2 - this.capOffset),

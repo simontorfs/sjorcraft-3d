@@ -137,6 +137,21 @@ export class PoleTransformer extends THREE.Object3D {
     }
   }
 
+  dropHandle(handle: THREE.Mesh) {
+    switch (handle) {
+      case this.translationHandle:
+        break;
+      case this.scaleHandleTop:
+      case this.scaleHandleBottom:
+        this.dropScaleHandle();
+        break;
+    }
+  }
+
+  dropScaleHandle() {
+    this.activeScaffold.addExtensionToViewer(this.viewer);
+  }
+
   getTargetOnPoleAxis(dragPositionOnActivePole: THREE.Vector3) {
     if (!this.activeScaffold) return new THREE.Vector3();
 
