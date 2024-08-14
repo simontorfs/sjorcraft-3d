@@ -7,7 +7,7 @@ import { SaveTool } from "./saveTool";
 import { DetailsTool } from "./detailsTool";
 import { SelectionTool } from "./selectionTool";
 import { Floor } from "./floor";
-import { imageExporter } from "./imageExporter";
+import { ImageExporter } from "./imageExporter";
 import { BipodTool } from "./bipodTool";
 import { Lashing } from "./lashing";
 import { TripodTool } from "./tripodTool";
@@ -34,7 +34,7 @@ export class Viewer {
   saveTool: SaveTool;
   detailsTool: DetailsTool;
   floor: Floor;
-  imageExporter: imageExporter;
+  imageExporter: ImageExporter;
 
   constructor(domElement: HTMLElement) {
     this.domElement = domElement;
@@ -102,7 +102,7 @@ export class Viewer {
     this.saveTool = new SaveTool(this);
 
     // Image Exporter
-    this.imageExporter = new imageExporter(this);
+    this.imageExporter = new ImageExporter(this);
 
     // Poles
     this.poles = [];
