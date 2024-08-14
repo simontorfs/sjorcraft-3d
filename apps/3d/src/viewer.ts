@@ -8,8 +8,13 @@ import { DetailsTool } from "./detailsTool";
 import { SelectionTool } from "./selectionTool";
 import { Floor } from "./floor";
 import { imageExporter } from "./imageExporter";
+import { BipodTool } from "./bipodTool";
+import { Lashing } from "./lashing";
+import { TripodTool } from "./tripodTool";
+import { PoleTransformer } from "./poleTransformer";
 
 export class Viewer {
+  domElement: HTMLElement;
   canvas: HTMLElement;
   renderer: THREE.WebGLRenderer;
   scene: THREE.Scene;
@@ -17,16 +22,33 @@ export class Viewer {
   camera: THREE.PerspectiveCamera;
   controls: OrbitControls;
   inputHandler: InputHandler;
-  poleTool: PoleTool;
+
   selectionTool: SelectionTool;
+  poleTool: PoleTool;
+  bipodTool: BipodTool;
+  tripodTool: TripodTool;
+  poleTransformer: PoleTransformer;
+
   poles: Pole[];
+  lashings: Lashing[];
   saveTool: SaveTool;
   detailsTool: DetailsTool;
   floor: Floor;
   imageExporter: imageExporter;
 
-  constructor() {
-    this.sizes = { width: window.innerWidth, height: window.innerHeight };
+  constructor(domElement: HTMLElement) {
+    this.domElement = domElement;
+    this.canvas = document.createElement("canvas");
+    this.domElement.appendChild(this.canvas);
+    this.renderer = new THREE.WebGLRenderer({ canvas: this.canvas });
+    this.scene = new THREE.Scene();
+
+    this.sizes = {
+      width: window.innerWidth,
+      height: window.innerHeight,
+    };
+    this.renderer.setSize(this.sizes.width, this.sizes.height);
+
     window.addEventListener("resize", () => {
       this.sizes.width = window.innerWidth;
       this.sizes.height = window.innerHeight;
@@ -42,10 +64,6 @@ export class Viewer {
         document.exitFullscreen();
       }
     });
-    this.canvas = document.querySelector("canvas.webgl")!;
-    this.renderer = new THREE.WebGLRenderer({ canvas: this.canvas });
-    this.renderer.setSize(this.sizes.width, this.sizes.height);
-    this.scene = new THREE.Scene();
 
     // Camera
     this.camera = new THREE.PerspectiveCamera(
@@ -69,7 +87,7 @@ export class Viewer {
 
     // Floor
     this.floor = new Floor(this);
-    this.floor.setNewFloor(50, 50, "green");
+    this.floor.setNewFloor(50, 50, new THREE.Color("green"));
     // Light
     const ambientLight = new THREE.AmbientLight();
     this.scene.add(ambientLight);
@@ -89,9 +107,26 @@ export class Viewer {
     // Poles
     this.poles = [];
 
+    // Lashings
+    this.lashings = [];
+
     // Tools
-    this.poleTool = new PoleTool(this);
     this.selectionTool = new SelectionTool(this);
     this.selectionTool.activate();
+    this.poleTool = new PoleTool(this);
+    this.bipodTool = new BipodTool(this);
+    this.tripodTool = new TripodTool(this);
+    this.poleTransformer = new PoleTransformer(this);
+    this.scene.add(this.poleTransformer);
+
+    const tick = () => {
+      this.controls.update();
+
+      this.renderer.render(this.scene, this.camera);
+
+      window.requestAnimationFrame(tick);
+    };
+
+    tick();
   }
 }

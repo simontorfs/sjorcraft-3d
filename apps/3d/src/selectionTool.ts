@@ -19,6 +19,7 @@ export class SelectionTool {
     this.active = false;
     this.selectedPole?.deselect();
     this.selectedPole = undefined;
+    document.body.style.cursor = "default";
   }
 
   leftClick() {
@@ -34,5 +35,14 @@ export class SelectionTool {
     this.viewer.poles = this.viewer.poles.filter(
       (pole) => pole !== this.selectedPole
     );
+  }
+
+  setHoveredPole(pole: Pole) {
+    this.hoveredPole = pole;
+    if (this.hoveredPole) {
+      document.body.style.cursor = "pointer";
+    } else {
+      document.body.style.cursor = "default";
+    }
   }
 }
