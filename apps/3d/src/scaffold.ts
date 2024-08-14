@@ -209,7 +209,7 @@ export class Scaffold {
 
   resize(resizeAtTop: boolean, newMinimumLength: number) {
     const oldLength = this.length;
-    this.setLength(newMinimumLength);
+    this.setLength(Math.min(newMinimumLength, 6.0)); // Set max to 6.0 for now. In the future we want to make scaffolds here.
     const lengthDifference = this.length - oldLength;
     this.setDirection(this.direction);
     const positionOffset = this.direction
