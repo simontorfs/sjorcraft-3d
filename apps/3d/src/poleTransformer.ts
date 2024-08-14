@@ -70,7 +70,7 @@ export class PoleTransformer extends THREE.Object3D {
     if (!this.activeScaffold) return;
     for (const handle of this.handles) {
       // @ts-ignore
-      handle.material.color = this.activeScaffold.color;
+      handle.material.color = this.activeScaffold.mainPole.color;
     }
   }
 
