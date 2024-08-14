@@ -78,6 +78,12 @@ export class InputHandler {
       case "q":
         console.log(this.viewer.poles);
         console.log(this.viewer.lashings);
+      case "a": // alles laten zien
+        this.viewer.imageExporter.exportImage();
+      case "w":
+        console.log("camera pos", this.viewer.camera.position);
+        console.log("camera r", this.viewer.camera.rotation);
+        console.log("camera", this.viewer.camera.position);
       default:
         console.log(event.key);
         break;
