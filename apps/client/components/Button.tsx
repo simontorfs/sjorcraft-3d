@@ -1,6 +1,6 @@
 import React from "react";
 
-const Button = ({ extension, icon: Icon }) => {
+const Button = ({ extension, icon: Icon, disabled }) => {
   return (
     <button
       style={{
@@ -10,18 +10,23 @@ const Button = ({ extension, icon: Icon }) => {
         padding: "15px 30px",
         margin: "10px 0px",
         fontSize: "14px",
-        backgroundColor: "#333",
+        backgroundColor: disabled ? "#444" : "#333",
         color: "#fff",
         outline: "1px solid #6b7280",
         borderRadius: "16px",
-        cursor: "pointer",
         boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)",
         width: "100%",
         position: "relative",
+        cursor: disabled ? "not-allowed" : "pointer",
       }}
-      onMouseOver={(e) => (e.currentTarget.style.outline = "4px solid #6b7280")}
+      onMouseOver={(e) =>
+        (e.currentTarget.style.outline = disabled
+          ? "1px soldid #6b7280"
+          : "4px solid #6b7280")
+      }
       onMouseOut={(e) => (e.currentTarget.style.outline = "1px solid #6b7280")}
       onClick={() => {
+        if (disabled) return;
         console.log(extension);
       }}
     >

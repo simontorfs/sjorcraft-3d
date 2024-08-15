@@ -8,9 +8,9 @@ const EditorSidebar = () => {
     <div className="editor-sidebar">
       <PoleTable />
       <hr style={{ border: "1px solid #ccc", margin: "20px 0px" }} />
-      <Button extension=".sjor" icon={ExportIcon} />
-      <Button extension=".dae" icon={ExportIcon} />
-      <Button extension=".jpg" icon={ExportIcon} />
+      <Button extension=".sjor" icon={ExportIcon} disabled={false} />
+      <Button extension=".jpg" icon={ExportIcon} disabled={false} />
+      <Button extension=".dae" icon={ExportIcon} disabled={true} />
     </div>
   );
 };
