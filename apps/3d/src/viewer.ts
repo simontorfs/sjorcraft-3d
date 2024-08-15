@@ -44,14 +44,14 @@ export class Viewer {
     this.scene = new THREE.Scene();
 
     this.sizes = {
-      width: window.innerWidth,
-      height: window.innerHeight,
+      width: domElement.clientWidth,
+      height: domElement.clientHeight,
     };
     this.renderer.setSize(this.sizes.width, this.sizes.height);
 
     window.addEventListener("resize", () => {
-      this.sizes.width = window.innerWidth;
-      this.sizes.height = window.innerHeight;
+      this.sizes.width = domElement.clientWidth;
+      this.sizes.height = domElement.clientHeight;
 
       this.camera.aspect = this.sizes.width / this.sizes.height;
       this.camera.updateProjectionMatrix();

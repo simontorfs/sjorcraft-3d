@@ -7,6 +7,7 @@ import {
   RendererContext,
   RendererContextType,
 } from "../contexts/rendererContext";
+import EditorSidebar from "./EditorSidebar";
 
 const SjorcraftEditor = () => {
   const [rendererContext, setRendererContext] =
@@ -28,7 +29,10 @@ const SjorcraftEditor = () => {
     <div className="sjorcraft-editor">
       <RendererContext.Provider value={rendererContext}>
         <Toolbar />
-        <SjorcraftCanvas />
+        <div className="editor-main-content">
+          <SjorcraftCanvas />
+          <EditorSidebar />
+        </div>
       </RendererContext.Provider>
     </div>
   );

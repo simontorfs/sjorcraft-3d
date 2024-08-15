@@ -10,9 +10,9 @@ const Toolbar = () => {
   const viewer = rendererContext.viewer;
   const [selectedTool, setSelectedTool] = useState("selectiontool");
   return (
-    <nav className="navbar">
+    <nav className="toolbar">
       <p className="logo">SjorCRAFT</p>
-      <div className="nav-buttons">
+      <div className="toolbar-icons">
         <ToolbarItem
           active={selectedTool === "selectiontool"}
           disabled={false}
