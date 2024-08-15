@@ -1,8 +1,9 @@
-import React, { useContext, useRef } from "react";
+import React, { useContext } from "react";
 import PoleTable from "./PoleTable";
 import Button from "./Button";
 import ExportIcon from "../assets/icons/export.svg?react";
 import ImportIcon from "../assets/icons/import.svg?react";
+import CoffeeIcon from "../assets/icons/coffee.svg?react";
 import { RendererContext } from "../contexts/rendererContext";
 
 const EditorSidebar = () => {
@@ -25,6 +26,14 @@ const EditorSidebar = () => {
     viewer?.saveTool.importAll();
   };
 
+  const onCoffeeBreak = () => {
+    window.open(
+      "https://buymeacoffee.com/sjorcraft",
+      "_blank",
+      "noopener,noreferrer"
+    );
+  };
+
   return (
     <div className="editor-sidebar">
       <PoleTable />
@@ -39,11 +48,12 @@ const EditorSidebar = () => {
       />
       <hr style={{ border: "1px solid #ccc", margin: "20px 0px" }} />
       <Button extension=".sjor" icon={ImportIcon} onClick={onImportSjor} />
-      <input
-        type="file"
-        id="file"
-        accept=".sjor"
-        style={{ display: "none" }} // Hide the input element
+      <input type="file" id="file" accept=".sjor" style={{ display: "none" }} />
+      <hr style={{ border: "1px solid #ccc", margin: "20px 0px" }} />
+      <Button
+        extension="Coffee break"
+        icon={CoffeeIcon}
+        onClick={onCoffeeBreak}
       />
     </div>
   );

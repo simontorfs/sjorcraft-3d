@@ -18,6 +18,8 @@ const Button = ({ extension, icon: Icon, disabled = false, onClick }) => {
         width: "100%",
         position: "relative",
         cursor: disabled ? "not-allowed" : "pointer",
+        fontFamily:
+          "'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif",
       }}
       onMouseOver={(e) =>
         (e.currentTarget.style.outline = disabled
