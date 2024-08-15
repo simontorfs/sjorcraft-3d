@@ -51,7 +51,7 @@ body,
 .editor-sidebar {
   background-color: #333;
   color: white;
-  width: 20rem;
+  width: 15rem;
   right: 0;
   height: 100%;
   border-top: 1px solid #6b7280;
@@ -101,6 +101,23 @@ body,
 }
 
 .data-table td {
-  border: 1px solid #484d57;
+  text-align: center;
   padding: 4px;
+}
+
+.data-table th:nth-child(1),
+.data-table td:nth-child(1) {
+  width: 50px; /* Set width for the first column */
+}
+
+.data-table th:nth-child(2),
+.data-table td:nth-child(2) {
+  width: 400px; /* Set width for the second column */
+  text-align: left;
+}
+
+.data-table th:nth-child(3),
+.data-table td:nth-child(3) {
+  width: 200px;
+  text-align: center;
 }
