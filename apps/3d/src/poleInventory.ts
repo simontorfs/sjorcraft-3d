@@ -24,6 +24,18 @@ export class PoleInventory {
     });
   }
 
+  removePole(poleToRemove: Pole) {
+    this.viewer.scene.remove(poleToRemove);
+    this.poles = this.poles.filter((pole) => pole !== poleToRemove);
+  }
+
+  removeAll() {
+    for (const pole of this.poles) {
+      this.viewer.scene.remove(pole);
+    }
+    this.poles = [];
+  }
+
   getPolesGroupedByLength() {
     const poles: Pole[] = this.poles;
     const polesGroupedByLength: IPolesDetail[] = [];
@@ -51,17 +63,5 @@ export class PoleInventory {
       //@ts-ignore
       pole.mesh.material.color = new THREE.Color(1, 1, 1);
     }
-  }
-
-  removeAll() {
-    for (const pole of this.poles) {
-      this.viewer.scene.remove(pole);
-    }
-    this.poles = [];
-  }
-
-  removePole(poleToRemove: Pole) {
-    this.viewer.scene.remove(poleToRemove);
-    this.poles = this.poles.filter((pole) => pole !== poleToRemove);
   }
 }
