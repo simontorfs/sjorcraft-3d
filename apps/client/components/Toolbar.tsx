@@ -14,6 +14,7 @@ const Toolbar = () => {
       <p className="logo">SjorCRAFT</p>
       <div className="toolbar-icons">
         <Tool
+          style={{ margin: "0 50px 0 0" }}
           active={selectedTool === "selectiontool"}
           disabled={false}
           icon={ArrowIcon}
