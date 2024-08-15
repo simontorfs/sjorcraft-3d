@@ -54,6 +54,7 @@ export class InputHandler {
         break;
       case "e":
         this.viewer.saveTool.exportAll("demo");
+        this.viewer.saveTool.exportToCollada();
         break;
       case "i":
         this.viewer.saveTool.importAll();

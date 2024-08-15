@@ -1,3 +1,4 @@
+import { ColladaExporter } from "https://cdn.jsdelivr.net/npm/three@0.153.0/examples/jsm/exporters/ColladaExporter.js";
 import { Pole } from "./pole";
 import * as THREE from "three";
 import { Viewer } from "./viewer";
@@ -138,6 +139,17 @@ export class SaveTool {
         this.viewer.lashings.push(newLashing);
       }
     });
+  }
+
+  exportToCollada() {
+    const exporter = new THREE.ColladaExporter();
+    const collada = exporter.parse(this.viewer.scene);
+    const blob = new Blob([collada.data], { type: "text/xml" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = "model.dae";
+    a.click();
   }
 
   //clear local storage
