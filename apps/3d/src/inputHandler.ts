@@ -26,37 +26,8 @@ export class InputHandler {
 
   onKeyDown(event: any) {
     switch (event.key) {
-      case "h":
-        this.onActivateTool("selectiontool");
-        break;
-      case "j":
-        this.onActivateTool("poletool");
-        break;
-      case "k":
-        this.onActivateTool("bipodtool");
-        break;
-      case "l":
-        this.viewer.selectionTool.deactivate();
-        this.viewer.poleTool.deactivate();
-        this.viewer.bipodTool.deactivate();
-
-        // Activate tripodTool
-        break;
-      case "m":
-        this.viewer.selectionTool.deactivate();
-        this.viewer.poleTool.deactivate();
-        this.viewer.bipodTool.deactivate();
-
-        // Activate polypedastraTool
-        break;
       case "Delete":
         this.viewer.selectionTool.delete();
-        break;
-      case "e":
-        this.viewer.saveTool.exportAll("demo");
-        break;
-      case "i":
-        this.viewer.saveTool.importAll();
         break;
       case "r":
         this.viewer.saveTool.removeAllPoles();
@@ -72,15 +43,6 @@ export class InputHandler {
         const width = Number(prompt("Enter the width of the floor"));
         this.viewer.floor.setDimensions(length, width);
         break;
-      case "q":
-        console.log(this.viewer.poleInventory.poles);
-        console.log(this.viewer.lashings);
-      case "a": // alles laten zien
-        this.viewer.imageExporter.exportImage();
-      case "w":
-        console.log("camera pos", this.viewer.camera.position);
-        console.log("camera r", this.viewer.camera.rotation);
-        console.log("camera", this.viewer.camera.position);
       default:
         console.log(event.key);
         break;
