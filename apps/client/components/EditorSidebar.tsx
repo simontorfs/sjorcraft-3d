@@ -1,7 +1,8 @@
-import React, { useContext } from "react";
+import React, { useContext, useRef } from "react";
 import PoleTable from "./PoleTable";
 import Button from "./Button";
 import ExportIcon from "../assets/icons/export.svg?react";
+import ImportIcon from "../assets/icons/import.svg?react";
 import { RendererContext } from "../contexts/rendererContext";
 
 const EditorSidebar = () => {
@@ -20,6 +21,10 @@ const EditorSidebar = () => {
     console.log("Exporting to dae");
   };
 
+  const onImportSjor = () => {
+    viewer?.saveTool.importAll();
+  };
+
   return (
     <div className="editor-sidebar">
       <PoleTable />
@@ -31,6 +36,14 @@ const EditorSidebar = () => {
         icon={ExportIcon}
         disabled={true}
         onClick={onExportDae}
+      />
+      <hr style={{ border: "1px solid #ccc", margin: "20px 0px" }} />
+      <Button extension=".sjor" icon={ImportIcon} onClick={onImportSjor} />
+      <input
+        type="file"
+        id="file"
+        accept=".sjor"
+        style={{ display: "none" }} // Hide the input element
       />
     </div>
   );
