@@ -80,7 +80,7 @@ export class SaveTool {
     a.download = `${new Date()
       .toISOString()
       .slice(0, 10)
-      .replace(/-/g, "")}-${name}_poles.sjor`;
+      .replace(/-/g, "")}-${name}.sjor`;
     a.click();
   }
   exportPoles(name: string) {
@@ -95,7 +95,7 @@ export class SaveTool {
     a.download = `${new Date()
       .toISOString()
       .slice(0, 10)
-      .replace(/-/g, "")}-${name}_poles.sjor`;
+      .replace(/-/g, "")}-${name}.sjor`;
     a.click();
   }
 

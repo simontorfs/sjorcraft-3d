@@ -1,6 +1,6 @@
 import React from "react";
 
-const Button = ({ extension, icon: Icon, disabled }) => {
+const Button = ({ extension, icon: Icon, disabled = false, onClick }) => {
   return (
     <button
       style={{
@@ -27,7 +27,7 @@ const Button = ({ extension, icon: Icon, disabled }) => {
       onMouseOut={(e) => (e.currentTarget.style.outline = "1px solid #6b7280")}
       onClick={() => {
         if (disabled) return;
-        console.log(extension);
+        onClick();
       }}
     >
       <span
