@@ -26,11 +26,13 @@ export class SaveTool {
           const newPole = new Pole();
           newPole.loadFromJson(pole);
           this.viewer.scene.add(newPole);
-          this.viewer.poles.push(newPole);
+          this.viewer.poleInventory.addPole(newPole);
         });
         data.lashings.forEach((lashing: any) => {
           const newLashing = new Lashing();
-          if (newLashing.loadFromJson(lashing, this.viewer.poles)) {
+          if (
+            newLashing.loadFromJson(lashing, this.viewer.poleInventory.poles)
+          ) {
             this.viewer.lashings.push(newLashing);
           }
         });
@@ -56,7 +58,7 @@ export class SaveTool {
           const newPole = new Pole();
           newPole.loadFromJson(pole);
           this.viewer.scene.add(newPole);
-          this.viewer.poles.push(newPole);
+          this.viewer.poleInventory.addPole(newPole);
         });
       };
       reader.readAsText(file);
@@ -64,7 +66,9 @@ export class SaveTool {
   }
 
   exportAll(name: string) {
-    const poles = this.viewer.poles.map((pole) => pole.saveToJson());
+    const poles = this.viewer.poleInventory.poles.map((pole) =>
+      pole.saveToJson()
+    );
     const lashings = this.viewer.lashings.map((lashing) =>
       lashing.saveToJson()
     );
@@ -80,7 +84,9 @@ export class SaveTool {
     a.click();
   }
   exportPoles(name: string) {
-    const poles = this.viewer.poles.map((pole) => pole.saveToJson());
+    const poles = this.viewer.poleInventory.poles.map((pole) =>
+      pole.saveToJson()
+    );
     const data = JSON.stringify(poles, null, 2);
     const blob = new Blob([data], { type: "text/json" });
     const url = URL.createObjectURL(blob);
@@ -94,14 +100,13 @@ export class SaveTool {
   }
 
   removeAllPoles() {
-    this.viewer.poles.forEach((pole) => {
-      this.viewer.scene.remove(pole);
-    });
-    this.viewer.poles = [];
+    this.viewer.poleInventory.removeAll();
   }
 
   savePolesToLocalStorage() {
-    const poles = this.viewer.poles.map((pole) => pole.saveToJson());
+    const poles = this.viewer.poleInventory.poles.map((pole) =>
+      pole.saveToJson()
+    );
     localStorage.setItem("poles", JSON.stringify(poles));
   }
 
@@ -112,7 +117,7 @@ export class SaveTool {
       const newPole = new Pole();
       newPole.loadFromJson(pole);
       this.viewer.scene.add(newPole);
-      this.viewer.poles.push(newPole);
+      this.viewer.poleInventory.addPole(newPole);
     });
   }
   removeAllLashings() {
@@ -134,7 +139,7 @@ export class SaveTool {
     this.removeAllLashings();
     lashings.forEach((lashing: any) => {
       const newLashing = new Lashing();
-      if (newLashing.loadFromJson(lashing, this.viewer.poles)) {
+      if (newLashing.loadFromJson(lashing, this.viewer.poleInventory.poles)) {
         this.viewer.lashings.push(newLashing);
       }
     });

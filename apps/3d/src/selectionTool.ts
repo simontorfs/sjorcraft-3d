@@ -31,10 +31,7 @@ export class SelectionTool {
 
   delete() {
     if (!this.active || !this.selectedPole) return;
-    this.viewer.scene.remove(this.selectedPole);
-    this.viewer.poles = this.viewer.poles.filter(
-      (pole) => pole !== this.selectedPole
-    );
+    this.viewer.poleInventory.removePole(this.selectedPole);
   }
 
   setHoveredPole(pole: Pole) {

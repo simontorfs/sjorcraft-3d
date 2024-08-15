@@ -47,10 +47,7 @@ export class BipodTool {
     this.removeHorizontalHelperLines();
     this.removeVerticalHelperLine();
     this.resetParameters();
-    for (const pole of this.viewer.poles) {
-      //@ts-ignore
-      pole.mesh.material.color = new THREE.Color(1, 1, 1);
-    }
+    this.viewer.poleInventory.resetAllColors();
   }
 
   resetParameters() {
@@ -75,8 +72,8 @@ export class BipodTool {
     } else {
       if (this.bipodIsColliding) return;
       this.removeVerticalHelperLine();
-      this.viewer.poles.push(this.pole1);
-      this.viewer.poles.push(this.pole2);
+      this.viewer.poleInventory.addPole(this.pole1);
+      this.viewer.poleInventory.addPole(this.pole2);
       this.pole1 = new Pole();
       this.pole2 = new Pole();
       this.viewer.scene.add(this.pole1);
@@ -237,7 +234,7 @@ export class BipodTool {
     this.bipodIsColliding = false;
     document.body.style.cursor = "default";
 
-    for (const pole of this.viewer.poles) {
+    for (const pole of this.viewer.poleInventory.poles) {
       if (this.pole1.overlaps(pole) || this.pole2.overlaps(pole)) {
         // @ts-ignore
         pole.mesh.material.color = new THREE.Color(1, 0, 0);

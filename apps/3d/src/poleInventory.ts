@@ -1,19 +1,31 @@
 import { Pole } from "./pole";
-import * as THREE from "three";
 import { Viewer } from "./viewer";
+import * as THREE from "three";
 
 interface IPolesDetail {
   length: number;
   number: number;
   color: string;
 }
-export class DetailsTool {
+
+export class PoleInventory {
   viewer: Viewer;
+  poles: Pole[] = [];
+
   constructor(viewer: Viewer) {
     this.viewer = viewer;
   }
+
+  addPole(pole: Pole) {
+    this.poles.push(pole);
+    (this.viewer.scene as any).dispatchEvent({
+      type: "new_pole_placed",
+      value: { pole },
+    });
+  }
+
   getPolesGroupedByLength() {
-    const poles: Pole[] = this.viewer.poles;
+    const poles: Pole[] = this.poles;
     const polesGroupedByLength: IPolesDetail[] = [];
     const allowedLengths: number[] = [1.0, 1.5, 2.0, 2.5, 3.0, 4.0, 5.0, 6.0];
     const colors: THREE.Color[] = [
@@ -42,5 +54,24 @@ export class DetailsTool {
       });
     }
     return polesGroupedByLength;
+  }
+
+  resetAllColors() {
+    for (const pole of this.poles) {
+      //@ts-ignore
+      pole.mesh.material.color = new THREE.Color(1, 1, 1);
+    }
+  }
+
+  removeAll() {
+    for (const pole of this.poles) {
+      this.viewer.scene.remove(pole);
+    }
+    this.poles = [];
+  }
+
+  removePole(poleToRemove: Pole) {
+    this.viewer.scene.remove(poleToRemove);
+    this.poles = this.poles.filter((pole) => pole !== poleToRemove);
   }
 }

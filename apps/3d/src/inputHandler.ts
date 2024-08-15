@@ -58,9 +58,6 @@ export class InputHandler {
       case "i":
         this.viewer.saveTool.importAll();
         break;
-      case "c":
-        this.viewer.detailsTool.getPolesGroupedByLength();
-        break;
       case "r":
         this.viewer.saveTool.removeAllPoles();
         this.viewer.saveTool.removeAllLashings();
@@ -76,7 +73,7 @@ export class InputHandler {
         this.viewer.floor.setDimensions(length, width);
         break;
       case "q":
-        console.log(this.viewer.poles);
+        console.log(this.viewer.poleInventory.poles);
         console.log(this.viewer.lashings);
       case "a": // alles laten zien
         this.viewer.imageExporter.exportImage();
@@ -184,7 +181,7 @@ export class InputHandler {
     );
 
     const intersects = raycaster.intersectObjects(
-      this.viewer.poles.map((pole) => pole.mesh)
+      this.viewer.poleInventory.poles.map((pole) => pole.mesh)
     );
     if (intersects.length) {
       return intersects[0];

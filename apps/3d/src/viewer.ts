@@ -1,10 +1,8 @@
 import * as THREE from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
 import { InputHandler } from "./inputHandler";
-import { Pole } from "./pole";
 import { PoleTool } from "./poleTool";
 import { SaveTool } from "./saveTool";
-import { DetailsTool } from "./detailsTool";
 import { SelectionTool } from "./selectionTool";
 import { Floor } from "./floor";
 import { ImageExporter } from "./imageExporter";
@@ -12,6 +10,7 @@ import { BipodTool } from "./bipodTool";
 import { Lashing } from "./lashing";
 import { TripodTool } from "./tripodTool";
 import { PoleTransformer } from "./poleTransformer";
+import { PoleInventory } from "./poleInventory";
 
 export class Viewer {
   domElement: HTMLElement;
@@ -29,10 +28,9 @@ export class Viewer {
   tripodTool: TripodTool;
   poleTransformer: PoleTransformer;
 
-  poles: Pole[];
+  poleInventory: PoleInventory;
   lashings: Lashing[];
   saveTool: SaveTool;
-  detailsTool: DetailsTool;
   floor: Floor;
   imageExporter: ImageExporter;
 
@@ -95,9 +93,6 @@ export class Viewer {
     //add background
     this.scene.background = new THREE.Color(0x87ceeb);
 
-    // Details tool
-    this.detailsTool = new DetailsTool(this);
-
     // Save tool
     this.saveTool = new SaveTool(this);
 
@@ -105,7 +100,7 @@ export class Viewer {
     this.imageExporter = new ImageExporter(this);
 
     // Poles
-    this.poles = [];
+    this.poleInventory = new PoleInventory(this);
 
     // Lashings
     this.lashings = [];

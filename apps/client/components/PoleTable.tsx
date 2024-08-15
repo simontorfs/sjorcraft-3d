@@ -1,11 +1,9 @@
-import React, { useContext } from "react";
-import { RendererContext } from "../contexts/rendererContext";
+import React from "react";
 import ColorIndicator from "./ColorIndicator";
+import { usePoles } from "../src/hooks/usePoles";
 
 const PoleTable = () => {
-  const rendererContext = useContext(RendererContext);
-  const viewer = rendererContext?.viewer;
-  const poles = viewer?.detailsTool.getPolesGroupedByLength().reverse();
+  const poles = usePoles();
   return (
     <table className="data-table">
       <thead>

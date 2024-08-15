@@ -27,7 +27,7 @@ export class PoleTool {
     // load poles from local storage if available else add demo poles
     if (localStorage.getItem("poles") !== null) {
       this.viewer.saveTool.loadPolesFromLocalStorage();
-    } else if (this.viewer.poles.length === 0) {
+    } else if (this.viewer.poleInventory.poles.length === 0) {
       this.addDemoPoles();
     }
     if (localStorage.getItem("lashes") !== null) {
@@ -38,7 +38,7 @@ export class PoleTool {
   addDemoPoles() {
     const demoPole1 = new Pole();
     this.viewer.scene.add(demoPole1);
-    this.viewer.poles.push(demoPole1);
+    this.viewer.poleInventory.addPole(demoPole1);
     demoPole1.position.x = -0.07;
     demoPole1.position.y = 1.74;
     demoPole1.position.z = 0.1;
@@ -47,7 +47,7 @@ export class PoleTool {
 
     const demoPole2 = new Pole();
     this.viewer.scene.add(demoPole2);
-    this.viewer.poles.push(demoPole2);
+    this.viewer.poleInventory.addPole(demoPole2);
     demoPole2.position.x = 0.9;
     demoPole2.position.y = 1.74;
     demoPole2.position.z = 0.93;
@@ -56,7 +56,7 @@ export class PoleTool {
 
     const demoPole3 = new Pole();
     this.viewer.scene.add(demoPole3);
-    this.viewer.poles.push(demoPole3);
+    this.viewer.poleInventory.addPole(demoPole3);
     demoPole3.position.x = 0.07;
     demoPole3.position.y = 1.74;
     demoPole3.position.z = 1.9;
@@ -65,7 +65,7 @@ export class PoleTool {
 
     const demoPole4 = new Pole();
     this.viewer.scene.add(demoPole4);
-    this.viewer.poles.push(demoPole4);
+    this.viewer.poleInventory.addPole(demoPole4);
     demoPole4.position.x = -0.9;
     demoPole4.position.y = 1.74;
     demoPole4.position.z = 1.07;
@@ -93,10 +93,7 @@ export class PoleTool {
     this.newLashing = undefined;
     this.lastPole = undefined;
 
-    for (const pole of this.viewer.poles) {
-      //@ts-ignore
-      pole.mesh.material.color = new THREE.Color(1, 1, 1);
-    }
+    this.viewer.poleInventory.resetAllColors();
   }
 
   drawPoleWhileHoveringGound(groundPosition: THREE.Vector3) {
@@ -249,7 +246,7 @@ export class PoleTool {
     if (this.activePoleIsColliding) return;
     if (this.fixedLashing || this.hoveringGround) {
       this.commitLashings();
-      this.viewer.poles.push(this.activePole);
+      this.viewer.poleInventory.addPole(this.activePole);
       this.lastPole = this.activePole;
 
       this.activePole = new Pole();
@@ -289,7 +286,7 @@ export class PoleTool {
     this.activePoleIsColliding = false;
     document.body.style.cursor = "default";
 
-    const polesToCheck = this.viewer.poles.filter(
+    const polesToCheck = this.viewer.poleInventory.poles.filter(
       (p) =>
         p !== this.fixedLashing?.fixedPole && p !== this.newLashing?.fixedPole
     );

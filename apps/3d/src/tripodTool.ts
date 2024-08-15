@@ -80,9 +80,9 @@ export class TripodTool {
     } else {
       if (this.tripodIsColliding) return;
       this.removeVerticalHelperLine();
-      this.viewer.poles.push(this.pole1);
-      this.viewer.poles.push(this.pole2);
-      this.viewer.poles.push(this.pole3);
+      this.viewer.poleInventory.addPole(this.pole1);
+      this.viewer.poleInventory.addPole(this.pole2);
+      this.viewer.poleInventory.addPole(this.pole3);
       this.pole1 = new Pole();
       this.pole2 = new Pole();
       this.pole3 = new Pole();
@@ -358,7 +358,7 @@ export class TripodTool {
     this.tripodIsColliding = false;
     document.body.style.cursor = "default";
 
-    for (const pole of this.viewer.poles) {
+    for (const pole of this.viewer.poleInventory.poles) {
       if (
         this.pole1.overlaps(pole) ||
         this.pole2.overlaps(pole) ||
