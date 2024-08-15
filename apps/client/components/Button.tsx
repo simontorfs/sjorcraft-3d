@@ -1,6 +1,6 @@
 import React from "react";
 
-const ExportButton = ({ extension, icon: Icon }) => {
+const Button = ({ extension, icon: Icon }) => {
   return (
     <button
       style={{
@@ -38,4 +38,4 @@ const ExportButton = ({ extension, icon: Icon }) => {
   );
 };
 
-export default ExportButton;
+export default Button;
