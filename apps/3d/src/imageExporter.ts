@@ -22,7 +22,7 @@ export class ImageExporter {
   exportImage() {
     // Setting the scene
     const boundingBox = new THREE.Box3();
-    this.viewer.poles.forEach((obj) => {
+    this.viewer.poleInventory.poles.forEach((obj) => {
       const objBoundingBox = new THREE.Box3().setFromObject(obj);
       boundingBox.union(objBoundingBox);
     });

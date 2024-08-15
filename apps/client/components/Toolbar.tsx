@@ -3,17 +3,18 @@ import BipodIcon from "../assets/icons/bipod.svg?react";
 import PoleIcon from "../assets/icons/pole.svg?react";
 import TripodIcon from "../assets/icons/tripod.svg?react";
 import React, { useContext, useState } from "react";
-import { ToolbarItem } from "./ToolbarItem";
+import { Tool } from "./ToolbarItem";
 import { RendererContext } from "../contexts/rendererContext";
 const Toolbar = () => {
   const rendererContext = useContext(RendererContext);
   const viewer = rendererContext.viewer;
   const [selectedTool, setSelectedTool] = useState("selectiontool");
   return (
-    <nav className="navbar">
+    <nav className="toolbar">
       <p className="logo">SjorCRAFT</p>
-      <div className="nav-buttons">
-        <ToolbarItem
+      <div className="toolbar-icons">
+        <Tool
+          style={{ margin: "0 50px 0 0" }}
           active={selectedTool === "selectiontool"}
           disabled={false}
           icon={ArrowIcon}
@@ -22,7 +23,7 @@ const Toolbar = () => {
             setSelectedTool("selectiontool");
           }}
         />
-        <ToolbarItem
+        <Tool
           active={selectedTool === "poletool"}
           disabled={false}
           icon={PoleIcon}
@@ -31,7 +32,7 @@ const Toolbar = () => {
             setSelectedTool("poletool");
           }}
         />
-        <ToolbarItem
+        <Tool
           active={selectedTool === "bipodtool"}
           disabled={false}
           icon={BipodIcon}
@@ -40,7 +41,7 @@ const Toolbar = () => {
             setSelectedTool("bipodtool");
           }}
         />
-        <ToolbarItem
+        <Tool
           active={selectedTool === "tripodtool"}
           disabled={false}
           icon={TripodIcon}

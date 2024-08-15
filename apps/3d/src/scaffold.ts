@@ -278,13 +278,13 @@ export class Scaffold {
       ...this.extensionPoles,
       ...this.splintPoles,
     ]) {
-      viewer.poles.push(pole);
+      viewer.poleInventory.addPole(pole);
     }
   }
 
   addExtensionToViewer(viewer: Viewer) {
     for (const pole of [...this.extensionPoles, ...this.splintPoles]) {
-      viewer.poles.push(pole);
+      viewer.poleInventory.addPole(pole);
     }
   }
 }

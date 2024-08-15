@@ -12,7 +12,7 @@ interface ToolbarItemProps {
   disabled?: boolean;
   icon: React.FC2;
 }
-export const ToolbarItem: React.FC<ToolbarItemProps> = ({
+export const Tool: React.FC<ToolbarItemProps> = ({
   active,
   icon: Icon,
   disabled,
@@ -20,7 +20,7 @@ export const ToolbarItem: React.FC<ToolbarItemProps> = ({
   ...props
 }) => {
   return (
-    <div {...props} className={active ? "toolbar-item-active" : "toolbar-item"}>
+    <div {...props} className={active ? "toolbar-icon-active" : "toolbar-icon"}>
       <Icon />
     </div>
   );
