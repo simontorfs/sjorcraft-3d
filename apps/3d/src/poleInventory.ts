@@ -27,6 +27,10 @@ export class PoleInventory {
   removePole(poleToRemove: Pole) {
     this.viewer.scene.remove(poleToRemove);
     this.poles = this.poles.filter((pole) => pole !== poleToRemove);
+    (this.viewer.scene as any).dispatchEvent({
+      type: "pole_removed",
+      value: { poleToRemove },
+    });
   }
 
   removeAll() {

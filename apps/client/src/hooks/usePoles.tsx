@@ -18,9 +18,19 @@ export const usePoles = () => {
     [viewer]
   );
 
-  const onPoleMove = useCallback(({ value }: { value?: { pole: Pole } }) => {
-    setPoles(viewer?.poleInventory.getPolesGroupedByLength());
-  }, []);
+  const onPoleMove = useCallback(
+    ({ value }: { value?: { pole: Pole } }) => {
+      setPoles(viewer?.poleInventory.getPolesGroupedByLength());
+    },
+    [viewer]
+  );
+
+  const onPoleRemove = useCallback(
+    ({ value }: { value?: { pole: Pole } }) => {
+      setPoles(viewer?.poleInventory.getPolesGroupedByLength());
+    },
+    [viewer]
+  );
 
   useEffect(() => {
     if (!viewer) return;
@@ -35,6 +45,14 @@ export const usePoles = () => {
     viewer.scene.addEventListener("pole_moved", onPoleMove);
     return () => {
       viewer.scene.removeEventListener("pole_moved", onPoleMove);
+    };
+  }, [onPoleMove, viewer]);
+
+  useEffect(() => {
+    if (!viewer) return;
+    viewer.scene.addEventListener("pole_removed", onPoleRemove);
+    return () => {
+      viewer.scene.removeEventListener("pole_removed", onPoleRemove);
     };
   }, [onPoleMove, viewer]);
 
