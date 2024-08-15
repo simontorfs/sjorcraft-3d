@@ -1,5 +1,19 @@
 import * as THREE from "three";
 
+export const allowedLengths: number[] = [
+  1.0, 1.5, 2.0, 2.5, 3.0, 4.0, 5.0, 6.0,
+];
+export const colors: THREE.Color[] = [
+  new THREE.Color(0xffa500),
+  new THREE.Color(0x00ff00),
+  new THREE.Color(0xff0000),
+  new THREE.Color(0x037c6e),
+  new THREE.Color(0xffffff),
+  new THREE.Color(0x0000ff),
+  new THREE.Color(0xffff00),
+  new THREE.Color(0x000000),
+];
+
 export class Pole extends THREE.Object3D {
   mesh: THREE.Mesh;
   capTop: THREE.Mesh;
@@ -117,18 +131,6 @@ export class Pole extends THREE.Object3D {
   }
 
   setLength(minimumLength: number) {
-    const allowedLengths: number[] = [1.0, 1.5, 2.0, 2.5, 3.0, 4.0, 5.0, 6.0];
-    const colors: THREE.Color[] = [
-      new THREE.Color(0xffa500),
-      new THREE.Color(0x00ff00),
-      new THREE.Color(0xff0000),
-      new THREE.Color(0x037c6e),
-      new THREE.Color(0xffffff),
-      new THREE.Color(0x0000ff),
-      new THREE.Color(0xffff00),
-      new THREE.Color(0x000000),
-    ];
-
     // if the lenth is to big, just set it to the biggest lenght
     this.length = allowedLengths[allowedLengths.length - 1];
     this.color = colors[colors.length - 1];
