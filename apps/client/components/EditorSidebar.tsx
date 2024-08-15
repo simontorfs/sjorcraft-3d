@@ -1,10 +1,10 @@
 import React from "react";
+import PoleTable from "./PoleTable";
 
 const EditorSidebar = () => {
   return (
     <div className="editor-sidebar">
-      <h2>Right Panel</h2>
-      <p>This is the right panel.</p>
+      <PoleTable />
     </div>
   );
 };

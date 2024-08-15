@@ -94,3 +94,13 @@ body,
 .toolbar-icon:hover {
   outline: 1px solid #6b7280;
 }
+
+.data-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.data-table td {
+  border: 1px solid #484d57;
+  padding: 4px;
+}

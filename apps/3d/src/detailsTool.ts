@@ -3,7 +3,9 @@ import * as THREE from "three";
 import { Viewer } from "./viewer";
 
 interface IPolesDetail {
-  [key: number]: number;
+  length: number;
+  number: number;
+  color: THREE.Color;
 }
 export class DetailsTool {
   viewer: Viewer;
@@ -12,15 +14,22 @@ export class DetailsTool {
   }
   getPolesGroupedByLength() {
     const poles: Pole[] = this.viewer.poles;
-    const polesGroupedByLength: IPolesDetail = {};
-    poles.forEach((pole) => {
-      if (polesGroupedByLength[pole.length]) {
-        polesGroupedByLength[pole.length]++;
-      } else {
-        polesGroupedByLength[pole.length] = 1;
-      }
-    });
-    console.log("Poles grouped by length: ", polesGroupedByLength);
+    const polesGroupedByLength: IPolesDetail[] = [];
+    const allowedLengths: number[] = [1.0, 1.5, 2.0, 2.5, 3.0, 4.0, 5.0, 6.0];
+    for (length of allowedLengths) {
+      const number = poles.reduce((acc, pole) => {
+        if (pole.length === length) {
+          return acc + 1;
+        } else {
+          return acc;
+        }
+      }, 0);
+      polesGroupedByLength.push({
+        length,
+        number,
+        color: new THREE.Color(1, 1, 0),
+      });
+    }
     return polesGroupedByLength;
   }
 }
