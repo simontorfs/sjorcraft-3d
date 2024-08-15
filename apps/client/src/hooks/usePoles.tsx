@@ -12,21 +12,21 @@ export const usePoles = () => {
   }, [viewer]);
 
   const onPolePlace = useCallback(
-    ({ value }: { value?: { pole: Pole } }) => {
+    ({ pole }: { pole: Pole }) => {
       setPoles(viewer?.poleInventory.getPolesGroupedByLength());
     },
     [viewer]
   );
 
   const onPoleMove = useCallback(
-    ({ value }: { value?: { pole: Pole } }) => {
+    ({ pole }: { pole: Pole }) => {
       setPoles(viewer?.poleInventory.getPolesGroupedByLength());
     },
     [viewer]
   );
 
   const onPoleRemove = useCallback(
-    ({ value }: { value?: { pole: Pole } }) => {
+    ({ pole }: { pole: Pole }) => {
       setPoles(viewer?.poleInventory.getPolesGroupedByLength());
     },
     [viewer]

@@ -124,6 +124,10 @@ export class PoleTransformer extends THREE.Object3D {
     } else {
       this.scaleHandleBottom.position.y = -newDistTargetToPoleCenter;
     }
+    (this.viewer.scene as any).dispatchEvent({
+      type: "pole_moved",
+      pole: this.activePole,
+    });
   }
 
   getTargetOnPoleAxis(dragPositionOnActivePole: THREE.Vector3) {

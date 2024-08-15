@@ -20,7 +20,7 @@ export class PoleInventory {
     this.poles.push(pole);
     (this.viewer.scene as any).dispatchEvent({
       type: "new_pole_placed",
-      value: { pole },
+      pole: pole,
     });
   }
 
@@ -29,7 +29,7 @@ export class PoleInventory {
     this.poles = this.poles.filter((pole) => pole !== poleToRemove);
     (this.viewer.scene as any).dispatchEvent({
       type: "pole_removed",
-      value: { poleToRemove },
+      pole: poleToRemove,
     });
   }
 
