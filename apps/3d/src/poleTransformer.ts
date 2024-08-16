@@ -137,7 +137,7 @@ export class PoleTransformer extends THREE.Object3D {
     }
     (this.viewer.scene as any).dispatchEvent({
       type: "pole_moved",
-      pole: this.activePole,
+      pole: this.activeScaffold.mainPole,
     });
   }
 
