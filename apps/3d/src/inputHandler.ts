@@ -119,9 +119,7 @@ export class InputHandler {
     } else if (this.viewer.selectionTool.active) {
       this.viewer.selectionTool.setHoveredPole(hoveredPole);
       if (this.hoveredHandle && this.mouseDown) {
-        //if (poleIntersect) {
         this.viewer.poleTransformer.dragHandle(this.hoveredHandle);
-        //}
       } else {
         this.viewer.selectionTool.hoveredPole = hoveredPole;
         this.viewer.poleTransformer.setActivePole(hoveredPole);
