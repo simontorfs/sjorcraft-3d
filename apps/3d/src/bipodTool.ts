@@ -24,7 +24,6 @@ export class BipodTool {
   parallelHelperLine: HelperLine = new HelperLine();
   perpendicularHelperLine: HelperLine = new HelperLine();
   verticalHelperLine: HelperLine = new HelperLine();
-  helperPlane: THREE.Plane = new THREE.Plane();
 
   bipodIsColliding: boolean = false;
 
@@ -107,7 +106,7 @@ export class BipodTool {
     } else if (!this.lashPositionPlaced) {
       this.drawThirdStep(groundPosition);
     } else {
-      this.drawFourthStep(groundPosition);
+      this.drawFourthStep();
     }
     this.checkCollisions();
   }
@@ -139,14 +138,9 @@ export class BipodTool {
     this.calculatePositions();
   }
 
-  drawFourthStep(groundPosition: THREE.Vector3) {
-    this.setHelperPlane();
-    const lineOfSightToMouse = new THREE.Line3(
-      this.viewer.camera.position,
-      groundPosition
-    );
-    let target: THREE.Vector3 = new THREE.Vector3();
-    this.helperPlane.intersectLine(lineOfSightToMouse, target);
+  drawFourthStep() {
+    let target = this.getTarget();
+
     this.lashHeight = target.y;
 
     this.calculatePositions();
@@ -227,17 +221,6 @@ export class BipodTool {
     this.viewer.scene.remove(this.verticalHelperLine);
   }
 
-  setHelperPlane() {
-    const lineOfSightToLashing = this.viewer.camera.position
-      .clone()
-      .sub(this.lashPosition)
-      .normalize();
-    this.helperPlane.setFromNormalAndCoplanarPoint(
-      lineOfSightToLashing,
-      this.lashPosition
-    );
-  }
-
   checkCollisions() {
     this.bipodIsColliding = false;
     document.body.style.cursor = "default";
@@ -255,5 +238,33 @@ export class BipodTool {
         pole.mesh.material.color = new THREE.Color(1, 1, 1);
       }
     }
+  }
+
+  getTarget() {
+    const raycaster = new THREE.Raycaster();
+    raycaster.setFromCamera(
+      new THREE.Vector2(
+        this.viewer.inputHandler.cursor.x * 2,
+        this.viewer.inputHandler.cursor.y * 2
+      ),
+      this.viewer.camera
+    );
+    const w0 = raycaster.ray.origin
+      .clone()
+      .sub(this.lashPositionProjectedOnFloor);
+    const direction = new THREE.Vector3(0, 1, 0);
+    const a = direction.dot(direction);
+    const b = direction.dot(raycaster.ray.direction);
+    const c = raycaster.ray.direction.dot(raycaster.ray.direction);
+    const dDotW0 = direction.dot(w0);
+    const rayDirectionDotW0 = raycaster.ray.direction.dot(w0);
+
+    const denom = a * c - b * b;
+    const s = (b * rayDirectionDotW0 - c * dDotW0) / denom;
+    const target = this.lashPositionProjectedOnFloor
+      .clone()
+      .sub(direction.clone().multiplyScalar(s));
+
+    return target;
   }
 }
