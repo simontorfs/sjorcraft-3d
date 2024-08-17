@@ -29,7 +29,6 @@ export class TripodTool {
   boundaryHelperLine31: HelperLine = new HelperLine();
 
   verticalHelperLine: HelperLine = new HelperLine();
-  helperPlane: THREE.Plane = new THREE.Plane();
 
   tripodIsColliding: boolean = false;
 
@@ -122,7 +121,7 @@ export class TripodTool {
     } else if (!this.lashPositionPlaced) {
       this.drawFourthStep(groundPosition);
     } else {
-      this.drawFifthStep(groundPosition);
+      this.drawFifthStep();
     }
     this.checkCollisions();
   }
@@ -190,14 +189,12 @@ export class TripodTool {
     this.optimisePositions();
   }
 
-  drawFifthStep(groundPosition: THREE.Vector3) {
-    this.setHelperPlane();
-    const lineOfSightToMouse = new THREE.Line3(
-      this.viewer.camera.position,
-      groundPosition
+  drawFifthStep() {
+    let target = this.viewer.inputHandler.getPointOnLineClosestToCursor(
+      this.lashPositionProjectedOnFloor,
+      new THREE.Vector3(0, 1, 0)
     );
-    let target: THREE.Vector3 = new THREE.Vector3();
-    this.helperPlane.intersectLine(lineOfSightToMouse, target);
+
     this.lashHeight = target.y;
 
     this.calculatePositions();
@@ -355,17 +352,6 @@ export class TripodTool {
 
   removeVerticalHelperLine() {
     this.viewer.scene.remove(this.verticalHelperLine);
-  }
-
-  setHelperPlane() {
-    const lineOfSightToLashing = this.viewer.camera.position
-      .clone()
-      .sub(this.lashPosition)
-      .normalize();
-    this.helperPlane.setFromNormalAndCoplanarPoint(
-      lineOfSightToLashing,
-      this.lashPosition
-    );
   }
 
   checkCollisions() {

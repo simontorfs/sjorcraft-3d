@@ -24,7 +24,6 @@ export class BipodTool {
   parallelHelperLine: HelperLine = new HelperLine();
   perpendicularHelperLine: HelperLine = new HelperLine();
   verticalHelperLine: HelperLine = new HelperLine();
-  helperPlane: THREE.Plane = new THREE.Plane();
 
   bipodIsColliding: boolean = false;
 
@@ -107,7 +106,7 @@ export class BipodTool {
     } else if (!this.lashPositionPlaced) {
       this.drawThirdStep(groundPosition);
     } else {
-      this.drawFourthStep(groundPosition);
+      this.drawFourthStep();
     }
     this.checkCollisions();
   }
@@ -139,14 +138,12 @@ export class BipodTool {
     this.calculatePositions();
   }
 
-  drawFourthStep(groundPosition: THREE.Vector3) {
-    this.setHelperPlane();
-    const lineOfSightToMouse = new THREE.Line3(
-      this.viewer.camera.position,
-      groundPosition
+  drawFourthStep() {
+    let target = this.viewer.inputHandler.getPointOnLineClosestToCursor(
+      this.lashPositionProjectedOnFloor,
+      new THREE.Vector3(0, 1, 0)
     );
-    let target: THREE.Vector3 = new THREE.Vector3();
-    this.helperPlane.intersectLine(lineOfSightToMouse, target);
+
     this.lashHeight = target.y;
 
     this.calculatePositions();
@@ -225,17 +222,6 @@ export class BipodTool {
 
   removeVerticalHelperLine() {
     this.viewer.scene.remove(this.verticalHelperLine);
-  }
-
-  setHelperPlane() {
-    const lineOfSightToLashing = this.viewer.camera.position
-      .clone()
-      .sub(this.lashPosition)
-      .normalize();
-    this.helperPlane.setFromNormalAndCoplanarPoint(
-      lineOfSightToLashing,
-      this.lashPosition
-    );
   }
 
   checkCollisions() {

@@ -6,6 +6,7 @@ import { Scaffold } from "./scaffold";
 export class PoleTransformer extends THREE.Object3D {
   viewer: Viewer;
   activeScaffold: Scaffold | undefined = undefined;
+  originalPosition: THREE.Vector3 = new THREE.Vector3();
 
   translationHandle: THREE.Mesh;
   scaleHandleTop: THREE.Mesh;
@@ -43,6 +44,7 @@ export class PoleTransformer extends THREE.Object3D {
     if (pole) {
       this.activeScaffold = new Scaffold();
       this.activeScaffold.setMainPole(pole);
+      this.originalPosition = pole.position.clone();
       this.visible = true;
       this.setHandlePositions();
       this.setHandleColor();
@@ -86,33 +88,39 @@ export class PoleTransformer extends THREE.Object3D {
     }
   }
 
-  dragHandle(handle: THREE.Mesh, dragPositionOnActivePole: THREE.Vector3) {
+  dragHandle(handle: THREE.Mesh) {
     switch (handle) {
       case this.translationHandle:
-        this.dragTranslationHandle(dragPositionOnActivePole);
+        this.dragTranslationHandle();
         break;
       case this.scaleHandleTop:
-        this.dragScaleHandle(true, dragPositionOnActivePole);
+        this.dragScaleHandle(true);
         break;
       case this.scaleHandleBottom:
-        this.dragScaleHandle(false, dragPositionOnActivePole);
+        this.dragScaleHandle(false);
         break;
     }
   }
 
-  dragTranslationHandle(dragPositionOnActivePole: THREE.Vector3) {
+  dragTranslationHandle() {
     if (!this.activeScaffold) return;
 
-    const target = this.getTargetOnPoleAxis(dragPositionOnActivePole);
+    const target = this.viewer.inputHandler.getPointOnLineClosestToCursor(
+      this.originalPosition,
+      this.activeScaffold.direction
+    );
 
     this.activeScaffold.mainPole.position.set(target.x, target.y, target.z);
     this.setHandlePositions();
   }
 
-  dragScaleHandle(topHandle: boolean, dragPositionOnActivePole: THREE.Vector3) {
+  dragScaleHandle(topHandle: boolean) {
     if (!this.activeScaffold) return;
 
-    const target = this.getTargetOnPoleAxis(dragPositionOnActivePole);
+    const target = this.viewer.inputHandler.getPointOnLineClosestToCursor(
+      this.originalPosition,
+      this.activeScaffold.direction
+    );
 
     const distTargetToPoleCenter = this.activeScaffold
       .getCenter()
@@ -154,23 +162,5 @@ export class PoleTransformer extends THREE.Object3D {
 
   dropScaleHandle() {
     this.activeScaffold.addExtensionToViewer(this.viewer);
-  }
-
-  getTargetOnPoleAxis(dragPositionOnActivePole: THREE.Vector3) {
-    if (!this.activeScaffold) return new THREE.Vector3();
-
-    const start = this.activeScaffold
-      .getCenter()
-      .clone()
-      .sub(this.activeScaffold.direction.clone().multiplyScalar(20));
-    const end = this.activeScaffold
-      .getCenter()
-      .clone()
-      .add(this.activeScaffold.direction.clone().multiplyScalar(20));
-    const activePoleAxis = new THREE.Line3(start, end);
-
-    let target: THREE.Vector3 = new THREE.Vector3();
-    activePoleAxis.closestPointToPoint(dragPositionOnActivePole, true, target);
-    return target;
   }
 }

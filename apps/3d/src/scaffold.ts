@@ -209,20 +209,19 @@ export class Scaffold {
 
   resize(resizeAtTop: boolean, newMinimumLength: number) {
     const oldLength = this.length;
-    this.setLength(Math.min(newMinimumLength, 6.0)); // Set max to 6.0 for now. In the future we want to make scaffolds here.
+    const oldLengthMainPole = this.mainPole.length;
+    this.setLength(newMinimumLength);
     const lengthDifference = this.length - oldLength;
+    const lengthDifferenceMainPole = this.mainPole.length - oldLengthMainPole;
     this.setDirection(this.direction);
-    const positionOffset = this.direction
-      .clone()
-      .multiplyScalar(lengthDifference / 2);
 
-    if (resizeAtTop) {
-      const newPosition = this.mainPole.position.clone().add(positionOffset);
-      this.setPositions(newPosition);
-    } else {
-      const newPosition = this.mainPole.position.clone().sub(positionOffset);
-      this.setPositions(newPosition);
-    }
+    const positionOffset = resizeAtTop
+      ? this.direction.clone().multiplyScalar(lengthDifferenceMainPole / 2)
+      : this.direction
+          .clone()
+          .multiplyScalar(lengthDifferenceMainPole / 2 - lengthDifference);
+    const newPosition = this.mainPole.position.clone().add(positionOffset);
+    this.setPositions(newPosition);
   }
 
   isParallelTo(direction: THREE.Vector3) {
