@@ -33,7 +33,7 @@ export class SelectionTool {
     if (!this.active || !this.selectedPole) return;
     this.viewer.poleInventory.removePole(this.selectedPole);
     if (
-      this.viewer.poleTransformer.activeScaffold.mainPole === this.selectedPole
+      this.viewer.poleTransformer.activeScaffold?.mainPole === this.selectedPole
     ) {
       this.viewer.poleTransformer.setActivePole(undefined);
     }
