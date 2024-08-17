@@ -139,7 +139,10 @@ export class BipodTool {
   }
 
   drawFourthStep() {
-    let target = this.getTarget();
+    let target = this.viewer.inputHandler.getPointOnLineClosestToCursor(
+      this.lashPositionProjectedOnFloor,
+      new THREE.Vector3(0, 1, 0)
+    );
 
     this.lashHeight = target.y;
 
@@ -238,33 +241,5 @@ export class BipodTool {
         pole.mesh.material.color = new THREE.Color(1, 1, 1);
       }
     }
-  }
-
-  getTarget() {
-    const raycaster = new THREE.Raycaster();
-    raycaster.setFromCamera(
-      new THREE.Vector2(
-        this.viewer.inputHandler.cursor.x * 2,
-        this.viewer.inputHandler.cursor.y * 2
-      ),
-      this.viewer.camera
-    );
-    const w0 = raycaster.ray.origin
-      .clone()
-      .sub(this.lashPositionProjectedOnFloor);
-    const direction = new THREE.Vector3(0, 1, 0);
-    const a = direction.dot(direction);
-    const b = direction.dot(raycaster.ray.direction);
-    const c = raycaster.ray.direction.dot(raycaster.ray.direction);
-    const dDotW0 = direction.dot(w0);
-    const rayDirectionDotW0 = raycaster.ray.direction.dot(w0);
-
-    const denom = a * c - b * b;
-    const s = (b * rayDirectionDotW0 - c * dDotW0) / denom;
-    const target = this.lashPositionProjectedOnFloor
-      .clone()
-      .sub(direction.clone().multiplyScalar(s));
-
-    return target;
   }
 }

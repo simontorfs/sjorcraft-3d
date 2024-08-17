@@ -183,6 +183,31 @@ export class InputHandler {
     this.viewer.poleTransformer.setHoveredHandle(this.hoveredHandle);
   }
 
+  getPointOnLineClosestToCursor(
+    lineOrigin: THREE.Vector3,
+    lineDirection: THREE.Vector3
+  ) {
+    const raycaster = new THREE.Raycaster();
+    raycaster.setFromCamera(
+      new THREE.Vector2(this.cursor.x * 2, this.cursor.y * 2),
+      this.viewer.camera
+    );
+    const w0 = raycaster.ray.origin.clone().sub(lineOrigin);
+    const a = lineDirection.dot(lineDirection);
+    const b = lineDirection.dot(raycaster.ray.direction);
+    const c = raycaster.ray.direction.dot(raycaster.ray.direction);
+    const dDotW0 = lineDirection.dot(w0);
+    const rayDirectionDotW0 = raycaster.ray.direction.dot(w0);
+
+    const denom = a * c - b * b;
+    const s = (b * rayDirectionDotW0 - c * dDotW0) / denom;
+    const target = lineOrigin
+      .clone()
+      .sub(lineDirection.clone().multiplyScalar(s));
+
+    return target;
+  }
+
   onActivateTool(tool: ButtonType) {
     switch (tool) {
       case "selectiontool":

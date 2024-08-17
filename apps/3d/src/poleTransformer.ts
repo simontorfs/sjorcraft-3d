@@ -105,7 +105,10 @@ export class PoleTransformer extends THREE.Object3D {
   dragTranslationHandle() {
     if (!this.activeScaffold) return;
 
-    const target = this.getTargetOnPoleAxis();
+    const target = this.viewer.inputHandler.getPointOnLineClosestToCursor(
+      this.originalPosition,
+      this.activeScaffold.direction
+    );
 
     this.activeScaffold.mainPole.position.set(target.x, target.y, target.z);
     this.setHandlePositions();
@@ -114,7 +117,10 @@ export class PoleTransformer extends THREE.Object3D {
   dragScaleHandle(topHandle: boolean) {
     if (!this.activeScaffold) return;
 
-    const target = this.getTargetOnPoleAxis();
+    const target = this.viewer.inputHandler.getPointOnLineClosestToCursor(
+      this.originalPosition,
+      this.activeScaffold.direction
+    );
 
     const distTargetToPoleCenter = this.activeScaffold
       .getCenter()
@@ -156,33 +162,5 @@ export class PoleTransformer extends THREE.Object3D {
 
   dropScaleHandle() {
     this.activeScaffold.addExtensionToViewer(this.viewer);
-  }
-
-  getTargetOnPoleAxis() {
-    if (!this.activeScaffold) return new THREE.Vector3();
-
-    const raycaster = new THREE.Raycaster();
-    raycaster.setFromCamera(
-      new THREE.Vector2(
-        this.viewer.inputHandler.cursor.x * 2,
-        this.viewer.inputHandler.cursor.y * 2
-      ),
-      this.viewer.camera
-    );
-    const w0 = raycaster.ray.origin.clone().sub(this.originalPosition);
-    const direction = this.activeScaffold.direction.clone();
-    const a = direction.dot(direction);
-    const b = direction.dot(raycaster.ray.direction);
-    const c = raycaster.ray.direction.dot(raycaster.ray.direction);
-    const dDotW0 = direction.dot(w0);
-    const rayDirectionDotW0 = raycaster.ray.direction.dot(w0);
-
-    const denom = a * c - b * b;
-    const s = (b * rayDirectionDotW0 - c * dDotW0) / denom;
-    const target = this.originalPosition
-      .clone()
-      .sub(direction.clone().multiplyScalar(s));
-
-    return target;
   }
 }
