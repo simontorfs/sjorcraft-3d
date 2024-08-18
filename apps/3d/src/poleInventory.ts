@@ -27,6 +27,10 @@ export class PoleInventory {
   removePole(poleToRemove: Pole) {
     this.viewer.scene.remove(poleToRemove);
     this.poles = this.poles.filter((pole) => pole !== poleToRemove);
+    this.viewer.lashings = this.viewer.lashings.filter(
+      (lashing) =>
+        lashing.loosePole !== poleToRemove && lashing.fixedPole !== poleToRemove
+    );
     (this.viewer.scene as any).dispatchEvent({
       type: "pole_removed",
       pole: poleToRemove,
