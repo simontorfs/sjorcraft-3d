@@ -274,12 +274,12 @@ export class PoleTool {
     this.activeScaffoldIsColliding = false;
     document.body.style.cursor = "default";
 
-    const polesToCheck = this.viewer.poleInventory.poles.filter(
-      (p) =>
-        p !== this.fixedLashing?.fixedPole && p !== this.newLashing?.fixedPole
-    );
-    for (const pole of polesToCheck) {
-      if (this.activeScaffold.overlaps(pole)) {
+    for (const pole of this.viewer.poleInventory.poles) {
+      if (
+        this.activeScaffold.overlaps(pole) &&
+        pole !== this.fixedLashing?.fixedPole &&
+        pole !== this.newLashing?.fixedPole
+      ) {
         // @ts-ignore
         pole.mesh.material.color = new THREE.Color(1, 0, 0);
         if (blockPlacement) {
