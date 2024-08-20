@@ -8,6 +8,7 @@ import {
   RendererContextType,
 } from "../contexts/rendererContext";
 import EditorSidebar from "./EditorSidebar";
+import { useDeviceSize } from "../src/hooks/useDeviceSize";
 
 const SjorcraftEditor = () => {
   const [rendererContext, setRendererContext] =
@@ -25,13 +26,15 @@ const SjorcraftEditor = () => {
     initialised = true;
   }, []);
 
+  const { smDevice } = useDeviceSize();
+
   return (
     <div className="sjorcraft-editor">
       <RendererContext.Provider value={rendererContext}>
-        <Toolbar />
+        {!smDevice && <Toolbar />}
         <div className="editor-main-content">
           <SjorcraftCanvas />
-          <EditorSidebar />
+          {!smDevice && <EditorSidebar />}
         </div>
       </RendererContext.Provider>
     </div>
