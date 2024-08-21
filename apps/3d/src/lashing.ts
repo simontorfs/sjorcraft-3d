@@ -1,7 +1,7 @@
 import { Pole } from "./pole";
 import * as THREE from "three";
 
-export class Lashing {
+export class Lashing extends THREE.Object3D {
   fixedPole: Pole;
   loosePole: Pole;
   centerFixedPole: THREE.Vector3;
@@ -9,7 +9,11 @@ export class Lashing {
   anchorPoint: THREE.Vector3; // Point on the surface of the fixed pole where the user clicked
   anchorPointNormal: THREE.Vector3;
   fixedHeight: number | undefined;
-  constructor() {}
+
+  mesh: THREE.Mesh = new THREE.Mesh();
+  constructor() {
+    super();
+  }
 
   setProperties(
     fixedPole: Pole,
@@ -22,6 +26,18 @@ export class Lashing {
     this.anchorPoint = position;
     this.anchorPointNormal = normal;
     this.calculatePositions();
+
+    this.remove(this.mesh);
+    const path = new CustomSinCurve(1);
+    const geometry = new THREE.TubeGeometry(path, 40, 0.004, 8, false);
+    const material = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
+    this.mesh = new THREE.Mesh(geometry, material);
+    this.position.set(
+      this.anchorPoint.x,
+      this.anchorPoint.y,
+      this.anchorPoint.z
+    );
+    this.add(this.mesh);
   }
 
   loadFromJson(lashing: any, poles: Pole[]) {
@@ -105,5 +121,28 @@ export class Lashing {
       return true;
     }
     return false;
+  }
+
+  place() {
+    const path = new CustomSinCurve(1);
+    const geometry = new THREE.TubeGeometry(path, 40, 0.004, 8, false);
+    const material = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
+    const mesh = new THREE.Mesh(geometry, material);
+  }
+}
+
+class CustomSinCurve extends THREE.Curve<THREE.Vector3> {
+  scale: number;
+  constructor(scale = 1) {
+    super();
+    this.scale = scale;
+  }
+
+  getPoint(t, optionalTarget = new THREE.Vector3()) {
+    const tx = t * 3 - 1.5;
+    const ty = Math.sin(2 * Math.PI * t);
+    const tz = 0;
+
+    return optionalTarget.set(tx, ty, tz).multiplyScalar(this.scale);
   }
 }

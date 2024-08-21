@@ -124,6 +124,7 @@ export class PoleTool {
       position,
       normal
     );
+    this.viewer.scene.add(this.newLashing);
 
     if (this.fixedLashing) {
       if (this.fixedLashing.fixedPole === hoveredPole) return;
