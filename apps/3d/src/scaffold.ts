@@ -217,7 +217,7 @@ export class Scaffold {
   overlaps(otherPole: Pole) {
     let overlaps = false;
     for (const pole of [this.mainPole, this.extensionPole, this.splintPole]) {
-      overlaps ||= pole.overlaps(otherPole);
+      overlaps ||= pole.overlaps(otherPole) && pole.visible;
     }
     return overlaps;
   }
