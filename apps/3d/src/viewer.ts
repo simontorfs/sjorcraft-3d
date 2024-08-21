@@ -85,7 +85,7 @@ export class Viewer {
 
     // Floor
     this.floor = new Floor(this);
-    this.floor.setNewFloor(50, 50, new THREE.Color("green"));
+    this.floor.setNewFloor(50, 50, new THREE.Color("#2a6e3c"));
     // Light
     const ambientLight = new THREE.AmbientLight();
     this.scene.add(ambientLight);
