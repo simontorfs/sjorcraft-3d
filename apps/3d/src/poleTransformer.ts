@@ -44,6 +44,7 @@ export class PoleTransformer extends THREE.Object3D {
     if (pole) {
       this.activeScaffold = new Scaffold();
       this.activeScaffold.setMainPole(pole);
+      this.activeScaffold.addExtensionToScene(this.viewer.scene);
       this.originalPosition = pole.position.clone();
       this.visible = true;
       this.setHandlePositions();

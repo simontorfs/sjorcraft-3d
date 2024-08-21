@@ -228,6 +228,13 @@ export class Scaffold {
     }
   }
 
+  addExtensionToScene(scene: THREE.Scene) {
+    for (const pole of [this.extensionPole, this.splintPole]) {
+      scene.add(pole);
+      pole.visible = false;
+    }
+  }
+
   removeFromScene(scene: THREE.Scene) {
     for (const pole of [this.mainPole, this.extensionPole, this.splintPole]) {
       scene.remove(pole);
@@ -236,13 +243,21 @@ export class Scaffold {
 
   addToViewer(viewer: Viewer) {
     for (const pole of [this.mainPole, this.extensionPole, this.splintPole]) {
-      viewer.poleInventory.addPole(pole);
+      if (pole.visible) {
+        viewer.poleInventory.addPole(pole);
+      } else {
+        viewer.scene.remove(pole);
+      }
     }
   }
 
   addExtensionToViewer(viewer: Viewer) {
     for (const pole of [this.extensionPole, this.splintPole]) {
-      viewer.poleInventory.addPole(pole);
+      if (pole.visible) {
+        viewer.poleInventory.addPole(pole);
+      } else {
+        viewer.scene.remove(pole);
+      }
     }
   }
 }
