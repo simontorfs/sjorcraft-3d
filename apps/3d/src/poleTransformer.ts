@@ -41,9 +41,12 @@ export class PoleTransformer extends THREE.Object3D {
   }
 
   setActivePole(pole: Pole | undefined) {
+    if (this.activeScaffold && !this.activeScaffold.extensionPole.visible)
+      this.activeScaffold.removeExtensionFromScene(this.viewer.scene);
     if (pole) {
       this.activeScaffold = new Scaffold();
       this.activeScaffold.setMainPole(pole);
+      this.activeScaffold.addExtensionToScene(this.viewer.scene);
       this.originalPosition = pole.position.clone();
       this.visible = true;
       this.setHandlePositions();
@@ -161,6 +164,9 @@ export class PoleTransformer extends THREE.Object3D {
   }
 
   dropScaleHandle() {
+    if (!this.activeScaffold.extensionPole.visible) {
+      this.activeScaffold.removeExtensionFromScene(this.viewer.scene);
+    }
     this.activeScaffold.addExtensionToViewer(this.viewer);
   }
 }
