@@ -2,6 +2,8 @@ import { Pole } from "./pole";
 import * as THREE from "three";
 import { Viewer } from "./viewer";
 import { Lashing } from "./lashing";
+import { PoleInventory } from "./poleInventory";
+import { GLTFExporter } from "three/examples/jsm/exporters/GLTFExporter";
 
 export class SaveTool {
   viewer: Viewer;
@@ -143,6 +145,56 @@ export class SaveTool {
         this.viewer.lashings.push(newLashing);
       }
     });
+  }
+
+  saveString(text: string, filename: string) {
+    const blob = new Blob([text], { type: "text/plain" });
+    console.log("Werk jij", blob);
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = filename;
+    a.click();
+
+    URL.revokeObjectURL(url);
+  }
+
+   exportGLTF() {
+    const gltfExporter = new GLTFExporter();
+
+    const options = {
+      trs: true,
+      onlyVisible: true,
+      binary: false,
+      maxTextureSize: 4096,
+      sourceWidth: 1024,
+    };
+
+    const input = this.viewer.scene;
+    input.traverse((node) => {
+      if (node instanceof THREE.Mesh) {
+        node.updateMatrixWorld();
+      }
+    });
+    gltfExporter.parse(
+      this.viewer.scene,
+      function (result) {
+        const output: string = JSON.stringify(result, null, 2);
+        const blob = new Blob([output], { type: "text/json" });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = `${new Date()
+          .toISOString()
+          .slice(0, 10)
+          .replace(/-/g, "")}-test.gltf`;
+        a.click();
+      },
+      function (error) {
+        console.log("An error happened during parsing", error);
+      },
+      options
+    );
   }
 
   //clear local storage

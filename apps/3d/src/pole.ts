@@ -32,10 +32,14 @@ export class Pole extends THREE.Object3D {
     colorTexture.repeat.y = this.length * 2;
     colorTexture.wrapT = THREE.MirroredRepeatWrapping;
     const heightTexture = textureLoader.load("./wood/Wood_025_height.png");
-    const normalTexture = textureLoader.load("./wood/Wood_025_normal.png");
+    const normalTexture = textureLoader.load("./wood/Wood_025_normal.jpg");
     const roughnessTexture = textureLoader.load(
-      "./wood/Wood_025_roughness.png"
+      "./wood/Wood_025_roughness.jpg"
     );
+    const metalnessTexture = textureLoader.load("./wood/Wood_025_height.png");
+    /* const metalRougnessTexture = textureLoader.load(
+      "./wood/Wood_025_roughness.jpg"
+    );*/
 
     const geometry = new THREE.CylinderGeometry(
       this.radius,
@@ -45,7 +49,10 @@ export class Pole extends THREE.Object3D {
     const material = new THREE.MeshStandardMaterial({
       map: colorTexture,
       roughnessMap: roughnessTexture,
+      metalnessMap: metalnessTexture,
       normalMap: normalTexture,
+      metalness: 0.2,
+      roughness: 1,
       wireframe: false,
     });
     this.mesh = new THREE.Mesh(geometry, material);

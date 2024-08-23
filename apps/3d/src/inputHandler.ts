@@ -43,6 +43,9 @@ export class InputHandler {
         const width = Number(prompt("Enter the width of the floor"));
         this.viewer.floor.setDimensions(length, width);
         break;
+      case "g":
+        this.viewer.saveTool.exportGLTF();
+        break;
       default:
         console.log(event.key);
         break;
