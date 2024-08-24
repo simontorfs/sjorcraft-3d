@@ -44,7 +44,7 @@ export class InputHandler {
         this.viewer.floor.setDimensions(length, width);
         break;
       case "g":
-        this.viewer.saveTool.exportGLTF();
+        this.viewer.saveTool.exportGLTF("Sjorcraft_Construction");
         break;
       default:
         console.log(event.key);

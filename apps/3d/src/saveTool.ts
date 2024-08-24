@@ -159,15 +159,13 @@ export class SaveTool {
     URL.revokeObjectURL(url);
   }
 
-   exportGLTF() {
+  exportGLTF(name: string) {
     const gltfExporter = new GLTFExporter();
 
     const options = {
       trs: true,
       onlyVisible: true,
       binary: false,
-      maxTextureSize: 4096,
-      sourceWidth: 1024,
     };
 
     const input = this.viewer.scene;
@@ -179,7 +177,7 @@ export class SaveTool {
     gltfExporter.parse(
       this.viewer.scene,
       function (result) {
-        const output: string = JSON.stringify(result, null, 2);
+        let output: string = JSON.stringify(result, null, 2);
         const blob = new Blob([output], { type: "text/json" });
         const url = URL.createObjectURL(blob);
         const a = document.createElement("a");
@@ -187,7 +185,7 @@ export class SaveTool {
         a.download = `${new Date()
           .toISOString()
           .slice(0, 10)
-          .replace(/-/g, "")}-test.gltf`;
+          .replace(/-/g, "")}-${name}.gltf`;
         a.click();
       },
       function (error) {

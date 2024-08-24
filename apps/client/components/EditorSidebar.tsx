@@ -18,8 +18,8 @@ const EditorSidebar = () => {
     viewer?.saveTool.exportAll("sjorcraft_export");
   };
 
-  const onExportDae = () => {
-    console.log("Exporting to dae");
+  const onExportGLTF = () => {
+    viewer?.saveTool.exportGLTF("sjorcraft_export");
   };
 
   const onImportSjor = () => {
@@ -41,10 +41,10 @@ const EditorSidebar = () => {
       <Button extension=".sjor" icon={ExportIcon} onClick={onExportSjor} />
       <Button extension=".jpg" icon={ExportIcon} onClick={onExportJpg} />
       <Button
-        extension=".dae"
+        extension=".gltf"
         icon={ExportIcon}
-        disabled={true}
-        onClick={onExportDae}
+        disabled={false}
+        onClick={onExportGLTF}
       />
       <hr style={{ border: "1px solid #ccc", margin: "20px 0px" }} />
       <Button extension=".sjor" icon={ImportIcon} onClick={onImportSjor} />
