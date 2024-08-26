@@ -28,6 +28,13 @@ export class SelectionTool {
     this.selectedPoles = [];
   }
 
+  selectAll() {
+    this.selectedPoles = this.viewer.poleInventory.poles;
+    for (const pole of this.selectedPoles) {
+      pole.select();
+    }
+  }
+
   leftClick(ctrlDown: boolean) {
     if (!this.active) return;
     if (!ctrlDown) {

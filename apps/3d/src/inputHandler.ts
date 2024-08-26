@@ -42,6 +42,12 @@ export class InputHandler {
       case "Control":
         this.ctrlDown = true;
         break;
+      case "a":
+        event.preventDefault();
+        if (this.viewer.selectionTool.active && this.ctrlDown) {
+          this.viewer.selectionTool.selectAll();
+        }
+        break;
       // case "s":
       //   this.viewer.saveTool.savePolesToLocalStorage();
       //   this.viewer.saveTool.saveLashingsToLocalStorage();
