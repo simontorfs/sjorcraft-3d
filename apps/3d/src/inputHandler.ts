@@ -42,6 +42,12 @@ export class InputHandler {
       case "Control":
         this.ctrlDown = true;
         break;
+      case "a":
+        event.preventDefault();
+        if (this.viewer.selectionTool.active && this.ctrlDown) {
+          this.viewer.selectionTool.selectAll();
+        }
+        break;
       // case "s":
       //   this.viewer.saveTool.savePolesToLocalStorage();
       //   this.viewer.saveTool.saveLashingsToLocalStorage();
@@ -87,7 +93,7 @@ export class InputHandler {
         }
       } else if (this.viewer.selectionTool.active) {
         if (event.button === THREE.MOUSE.LEFT) {
-          this.viewer.selectionTool.leftClick();
+          this.viewer.selectionTool.leftClick(this.ctrlDown);
         }
       } else if (this.viewer.bipodTool.active) {
         if (event.button === THREE.MOUSE.LEFT) {

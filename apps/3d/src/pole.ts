@@ -24,6 +24,7 @@ export class Pole extends THREE.Object3D {
   capLength: number = 0.1;
   capOffset: number = 0.001; //makes the render look great
   color: THREE.Color = new THREE.Color(0x0000ff);
+  selected: Boolean = false;
 
   constructor() {
     super();
@@ -144,11 +145,13 @@ export class Pole extends THREE.Object3D {
   select() {
     // @ts-ignore
     this.mesh.material.color = new THREE.Color(0, 1, 1);
+    this.selected = true;
   }
 
   deselect() {
     // @ts-ignore
     this.mesh.material.color = new THREE.Color(1, 1, 1);
+    this.selected = false;
   }
 
   isParallelTo(direction: THREE.Vector3) {
