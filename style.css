@@ -48,17 +48,6 @@ body,
   min-width: 0;
 }
 
-.editor-sidebar {
-  background-color: #333;
-  color: white;
-  width: 15rem;
-  right: 0;
-  height: 100%;
-  border-top: 1px solid #6b7280;
-  padding: 2rem;
-  flex-shrink: 0;
-}
-
 .toolbar-icons {
   display: flex;
   justify-content: left;
@@ -76,6 +65,7 @@ body,
   border-radius: 0.25rem; /* rounded */
   margin: 0 1px; /* mx-px */
   cursor: pointer;
+  background-color: #effcec;
 }
 
 .toolbar-icon-active {
@@ -87,7 +77,7 @@ body,
   border-radius: 0.25rem; /* rounded */
   margin: 0 1px; /* mx-px */
   cursor: pointer;
-  background-color: #b5ffa1;
+  background-color: #aafc93;
   color: #000000;
 }
 
