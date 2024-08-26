@@ -2,7 +2,7 @@ import * as THREE from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
 import { InputHandler } from "./inputHandler";
 import { PoleTool } from "./poleTool";
-import { SaveTool } from "./saveTool";
+import { SaveTool } from "./saveAndLoader";
 import { SelectionTool } from "./selectionTool";
 import { Floor } from "./floor";
 import { ImageExporter } from "./imageExporter";

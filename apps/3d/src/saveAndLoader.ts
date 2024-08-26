@@ -147,18 +147,6 @@ export class SaveTool {
     });
   }
 
-  saveString(text: string, filename: string) {
-    const blob = new Blob([text], { type: "text/plain" });
-    console.log("Werk jij", blob);
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = filename;
-    a.click();
-
-    URL.revokeObjectURL(url);
-  }
-
   exportGLTF(name: string) {
     const gltfExporter = new GLTFExporter();
 
@@ -168,14 +156,9 @@ export class SaveTool {
       binary: false,
     };
 
-    const input = this.viewer.scene;
-    input.traverse((node) => {
-      if (node instanceof THREE.Mesh) {
-        node.updateMatrixWorld();
-      }
-    });
+    let input = this.viewer.scene;
     gltfExporter.parse(
-      this.viewer.scene,
+      input,
       function (result) {
         let output: string = JSON.stringify(result, null, 2);
         const blob = new Blob([output], { type: "text/json" });
@@ -194,6 +177,8 @@ export class SaveTool {
       options
     );
   }
+
+  exportDAE() {}
 
   //clear local storage
   clearLocalStorage() {
