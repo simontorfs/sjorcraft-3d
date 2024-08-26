@@ -37,12 +37,23 @@ export class SelectionTool {
 
   leftClick(ctrlDown: boolean) {
     if (!this.active) return;
-    if (!ctrlDown) {
+    if (ctrlDown) {
+      if (!this.hoveredPole) return;
+      if (this.hoveredPole.selected) {
+        this.hoveredPole.deselect();
+        this.selectedPoles = this.selectedPoles.filter(
+          (pole) => pole !== this.hoveredPole
+        );
+      } else {
+        this.hoveredPole.select();
+        this.selectedPoles.push(this.hoveredPole);
+      }
+    } else {
       this.deselectAll();
-    }
-    if (this.hoveredPole) {
-      this.hoveredPole.select();
-      this.selectedPoles.push(this.hoveredPole);
+      if (this.hoveredPole) {
+        this.hoveredPole.select();
+        this.selectedPoles.push(this.hoveredPole);
+      }
     }
   }
 
