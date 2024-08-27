@@ -18,6 +18,7 @@ export class SelectionTool {
   deactivate() {
     this.active = false;
     this.deselectAll();
+    this.viewer.poleTransformer.setActivePole(undefined);
     document.body.style.cursor = "default";
   }
 
