@@ -71,7 +71,7 @@ Meet the minds behind SjorCRAFT:
 
 - [Giraf - Simon Torfs](https://github.com/simontorfs)
 - [Springbok - Raven Van Hove](https://www.github.com/ravenmyrrdin)
-- [Meneer Verbruggen - Dieter Verbruggen](https://github.com/MrDerdiet)
+- [Stekelvarken - Dieter Verbruggen](https://github.com/MrDerdiet)
 
 ## Disclaimer
 
