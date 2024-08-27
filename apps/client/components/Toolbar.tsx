@@ -108,9 +108,7 @@ const Toolbar = () => {
           sx={{
             fontWeight: "bold",
           }}
-        >
-          Wiki (coming soon)
-        </Typography>
+        ></Typography>
       </Box>
     </Box>
   );
