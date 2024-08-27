@@ -1,11 +1,8 @@
-import React from "react";
-import { useContext } from "react";
+import React, { useContext } from "react";
 import PoleTable from "./PoleTable";
-import ExportIcon from "../assets/icons/export.svg?react";
-import ImportIcon from "../assets/icons/import.svg?react";
 import CoffeeIcon from "../assets/icons/coffee.svg?react";
 import { RendererContext } from "../contexts/rendererContext";
-import { Box, Button, Divider, Icon, Stack, SvgIcon } from "@mui/material";
+import { Box, Button, Divider, Stack } from "@mui/material";
 import FileDownloadIcon from "@mui/icons-material/FileDownload";
 import FileUploadIcon from "@mui/icons-material/FileUpload";
 
