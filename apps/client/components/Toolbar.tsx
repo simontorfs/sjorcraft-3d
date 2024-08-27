@@ -25,6 +25,7 @@ const Toolbar = () => {
         fontWeight: "bold",
         fontSize: "x-large",
         height: "3.5rem",
+        borderBottom: "0.12rem solid #0b2b26",
       }}
       component="nav"
     >
