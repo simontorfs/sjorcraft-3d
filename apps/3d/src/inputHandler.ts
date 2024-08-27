@@ -36,7 +36,7 @@ export class InputHandler {
           this.viewer.saveTool.removeAllLashings();
           this.viewer.saveTool.clearLocalStorage();
         } else {
-          this.viewer.selectionTool.delete();
+          this.viewer.selectionTool.deleteSelectedPoles();
         }
         break;
       case "Control":
@@ -95,6 +95,10 @@ export class InputHandler {
         if (event.button === THREE.MOUSE.LEFT) {
           this.viewer.selectionTool.leftClick(this.ctrlDown);
         }
+      } else if (this.viewer.destructionTool.active) {
+        if (event.button === THREE.MOUSE.LEFT) {
+          this.viewer.destructionTool.leftClick();
+        }
       } else if (this.viewer.bipodTool.active) {
         if (event.button === THREE.MOUSE.LEFT) {
           this.viewer.bipodTool.leftClick();
@@ -149,6 +153,8 @@ export class InputHandler {
         this.viewer.poleTransformer.setActivePole(hoveredPole);
         this.setHoveredHandle();
       }
+    } else if (this.viewer.destructionTool.active) {
+      this.viewer.destructionTool.setHoveredPole(hoveredPole);
     } else if (this.viewer.bipodTool.active) {
       this.viewer.bipodTool.drawBipod(groundPosition);
     } else if (this.viewer.tripodTool.active) {

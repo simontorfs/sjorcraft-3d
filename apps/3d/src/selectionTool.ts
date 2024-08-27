@@ -57,7 +57,7 @@ export class SelectionTool {
     }
   }
 
-  delete() {
+  deleteSelectedPoles() {
     if (!this.active || !this.selectedPoles.length) return;
     this.viewer.poleInventory.removePoles(this.selectedPoles);
     this.viewer.poleTransformer.setActivePole(undefined);

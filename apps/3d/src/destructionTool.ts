@@ -20,7 +20,7 @@ export class DestructionTool {
     document.body.style.cursor = "default";
   }
 
-  leftClick(ctrlDown: boolean) {
+  leftClick() {
     if (!this.active) return;
     if (this.hoveredPole) {
       this.viewer.poleInventory.removePole(this.hoveredPole);
@@ -28,6 +28,9 @@ export class DestructionTool {
   }
 
   setHoveredPole(pole: Pole) {
+    if (pole === this.hoveredPole) return;
+    this.hoveredPole?.stopThreatening();
     this.hoveredPole = pole;
+    this.hoveredPole?.threatenWithDestruction();
   }
 }
