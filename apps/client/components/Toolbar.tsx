@@ -17,7 +17,6 @@ const Toolbar = () => {
         flexDirection: "row",
         justifyContent: "space-between",
         justifySelf: "center",
-
         color: "white",
         alignItems: "center",
         padding: "0.5rem 2rem",
