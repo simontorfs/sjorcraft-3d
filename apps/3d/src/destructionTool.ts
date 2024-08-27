@@ -12,12 +12,12 @@ export class DestructionTool {
 
   activate() {
     this.active = true;
-    document.body.style.cursor = "url(./cursors/axe.cur) 5 5, auto";
+    this.viewer.domElement.style.cursor = "url(./cursors/axe.cur) 5 5, auto";
   }
 
   deactivate() {
     this.active = false;
-    document.body.style.cursor = "default";
+    this.viewer.domElement.style.cursor = "default";
   }
 
   leftClick() {
