@@ -40,7 +40,6 @@ const EditorSidebar = () => {
   return (
     <Box
       sx={{
-        backgroundColor: "#b7dfb2",
         color: "black",
         width: "15rem",
         right: "0",
@@ -49,6 +48,7 @@ const EditorSidebar = () => {
         padding: "2rem",
         flexShrink: "0",
       }}
+      bgcolor="primary.light"
     >
       <PoleTable />
       <Divider color="gray" style={{ margin: "1rem 0rem" }} />

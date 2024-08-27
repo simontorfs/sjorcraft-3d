@@ -17,7 +17,7 @@ const Toolbar = () => {
         flexDirection: "row",
         justifyContent: "space-between",
         justifySelf: "center",
-        backgroundColor: "rgb(10, 75, 15)",
+
         color: "white",
         alignItems: "center",
         padding: "0.5rem 2rem",
@@ -26,6 +26,7 @@ const Toolbar = () => {
         height: "3.5rem",
         borderBottom: "0.12rem solid #0b2b26",
       }}
+      bgcolor="primary.dark"
       component="nav"
     >
       <Typography
