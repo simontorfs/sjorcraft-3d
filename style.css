@@ -23,18 +23,6 @@ body,
   width: 100%;
 }
 
-.toolbar {
-  background-color: #222;
-  color: white;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 10px 20px;
-  font-weight: bold;
-  font-size: x-large;
-  height: 60px;
-}
-
 .editor-main-content {
   height: 100%;
   display: flex;
@@ -48,13 +36,14 @@ body,
   min-width: 0;
 }
 
-.toolbar-icons {
+/* .toolbar-icons {
   display: flex;
-  justify-content: left;
+  flex-direction: row;
+  justify-content: flex-start;
   width: 70%;
-  padding: 0 2rem;
+  padding: 0;
   gap: 0.5rem;
-}
+} */
 
 .toolbar-icon {
   display: flex;
