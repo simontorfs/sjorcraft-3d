@@ -79,13 +79,9 @@ export class Viewer {
 
     this.inputHandler = new InputHandler(this);
 
-    // Axes helper
-    // const axesHelper = new THREE.AxesHelper();
-    // this.scene.add(axesHelper);
-
     // Floor
     this.floor = new Floor(this);
-    this.floor.setNewFloor(50, 50, new THREE.Color("#2a6e3c"));
+    this.floor.setNewFloor(50, 50, new THREE.Color("#7CFC00"));
 
     // Light
     const ambientLight = new THREE.AmbientLight(
@@ -104,7 +100,7 @@ export class Viewer {
     this.camera.add(directionalLight);
 
     //add background
-    this.scene.background = new THREE.Color(0x87ceeb);
+    this.scene.background = new THREE.Color("#9bc2f9");
 
     // Save tool
     this.saveTool = new SaveTool(this);

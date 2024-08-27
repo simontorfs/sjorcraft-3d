@@ -47,6 +47,7 @@ const EditorSidebar = () => {
         borderTop: "1px solid #6b7280",
         padding: "2rem",
         flexShrink: "0",
+        boxShadow: "-5px 0px 5px 0px rgba(0,0,0,0.2)",
       }}
       bgcolor="primary.light"
     >

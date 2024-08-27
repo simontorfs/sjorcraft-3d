@@ -25,15 +25,45 @@ export class Floor extends THREE.Object3D {
    */
   setFloor(length: number, width: number, color?: THREE.Color) {
     const floorGeometry = new THREE.PlaneGeometry(length, width);
-    const floorMaterial = new THREE.MeshBasicMaterial({
-      opacity: 0.5,
+    const textureLoader = new THREE.TextureLoader();
+    const colorTexture = textureLoader.load("./grass/grass1-albedo3.png");
+    colorTexture.repeat.y = width;
+    colorTexture.repeat.x = length;
+    colorTexture.wrapT = THREE.RepeatWrapping;
+    colorTexture.wrapS = THREE.RepeatWrapping;
+    const normalTexture = textureLoader.load("./grass/grass1-normal1-dx.png");
+    normalTexture.repeat.y = width;
+    normalTexture.repeat.x = length;
+    normalTexture.wrapT = THREE.RepeatWrapping;
+    normalTexture.wrapS = THREE.RepeatWrapping;
+    const roughnessTexture = textureLoader.load("./grass/grass1-rough.png");
+    roughnessTexture.repeat.y = width;
+    roughnessTexture.repeat.x = length;
+    roughnessTexture.wrapT = THREE.RepeatWrapping;
+    roughnessTexture.wrapS = THREE.RepeatWrapping;
+    const metalnessTexture = textureLoader.load("./grass/grass1-ao.png");
+    metalnessTexture.repeat.y = width;
+    metalnessTexture.repeat.x = length;
+    metalnessTexture.wrapT = THREE.RepeatWrapping;
+    metalnessTexture.wrapS = THREE.RepeatWrapping;
+
+    const floorMaterial = new THREE.MeshStandardMaterial({
+      map: colorTexture,
+      roughnessMap: roughnessTexture,
+      metalnessMap: metalnessTexture,
+      normalMap: normalTexture,
+      metalness: 0.2,
+      roughness: 1,
+      wireframe: false,
+      color: color ? color : "#056e3c",
       transparent: false,
-      color: color ? color : "#2a6e3c",
+      opacity: 0.6,
     });
     this.mesh = new THREE.Mesh(floorGeometry, floorMaterial);
     this.mesh.rotation.x = -Math.PI / 2;
     this.viewer.scene.add(this.mesh);
   }
+
   /**
    *
    * @param size this is the size of the grid
