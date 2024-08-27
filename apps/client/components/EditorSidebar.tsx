@@ -40,7 +40,7 @@ const EditorSidebar = () => {
   return (
     <Box
       sx={{
-        backgroundColor: "rgb(50, 150, 0, 0.3)",
+        backgroundColor: "#b7dfb2",
         color: "black",
         width: "15rem",
         right: "0",

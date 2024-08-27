@@ -36,15 +36,6 @@ body,
   min-width: 0;
 }
 
-/* .toolbar-icons {
-  display: flex;
-  flex-direction: row;
-  justify-content: flex-start;
-  width: 70%;
-  padding: 0;
-  gap: 0.5rem;
-} */
-
 .toolbar-icon {
   display: flex;
   width: 2.75rem; /* 11 * 0.25rem */
@@ -66,7 +57,7 @@ body,
   border-radius: 0.25rem; /* rounded */
   margin: 0 1px; /* mx-px */
   cursor: pointer;
-  background-color: #aafc93;
+  background-color: #b7dfb2;
   color: #000000;
 }
 

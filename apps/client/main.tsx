@@ -4,6 +4,8 @@ import App from "./App";
 import "../../style.css";
 import { BrowserRouter } from "react-router-dom";
 import { Analytics } from "@vercel/analytics/react";
+import { ThemeProvider } from "@mui/material";
+import { defaultTheme } from "./contexts/colourContext";
 
 const root = ReactDOM.createRoot(
   document.getElementById("root") as HTMLElement
@@ -15,7 +17,9 @@ try {
       <BrowserRouter>
         <React.Suspense fallback="loading">
           <Analytics />
-          <App />
+          <ThemeProvider theme={defaultTheme}>
+            <App />
+          </ThemeProvider>
         </React.Suspense>
       </BrowserRouter>
     </React.StrictMode>
