@@ -9,6 +9,7 @@ import { ImageExporter } from "./imageExporter";
 import { BipodTool } from "./bipodTool";
 import { Lashing } from "./lashing";
 import { TripodTool } from "./tripodTool";
+import { DestructionTool } from "./destructionTool";
 import { PoleTransformer } from "./poleTransformer";
 import { PoleInventory } from "./poleInventory";
 
@@ -26,6 +27,7 @@ export class Viewer {
   poleTool: PoleTool;
   bipodTool: BipodTool;
   tripodTool: TripodTool;
+  destructionTool: DestructionTool;
   poleTransformer: PoleTransformer;
 
   poleInventory: PoleInventory;
@@ -124,6 +126,7 @@ export class Viewer {
     this.poleTool = new PoleTool(this);
     this.bipodTool = new BipodTool(this);
     this.tripodTool = new TripodTool(this);
+    this.destructionTool = new DestructionTool(this);
     this.poleTransformer = new PoleTransformer(this);
     this.scene.add(this.poleTransformer);
 

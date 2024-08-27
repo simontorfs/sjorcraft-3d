@@ -6,7 +6,8 @@ export type ButtonType =
   | "bipodtool"
   | "tripodtool"
   | "polytool"
-  | "lashingtool";
+  | "lashingtool"
+  | "destructiontool";
 interface ToolbarItemProps {
   active?: boolean;
   disabled?: boolean;

@@ -236,6 +236,7 @@ export class InputHandler {
         this.viewer.poleTool.deactivate();
         this.viewer.bipodTool.deactivate();
         this.viewer.tripodTool.deactivate();
+        this.viewer.destructionTool.deactivate();
 
         this.viewer.selectionTool.activate();
         break;
@@ -243,6 +244,7 @@ export class InputHandler {
         this.viewer.selectionTool.deactivate();
         this.viewer.bipodTool.deactivate();
         this.viewer.tripodTool.deactivate();
+        this.viewer.destructionTool.deactivate();
 
         this.viewer.poleTool.activate();
         break;
@@ -250,6 +252,7 @@ export class InputHandler {
         this.viewer.selectionTool.deactivate();
         this.viewer.poleTool.deactivate();
         this.viewer.tripodTool.deactivate();
+        this.viewer.destructionTool.deactivate();
 
         this.viewer.bipodTool.activate();
         break;
@@ -257,6 +260,7 @@ export class InputHandler {
         this.viewer.selectionTool.deactivate();
         this.viewer.poleTool.deactivate();
         this.viewer.bipodTool.deactivate();
+        this.viewer.destructionTool.deactivate();
 
         this.viewer.tripodTool.activate();
         break;
@@ -266,6 +270,13 @@ export class InputHandler {
       case "lashingtool":
         // Activate lashingTool
         break;
+      case "destructiontool":
+        this.viewer.selectionTool.deactivate();
+        this.viewer.poleTool.deactivate();
+        this.viewer.bipodTool.deactivate();
+        this.viewer.tripodTool.deactivate();
+
+        this.viewer.destructionTool.activate();
       default:
         break;
     }
