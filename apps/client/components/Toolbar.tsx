@@ -99,7 +99,6 @@ const Toolbar = () => {
           width: "20%",
           height: "100%",
           padding: "0.3rem",
-          border: "1px solid white",
         }}
       >
         <Typography
