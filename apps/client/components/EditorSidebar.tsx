@@ -52,7 +52,14 @@ const EditorSidebar = () => {
     >
       <PoleTable />
       <Divider color="gray" style={{ margin: "1rem 0rem" }} />
-      <Stack>
+      <Stack
+        sx={{
+          display: "flex",
+          flexDirection: "column",
+          justifyContent: "space-between",
+          gap: "1rem",
+        }}
+      >
         <Button
           variant="contained"
           color="primary"
@@ -61,7 +68,6 @@ const EditorSidebar = () => {
         >
           .sjor
         </Button>
-        <br></br>
         <Button
           variant="contained"
           color="primary"
@@ -70,7 +76,6 @@ const EditorSidebar = () => {
         >
           .jpg
         </Button>
-        <br></br>
         <Button
           sx={{ color: "primary.contrastText" }}
           variant="contained"

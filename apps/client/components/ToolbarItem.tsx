@@ -16,7 +16,6 @@ export const Tool: React.FC<ToolbarItemProps> = ({
   active,
   icon: Icon,
   disabled,
-  className,
   ...props
 }) => {
   return (
