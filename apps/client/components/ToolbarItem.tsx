@@ -1,4 +1,4 @@
-import * as React from "react";
+import React from "react";
 
 export type ButtonType =
   | "selectiontool"
@@ -10,7 +10,7 @@ export type ButtonType =
 interface ToolbarItemProps {
   active?: boolean;
   disabled?: boolean;
-  icon: React.FC2;
+  icon: React.FC;
 }
 export const Tool: React.FC<ToolbarItemProps> = ({
   active,

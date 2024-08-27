@@ -1,4 +1,4 @@
-import * as React from "react";
+import React from "react";
 import { useContext } from "react";
 import PoleTable from "./PoleTable";
 import ExportIcon from "../assets/icons/export.svg?react";
