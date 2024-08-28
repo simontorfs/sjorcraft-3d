@@ -28,9 +28,9 @@ export class Lashing extends THREE.Object3D {
     this.calculatePositions();
 
     this.remove(this.mesh);
-    const path = new CustomSinCurve(1);
-    const geometry = new THREE.TubeGeometry(path, 40, 0.004, 8, false);
-    const material = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
+    const path = new SquareLashingCurve(this.fixedPole, this.loosePole);
+    const geometry = new THREE.TubeGeometry(path, 40, 0.004, 8, true);
+    const material = new THREE.MeshBasicMaterial({ color: 0xc9bd97 });
     this.mesh = new THREE.Mesh(geometry, material);
     this.position.set(
       this.anchorPoint.x,
@@ -124,25 +124,51 @@ export class Lashing extends THREE.Object3D {
   }
 
   place() {
-    const path = new CustomSinCurve(1);
+    const path = new SquareLashingCurve(this.fixedPole, this.loosePole);
     const geometry = new THREE.TubeGeometry(path, 40, 0.004, 8, false);
     const material = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
     const mesh = new THREE.Mesh(geometry, material);
   }
 }
 
-class CustomSinCurve extends THREE.Curve<THREE.Vector3> {
-  scale: number;
-  constructor(scale = 1) {
+class SquareLashingCurve extends THREE.Curve<THREE.Vector3> {
+  fixedPole: Pole;
+  loosePole: Pole;
+  constructor(fixedPole: Pole, loosePole: Pole) {
     super();
-    this.scale = scale;
+    this.fixedPole = fixedPole;
+    this.loosePole = loosePole;
   }
 
-  getPoint(t, optionalTarget = new THREE.Vector3()) {
-    const tx = t * 3 - 1.5;
-    const ty = Math.sin(2 * Math.PI * t);
-    const tz = 0;
+  getPoint(t: number, optionalTarget = new THREE.Vector3()) {
+    if (t < 0.25) {
+      const r = 4 * t * 0.12 - 0.06;
+      const tx = r;
+      const ty = 0.06 + 0.5 * Math.sqrt(0.12 * 0.12 - 4 * r * r);
+      const tz = -0.06;
 
-    return optionalTarget.set(tx, ty, tz).multiplyScalar(this.scale);
+      return optionalTarget.set(tx, ty, tz);
+    } else if (t < 0.5) {
+      const r = 4 * (t - 0.25) * 0.12 - 0.06;
+      const tx = 0.06;
+      const ty = -0.06 - 0.5 * Math.sqrt(0.12 * 0.12 - 4 * r * r);
+      const tz = r;
+
+      return optionalTarget.set(tx, ty, tz);
+    } else if (t < 0.75) {
+      const r = 4 * (t - 0.5) * 0.12 - 0.06;
+      const tx = -r;
+      const ty = 0.06 + 0.5 * Math.sqrt(0.12 * 0.12 - 4 * r * r);
+      const tz = 0.06;
+
+      return optionalTarget.set(tx, ty, tz);
+    } else {
+      const r = 4 * (t - 0.75) * 0.12 - 0.06;
+      const tx = -0.06;
+      const ty = -0.06 - 0.5 * Math.sqrt(0.12 * 0.12 - 4 * r * r);
+      const tz = -r;
+
+      return optionalTarget.set(tx, ty, tz);
+    }
   }
 }
