@@ -85,10 +85,23 @@ export class Viewer {
 
     // Floor
     this.floor = new Floor(this);
-    this.floor.setNewFloor(50, 50, new THREE.Color("green"));
+    this.floor.setNewFloor(50, 50, new THREE.Color("#2a6e3c"));
+
     // Light
-    const ambientLight = new THREE.AmbientLight();
-    this.scene.add(ambientLight);
+    const ambientLight = new THREE.AmbientLight(
+      new THREE.Color("#ffffff"),
+      0.3
+    );
+    ambientLight.name = "ambient_light";
+    this.camera.add(ambientLight);
+
+    const directionalLight = new THREE.DirectionalLight(
+      new THREE.Color("#ffffff"),
+      1.5
+    );
+    directionalLight.position.set(0.5, 0, 0.866); // ~60º
+    directionalLight.name = "main_light";
+    this.camera.add(directionalLight);
 
     //add background
     this.scene.background = new THREE.Color(0x87ceeb);

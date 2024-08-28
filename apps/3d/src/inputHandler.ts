@@ -10,6 +10,7 @@ export class InputHandler {
   mouseHasMoved: boolean;
   mouseDown: boolean;
   hoveredHandle: THREE.Mesh | undefined = undefined;
+  ctrlDown: boolean;
 
   constructor(viewer: Viewer) {
     this.viewer = viewer;
@@ -19,6 +20,7 @@ export class InputHandler {
 
     this.cursor = { x: 0, y: 0 };
     window.addEventListener("keydown", this.onKeyDown.bind(this));
+    window.addEventListener("keyup", this.onKeyUp.bind(this));
     domElement.addEventListener("mousedown", this.onMouseDown.bind(this));
     domElement.addEventListener("mouseup", this.onMouseUp.bind(this));
     domElement.addEventListener("mousemove", this.onMouseMove.bind(this));
@@ -27,25 +29,47 @@ export class InputHandler {
   onKeyDown(event: any) {
     switch (event.key) {
       case "Delete":
-        this.viewer.selectionTool.delete();
+      case "Backspace":
+        if (this.ctrlDown) {
+          event.preventDefault();
+          this.viewer.saveTool.removeAllPoles();
+          this.viewer.saveTool.removeAllLashings();
+          this.viewer.saveTool.clearLocalStorage();
+        } else {
+          this.viewer.selectionTool.delete();
+        }
         break;
-      case "r":
-        this.viewer.saveTool.removeAllPoles();
-        this.viewer.saveTool.removeAllLashings();
-        this.viewer.saveTool.clearLocalStorage();
+      case "Control":
+        this.ctrlDown = true;
         break;
-      case "s":
-        this.viewer.saveTool.savePolesToLocalStorage();
-        this.viewer.saveTool.saveLashingsToLocalStorage();
+      case "a":
+        event.preventDefault();
+        if (this.viewer.selectionTool.active && this.ctrlDown) {
+          this.viewer.selectionTool.selectAll();
+        }
         break;
-      case "f":
-        const length = Number(prompt("Enter the length of the floor"));
-        const width = Number(prompt("Enter the width of the floor"));
-        this.viewer.floor.setDimensions(length, width);
+      // case "s":
+      //   this.viewer.saveTool.savePolesToLocalStorage();
+      //   this.viewer.saveTool.saveLashingsToLocalStorage();
+      //   break;
+      // case "f":
+      //   const length = Number(prompt("Enter the length of the floor"));
+      //   const width = Number(prompt("Enter the width of the floor"));
+      //   this.viewer.floor.setDimensions(length, width);
+      //   break;
+      default:
+        console.log("down", event.key);
+        break;
+    }
+  }
+
+  onKeyUp(event: any) {
+    switch (event.key) {
+      case "Control":
+        this.ctrlDown = false;
         break;
       default:
-        console.log(event.key);
-        break;
+        console.log("up", event.key);
     }
   }
 
@@ -69,7 +93,7 @@ export class InputHandler {
         }
       } else if (this.viewer.selectionTool.active) {
         if (event.button === THREE.MOUSE.LEFT) {
-          this.viewer.selectionTool.leftClick();
+          this.viewer.selectionTool.leftClick(this.ctrlDown);
         }
       } else if (this.viewer.bipodTool.active) {
         if (event.button === THREE.MOUSE.LEFT) {
