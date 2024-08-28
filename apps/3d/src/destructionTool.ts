@@ -12,7 +12,6 @@ export class DestructionTool {
 
   activate() {
     this.active = true;
-    this.viewer.domElement.style.cursor = "url(./cursors/axe.cur) 5 5, auto";
   }
 
   deactivate() {
@@ -32,5 +31,10 @@ export class DestructionTool {
     this.hoveredPole?.stopThreatening();
     this.hoveredPole = pole;
     this.hoveredPole?.threatenWithDestruction();
+    if (this.hoveredPole) {
+      this.viewer.domElement.style.cursor = "url(./cursors/axe.cur) 5 5, auto";
+    } else {
+      this.viewer.domElement.style.cursor = "default";
+    }
   }
 }
