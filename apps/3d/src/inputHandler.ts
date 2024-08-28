@@ -236,38 +236,27 @@ export class InputHandler {
     return target;
   }
 
+  deactiveTools() {
+    this.viewer.selectionTool.deactivate();
+    this.viewer.poleTool.deactivate();
+    this.viewer.bipodTool.deactivate();
+    this.viewer.tripodTool.deactivate();
+    this.viewer.destructionTool.deactivate();
+  }
+
   onActivateTool(tool: ButtonType) {
+    this.deactiveTools();
     switch (tool) {
       case "selectiontool":
-        this.viewer.poleTool.deactivate();
-        this.viewer.bipodTool.deactivate();
-        this.viewer.tripodTool.deactivate();
-        this.viewer.destructionTool.deactivate();
-
         this.viewer.selectionTool.activate();
         break;
       case "poletool":
-        this.viewer.selectionTool.deactivate();
-        this.viewer.bipodTool.deactivate();
-        this.viewer.tripodTool.deactivate();
-        this.viewer.destructionTool.deactivate();
-
         this.viewer.poleTool.activate();
         break;
       case "bipodtool":
-        this.viewer.selectionTool.deactivate();
-        this.viewer.poleTool.deactivate();
-        this.viewer.tripodTool.deactivate();
-        this.viewer.destructionTool.deactivate();
-
         this.viewer.bipodTool.activate();
         break;
       case "tripodtool":
-        this.viewer.selectionTool.deactivate();
-        this.viewer.poleTool.deactivate();
-        this.viewer.bipodTool.deactivate();
-        this.viewer.destructionTool.deactivate();
-
         this.viewer.tripodTool.activate();
         break;
       case "polytool":
@@ -277,11 +266,6 @@ export class InputHandler {
         // Activate lashingTool
         break;
       case "destructiontool":
-        this.viewer.selectionTool.deactivate();
-        this.viewer.poleTool.deactivate();
-        this.viewer.bipodTool.deactivate();
-        this.viewer.tripodTool.deactivate();
-
         this.viewer.destructionTool.activate();
       default:
         break;
