@@ -12,9 +12,15 @@ import {
 } from "@mui/material";
 import React from "react";
 
-const TerrainOptions = () => {
-  const [isGrassTexture, setIsGrassTexture] = React.useState(false);
-  const [floorColor, setFloorColor] = React.useState<string>("#2a6e3c");
+type TerrainOptionsProps = {
+  parameterObject: {
+    isGrassTexture: boolean;
+    setIsGrassTexture: (isGrassTexture: boolean) => void;
+    floorColor: string;
+    setFloorColor: (color: string) => void;
+  };
+};
+const TerrainOptions = ({ parameterObject }: TerrainOptionsProps) => {
   return (
     <Box>
       <Typography variant="h6">Terrain Options</Typography>
@@ -39,8 +45,10 @@ const TerrainOptions = () => {
               <TableCell>
                 <input
                   type="color"
-                  value={floorColor}
-                  onChange={(event) => setFloorColor(event.target.value)}
+                  value={parameterObject.floorColor}
+                  onChange={(event) =>
+                    parameterObject.setFloorColor(event.target.value)
+                  }
                 />
               </TableCell>
             </TableRow>
@@ -51,7 +59,9 @@ const TerrainOptions = () => {
                   aria-label=""
                   color="secondary"
                   onChange={() => {
-                    setIsGrassTexture(!isGrassTexture);
+                    parameterObject.setIsGrassTexture(
+                      !parameterObject.isGrassTexture
+                    );
                   }}
                 />
               </TableCell>

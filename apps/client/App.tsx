@@ -10,6 +10,8 @@ import { c } from "vite/dist/node/types.d-FdqQ54oU";
 const App = () => {
   const [isLightMode, setIsLightMode] = React.useState(true);
   const [isSidebarOpen, setIsSidebarOpen] = React.useState(true);
+  const [floorColor, setFloorColor] = React.useState<string>("#2a6e3c");
+  const [isGrassTexture, setIsGrassTexture] = React.useState(false);
 
   const toggleLightmode = () => {
     setIsLightMode(!isLightMode);
@@ -19,19 +21,23 @@ const App = () => {
     setIsSidebarOpen(!isSidebarOpen);
   };
 
+  const parameterObject = {
+    isLightMode: isLightMode,
+    toggleLightmode: toggleLightmode,
+    isSidebarOpen: isSidebarOpen,
+    toggleSidebar: toggleSidebar,
+    floorColor: floorColor,
+    setFloorColor: setFloorColor,
+    isGrassTexture: isGrassTexture,
+    setIsGrassTexture: setIsGrassTexture,
+  };
+
   return (
     <ThemeProvider theme={isLightMode ? defaultTheme : darkTheme}>
       <Routes>
         <Route
           path="/"
-          element={
-            <SjorcraftEditor
-              isLightMode={isLightMode}
-              toggleLightmode={toggleLightmode}
-              isSidebarOpen={isSidebarOpen}
-              toggleSidebar={toggleSidebar}
-            />
-          }
+          element={<SjorcraftEditor parameterObject={parameterObject} />}
         />
       </Routes>
     </ThemeProvider>

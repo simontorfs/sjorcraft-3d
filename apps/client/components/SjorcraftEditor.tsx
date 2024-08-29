@@ -11,17 +11,18 @@ import EditorSidebar from "./EditorSidebar";
 import { useDeviceSize } from "../src/hooks/useDeviceSize";
 
 type SjorcraftEditorProps = {
-  isLightMode: boolean;
-  toggleLightmode: () => void;
-  isSidebarOpen: boolean;
-  toggleSidebar: () => void;
+  parameterObject: {
+    isLightMode: boolean;
+    toggleLightmode: () => void;
+    isSidebarOpen: boolean;
+    toggleSidebar: () => void;
+    floorColor: string;
+    setFloorColor: (color: string) => void;
+    isGrassTexture: boolean;
+    setIsGrassTexture: (isGrassTexture: boolean) => void;
+  };
 };
-const SjorcraftEditor = ({
-  isLightMode,
-  toggleLightmode,
-  isSidebarOpen,
-  toggleSidebar,
-}: SjorcraftEditorProps) => {
+const SjorcraftEditor = ({ parameterObject }: SjorcraftEditorProps) => {
   const [rendererContext, setRendererContext] =
     React.useState<RendererContextType>({});
 
@@ -44,15 +45,15 @@ const SjorcraftEditor = ({
       <RendererContext.Provider value={rendererContext}>
         {!smDevice && (
           <Toolbar
-            isLightMode={isLightMode}
-            toggleLightMode={toggleLightmode}
-            isSidebarOpen={isSidebarOpen}
-            toggleSidebar={toggleSidebar}
+            isLightMode={parameterObject.isLightMode}
+            toggleLightMode={parameterObject.toggleLightmode}
+            isSidebarOpen={parameterObject.isSidebarOpen}
+            toggleSidebar={parameterObject.toggleSidebar}
           />
         )}
         <div className="editor-main-content">
           <SjorcraftCanvas />
-          {!smDevice && <EditorSidebar isSidebarOpen={isSidebarOpen} />}
+          {!smDevice && <EditorSidebar parameterObject={parameterObject} />}
         </div>
       </RendererContext.Provider>
     </div>

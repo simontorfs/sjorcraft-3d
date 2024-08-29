@@ -38,9 +38,16 @@ function a11yProps(index: number) {
 }
 
 type EditorSidebarProps = {
-  isSidebarOpen: boolean;
+  parameterObject: {
+    isSidebarOpen: boolean;
+    toggleSidebar: () => void;
+    floorColor: string;
+    setFloorColor: (color: string) => void;
+    isGrassTexture: boolean;
+    setIsGrassTexture: (isGrassTexture: boolean) => void;
+  };
 };
-const EditorSidebar = ({ isSidebarOpen }: EditorSidebarProps) => {
+const EditorSidebar = ({ parameterObject }: EditorSidebarProps) => {
   const [value, setValue] = React.useState(0);
 
   const onCoffeeBreak = () => {
@@ -59,14 +66,14 @@ const EditorSidebar = ({ isSidebarOpen }: EditorSidebarProps) => {
     <Box
       sx={{
         position: "fixed",
-        right: isSidebarOpen ? "0" : "-10rem",
+        right: parameterObject.isSidebarOpen ? "0" : "-10rem",
         transition: "right 0.5s ease  0s  normal",
         height: "100%",
 
         zIndex: 10,
       }}
     >
-      {isSidebarOpen && (
+      {parameterObject.isSidebarOpen && (
         <Box
           sx={{
             width: "30rem",
@@ -134,7 +141,7 @@ const EditorSidebar = ({ isSidebarOpen }: EditorSidebarProps) => {
             <ImportExportButtons />
           </CustomTabPanel>
           <CustomTabPanel value={value} index={2}>
-            <TerrainOptions />
+            <TerrainOptions parameterObject={parameterObject} />
           </CustomTabPanel>
           <CustomTabPanel value={value} index={3}>
             <Box
