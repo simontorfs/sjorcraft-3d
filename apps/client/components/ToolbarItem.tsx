@@ -1,3 +1,4 @@
+import { Box } from "@mui/material";
 import React from "react";
 
 export type ButtonType =
@@ -7,11 +8,11 @@ export type ButtonType =
   | "tripodtool"
   | "polytool"
   | "lashingtool";
-interface ToolbarItemProps {
+type ToolbarItemProps = {
   active?: boolean;
   disabled?: boolean;
   icon: React.FC;
-}
+};
 export const Tool: React.FC<ToolbarItemProps> = ({
   active,
   icon: Icon,
@@ -19,8 +20,12 @@ export const Tool: React.FC<ToolbarItemProps> = ({
   ...props
 }) => {
   return (
-    <div {...props} className={active ? "toolbar-icon-active" : "toolbar-icon"}>
+    <Box
+      {...props}
+      bgcolor={active ? "secondary.light" : "primary.light"}
+      className={active ? "toolbar-icon-active" : "toolbar-icon"}
+    >
       <Icon />
-    </div>
+    </Box>
   );
 };

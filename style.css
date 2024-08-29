@@ -45,7 +45,6 @@ body,
   border-radius: 0.25rem; /* rounded */
   margin: 0 1px; /* mx-px */
   cursor: pointer;
-  background-color: #effcec;
 }
 
 .toolbar-icon-active {

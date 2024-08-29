@@ -1,21 +1,20 @@
 import { createTheme } from "@mui/material/styles";
-import { createContext, useState } from "react";
 export type Theme = typeof defaultTheme;
 
 export const defaultTheme = createTheme({
   palette: {
     mode: "light",
     primary: {
-      light: "#e5e5e5", // Zachte lichte grijstint voor een subtiele achtergrond
-      main: "#c0c0c0", // Neutrale grijstint voor de navbar en aside
-      dark: "#8c8c8c", // Iets donkerdere grijstint voor hover-effecten of randen
-      contrastText: "#000", // Zwarte tekst voor goede leesbaarheid
+      light: "#f4f4f4", // Zeer lichte grijstint voor zachte achtergrondaccenten
+      main: "#d1d1d1", // Neutrale, lichte grijstint voor de navbar en andere belangrijke elementen
+      dark: "#a6a6a6", // Iets donkerdere grijstint voor randen, knoppen, en hover-effecten
+      contrastText: "#000000", // Zwarte tekst voor een sterk contrast en leesbaarheid
     },
     secondary: {
-      light: "#a2d9a6", // Lichte groenige tint voor accenten
-      main: "#4caf50", // Groene hoofdkleur voor belangrijke accenten
-      dark: "#357a38", // Donkere groentint voor nadruk op knoppen of selecties
-      contrastText: "#fff", // Witte tekst voor contrast tegen de secundaire kleur
+      light: "#a2d9a6", // Lichte groenige tint voor accenten (ongewijzigd)
+      main: "#4caf50", // Groene hoofdkleur voor belangrijke accenten (ongewijzigd)
+      dark: "#357a38", // Donkere groentint voor nadruk op knoppen of selecties (ongewijzigd)
+      contrastText: "#fff", // Witte tekst voor contrast tegen de secundaire kleur (ongewijzigd)
     },
     background: {
       default: "#f5f5f5", // Lichte achtergrondkleur voor de hoofdpagina

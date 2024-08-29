@@ -13,10 +13,14 @@ import { useDeviceSize } from "../src/hooks/useDeviceSize";
 type SjorcraftEditorProps = {
   isLightMode: boolean;
   toggleLightmode: () => void;
+  isSidebarOpen: boolean;
+  toggleSidebar: () => void;
 };
 const SjorcraftEditor = ({
   isLightMode,
   toggleLightmode,
+  isSidebarOpen,
+  toggleSidebar,
 }: SjorcraftEditorProps) => {
   const [rendererContext, setRendererContext] =
     React.useState<RendererContextType>({});
@@ -42,11 +46,13 @@ const SjorcraftEditor = ({
           <Toolbar
             isLightMode={isLightMode}
             toggleLightMode={toggleLightmode}
+            isSidebarOpen={isSidebarOpen}
+            toggleSidebar={toggleSidebar}
           />
         )}
         <div className="editor-main-content">
           <SjorcraftCanvas />
-          {!smDevice && <EditorSidebar />}
+          {!smDevice && <EditorSidebar isSidebarOpen={isSidebarOpen} />}
         </div>
       </RendererContext.Provider>
     </div>

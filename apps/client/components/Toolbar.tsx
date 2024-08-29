@@ -4,6 +4,8 @@ import PoleIcon from "../assets/icons/pole.svg?react";
 import TripodIcon from "../assets/icons/tripod.svg?react";
 import LightModeIcon from "@mui/icons-material/LightMode";
 import DarkModeIcon from "@mui/icons-material/DarkMode";
+import MenuIcon from "@mui/icons-material/Menu";
+import MenuOpenIcon from "@mui/icons-material/MenuOpen";
 import React, { useContext, useState } from "react";
 import { Tool } from "./ToolbarItem";
 import { RendererContext } from "../contexts/rendererContext";
@@ -12,9 +14,16 @@ import { Box, Typography } from "@mui/material";
 type ToolbarType = {
   isLightMode: boolean;
   toggleLightMode: () => void;
+  isSidebarOpen: boolean;
+  toggleSidebar: () => void;
 };
 
-const Toolbar = ({ isLightMode, toggleLightMode }: ToolbarType) => {
+const Toolbar = ({
+  isLightMode,
+  toggleLightMode,
+  isSidebarOpen,
+  toggleSidebar,
+}: ToolbarType) => {
   const rendererContext = useContext(RendererContext);
   const viewer = rendererContext.viewer;
   const [selectedTool, setSelectedTool] = useState("selectiontool");
@@ -31,7 +40,7 @@ const Toolbar = ({ isLightMode, toggleLightMode }: ToolbarType) => {
         fontSize: "x-large",
         height: "3.5rem",
       }}
-      bgcolor="primary.dark"
+      bgcolor="primary.main"
       color="primary.contrastText"
       component="nav"
     >
@@ -108,7 +117,14 @@ const Toolbar = ({ isLightMode, toggleLightMode }: ToolbarType) => {
           padding: "0.3rem",
         }}
       >
-        {!isLightMode && (
+        {isLightMode ? (
+          <DarkModeIcon
+            sx={{ cursor: "pointer" }}
+            onClick={() => {
+              toggleLightMode();
+            }}
+          />
+        ) : (
           <LightModeIcon
             sx={{ cursor: "pointer" }}
             onClick={() => {
@@ -116,11 +132,18 @@ const Toolbar = ({ isLightMode, toggleLightMode }: ToolbarType) => {
             }}
           />
         )}
-        {isLightMode && (
-          <DarkModeIcon
+        {isSidebarOpen ? (
+          <MenuIcon
             sx={{ cursor: "pointer" }}
             onClick={() => {
-              toggleLightMode();
+              toggleSidebar();
+            }}
+          />
+        ) : (
+          <MenuOpenIcon
+            sx={{ cursor: "pointer" }}
+            onClick={() => {
+              toggleSidebar();
             }}
           />
         )}

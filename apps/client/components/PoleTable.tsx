@@ -3,6 +3,7 @@ import ColorIndicator from "./ColorIndicator";
 import { usePoles } from "../src/hooks/usePoles";
 import {
   Paper,
+  styled,
   Table,
   TableBody,
   TableCell,
@@ -14,19 +15,28 @@ import {
 const PoleTable = () => {
   const poles = usePoles();
   return (
-    <TableContainer component={Paper}>
-      <Table
-        aria-label="Pole Table"
-        sx={{
-          width: "100%",
-          height: "100%",
-        }}
-      >
+    <TableContainer
+      component={Paper}
+      sx={{
+        backgroundColor: "primary.light",
+        color: "primary.contrastText",
+
+        "& th": {
+          fontWeight: "bold",
+          backgroundColor: "primary.main",
+        },
+
+        "& td": {
+          fontWeight: "bold",
+        },
+      }}
+    >
+      <Table aria-label="Pole Table">
         <TableHead>
           <TableRow>
-            <TableCell align="right"></TableCell>
-            <TableCell align="right"></TableCell>
-            <TableCell align="center">#</TableCell>
+            <TableCell align="left">Color</TableCell>
+            <TableCell align="left">Length</TableCell>
+            <TableCell align="left">#</TableCell>
           </TableRow>
         </TableHead>
         <TableBody>

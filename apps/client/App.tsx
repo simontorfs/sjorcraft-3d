@@ -4,13 +4,19 @@ import { Route, Routes } from "react-router-dom";
 import SjorcraftEditor from "./components/SjorcraftEditor";
 import { darkTheme, defaultTheme } from "./contexts/colorContext";
 import { ThemeProvider } from "@mui/material";
+import { c } from "vite/dist/node/types.d-FdqQ54oU";
 
 //@ts-ignore
 const App = () => {
   const [isLightMode, setIsLightMode] = React.useState(true);
+  const [isSidebarOpen, setIsSidebarOpen] = React.useState(true);
 
   const toggleLightmode = () => {
     setIsLightMode(!isLightMode);
+  };
+
+  const toggleSidebar = () => {
+    setIsSidebarOpen(!isSidebarOpen);
   };
 
   return (
@@ -22,6 +28,8 @@ const App = () => {
             <SjorcraftEditor
               isLightMode={isLightMode}
               toggleLightmode={toggleLightmode}
+              isSidebarOpen={isSidebarOpen}
+              toggleSidebar={toggleSidebar}
             />
           }
         />
