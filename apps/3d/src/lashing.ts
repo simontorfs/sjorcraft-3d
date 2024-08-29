@@ -29,7 +29,7 @@ export class Lashing extends THREE.Object3D {
 
     this.remove(this.mesh);
     const path = new SquareLashingCurve(this.fixedPole, this.loosePole);
-    const geometry = new THREE.TubeGeometry(path, 80, 0.002, 8, true);
+    const geometry = new THREE.TubeGeometry(path, 120, 0.002, 8, true);
     const material = new THREE.MeshBasicMaterial({
       color: 0xc9bd97,
       wireframe: true,
@@ -137,7 +137,7 @@ class SquareLashingCurve extends THREE.Curve<THREE.Vector3> {
   }
 
   getPoint(t: number, optionalTarget = new THREE.Vector3()) {
-    const p = 8;
+    const p = 12;
     if (t < 1 / p) {
       const r = p * t * 0.12 - 0.06;
       const tx = r;
@@ -146,50 +146,78 @@ class SquareLashingCurve extends THREE.Curve<THREE.Vector3> {
 
       return optionalTarget.set(tx, ty, tz);
     } else if (t < 2 / p) {
-      const r = p * (t - 1 / p) * 0.12 - 0.06;
+      const r = (p * t - 1) * 0.12 - 0.06;
       const tx = 0.06;
       const ty = -0.06 - 0.5 * Math.sqrt(0.12 * 0.12 - 4 * r * r);
       const tz = r;
 
       return optionalTarget.set(tx, ty, tz);
     } else if (t < 3 / p) {
-      const r = p * (t - 2 / p) * 0.12 - 0.06;
+      const r = (p * t - 2) * 0.12 - 0.06;
       const tx = -r;
       const ty = 0.06 + 0.5 * Math.sqrt(0.12 * 0.12 - 4 * r * r);
       const tz = 0.06;
 
       return optionalTarget.set(tx, ty, tz);
     } else if (t < 4 / p) {
-      const r = p * (t - 3 / p) * 0.12 - 0.06;
+      const r = (p * t - 3) * 0.12 - 0.06;
       const tx = -0.06;
       const ty = -0.06 - 0.5 * Math.sqrt(0.12 * 0.12 - 4 * r * r);
       const tz = -r;
 
       return optionalTarget.set(tx, ty, tz);
     } else if (t < 5 / p) {
-      const r = p * (t - 4 / p) * 0.12 - 0.06;
+      const r = (p * t - 4) * 0.12 - 0.06;
       const tx = r;
       const ty = 0.06 + 0.5 * Math.sqrt(0.12 * 0.12 - 4 * r * r);
-      const tz = -0.06 - 0.004;
+      const tz = -0.06 - 0.005;
 
       return optionalTarget.set(tx, ty, tz);
     } else if (t < 6 / p) {
-      const r = p * (t - 5 / p) * 0.12 - 0.06;
-      const tx = 0.06 - 0.004;
+      const r = (p * t - 5) * 0.12 - 0.06;
+      const tx = 0.06 - 0.005;
       const ty = -0.06 - 0.5 * Math.sqrt(0.12 * 0.12 - 4 * r * r);
       const tz = r;
 
       return optionalTarget.set(tx, ty, tz);
     } else if (t < 7 / p) {
-      const r = p * (t - 6 / p) * 0.12 - 0.06;
+      const r = (p * t - 6) * 0.12 - 0.06;
       const tx = -r;
       const ty = 0.06 + 0.5 * Math.sqrt(0.12 * 0.12 - 4 * r * r);
-      const tz = 0.06 + 0.004;
+      const tz = 0.06 + 0.005;
+
+      return optionalTarget.set(tx, ty, tz);
+    } else if (t < 8 / p) {
+      const r = (p * t - 7) * 0.12 - 0.06;
+      const tx = -0.06 + 0.005;
+      const ty = -0.06 - 0.5 * Math.sqrt(0.12 * 0.12 - 4 * r * r);
+      const tz = -r;
+
+      return optionalTarget.set(tx, ty, tz);
+    } else if (t < 9 / p) {
+      const r = (p * t - 8) * 0.12 - 0.06;
+      const tx = r;
+      const ty = 0.06 + 0.5 * Math.sqrt(0.12 * 0.12 - 4 * r * r);
+      const tz = -0.06 - 0.01;
+
+      return optionalTarget.set(tx, ty, tz);
+    } else if (t < 10 / p) {
+      const r = (p * t - 9) * 0.12 - 0.06;
+      const tx = 0.06 - 0.01;
+      const ty = -0.06 - 0.5 * Math.sqrt(0.12 * 0.12 - 4 * r * r);
+      const tz = r;
+
+      return optionalTarget.set(tx, ty, tz);
+    } else if (t < 11 / p) {
+      const r = (p * t - 10) * 0.12 - 0.06;
+      const tx = -r;
+      const ty = 0.06 + 0.5 * Math.sqrt(0.12 * 0.12 - 4 * r * r);
+      const tz = 0.06 + 0.01;
 
       return optionalTarget.set(tx, ty, tz);
     } else {
-      const r = p * (t - 7 / p) * 0.12 - 0.06;
-      const tx = -0.06 + 0.004;
+      const r = (p * t - 11) * 0.12 - 0.06;
+      const tx = -0.06 + 0.01;
       const ty = -0.06 - 0.5 * Math.sqrt(0.12 * 0.12 - 4 * r * r);
       const tz = -r;
 
