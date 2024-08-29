@@ -29,14 +29,24 @@ export class Pole extends THREE.Object3D {
   constructor() {
     super();
     const textureLoader = new THREE.TextureLoader();
-    const colorTexture = textureLoader.load("./wood/v1/wood_basecolor.jpg");
+    const colorTexture = textureLoader.load(
+      "./textures/wood/v1/wood_basecolor.jpg"
+    );
     colorTexture.repeat.y = this.length * 2;
     colorTexture.wrapT = THREE.MirroredRepeatWrapping;
-    const heightTexture = textureLoader.load("./wood/v1/wood_height.png");
-    const normalTexture = textureLoader.load("./wood/v1/wood_normal.jpg");
-    const roughnessTexture = textureLoader.load("./wood/v1/wood_roughness.jpg");
-    const metalnessTexture = textureLoader.load("./wood/v1/wood_height.png");
-    const aoTexture = textureLoader.load("./wood/v1/wood_ao.jpg");
+    const heightTexture = textureLoader.load(
+      "./textures//wood/v1/wood_height.png"
+    );
+    const normalTexture = textureLoader.load(
+      "./textures/wood/v1/wood_normal.jpg"
+    );
+    const roughnessTexture = textureLoader.load(
+      "./textures/wood/v1/wood_roughness.jpg"
+    );
+    const metalnessTexture = textureLoader.load(
+      "./textures/wood/v1/wood_height.png"
+    );
+    const aoTexture = textureLoader.load("./textures/wood/v1/wood_ao.jpg");
 
     const geometry = new THREE.CylinderGeometry(
       this.radius,

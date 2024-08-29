@@ -26,22 +26,30 @@ export class Floor extends THREE.Object3D {
   setFloor(length: number, width: number, color?: THREE.Color) {
     const floorGeometry = new THREE.PlaneGeometry(length, width);
     const textureLoader = new THREE.TextureLoader();
-    const colorTexture = textureLoader.load("./grass/grass1-albedo3.png");
+    const colorTexture = textureLoader.load(
+      "./textures/grass/grass1-albedo3.png"
+    );
     colorTexture.repeat.y = width;
     colorTexture.repeat.x = length;
     colorTexture.wrapT = THREE.RepeatWrapping;
     colorTexture.wrapS = THREE.RepeatWrapping;
-    const normalTexture = textureLoader.load("./grass/grass1-normal1-dx.png");
+    const normalTexture = textureLoader.load(
+      "./textures/grass/grass1-normal1-dx.png"
+    );
     normalTexture.repeat.y = width;
     normalTexture.repeat.x = length;
     normalTexture.wrapT = THREE.RepeatWrapping;
     normalTexture.wrapS = THREE.RepeatWrapping;
-    const roughnessTexture = textureLoader.load("./grass/grass1-rough.png");
+    const roughnessTexture = textureLoader.load(
+      "./textures/grass/grass1-rough.png"
+    );
     roughnessTexture.repeat.y = width;
     roughnessTexture.repeat.x = length;
     roughnessTexture.wrapT = THREE.RepeatWrapping;
     roughnessTexture.wrapS = THREE.RepeatWrapping;
-    const metalnessTexture = textureLoader.load("./grass/grass1-ao.png");
+    const metalnessTexture = textureLoader.load(
+      "./textures/grass/grass1-ao.png"
+    );
     metalnessTexture.repeat.y = width;
     metalnessTexture.repeat.x = length;
     metalnessTexture.wrapT = THREE.RepeatWrapping;
