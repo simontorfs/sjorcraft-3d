@@ -94,6 +94,7 @@ export class PoleTool {
   }
 
   drawPoleWhileHoveringGound(groundPosition: THREE.Vector3) {
+    if (this.newLashing) this.viewer.scene.remove(this.newLashing);
     this.newLashing = undefined;
     this.hoveringGround = true;
     this.snapHelperLine.visible = false;

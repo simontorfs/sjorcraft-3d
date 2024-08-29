@@ -122,13 +122,6 @@ export class Lashing extends THREE.Object3D {
     }
     return false;
   }
-
-  place() {
-    const path = new SquareLashingCurve(this.fixedPole, this.loosePole);
-    const geometry = new THREE.TubeGeometry(path, 40, 0.004, 8, false);
-    const material = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
-    const mesh = new THREE.Mesh(geometry, material);
-  }
 }
 
 class SquareLashingCurve extends THREE.Curve<THREE.Vector3> {
