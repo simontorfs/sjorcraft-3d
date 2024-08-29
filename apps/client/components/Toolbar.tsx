@@ -2,11 +2,19 @@ import ArrowIcon from "../assets/icons/arrow.svg?react";
 import BipodIcon from "../assets/icons/bipod.svg?react";
 import PoleIcon from "../assets/icons/pole.svg?react";
 import TripodIcon from "../assets/icons/tripod.svg?react";
+import LightModeIcon from "@mui/icons-material/LightMode";
+import DarkModeIcon from "@mui/icons-material/DarkMode";
 import React, { useContext, useState } from "react";
 import { Tool } from "./ToolbarItem";
 import { RendererContext } from "../contexts/rendererContext";
-import { Box, TextField, Typography } from "@mui/material";
-const Toolbar = () => {
+import { Box, Typography } from "@mui/material";
+
+type ToolbarType = {
+  isLightMode: boolean;
+  toggleLightMode: () => void;
+};
+
+const Toolbar = ({ isLightMode, toggleLightMode }: ToolbarType) => {
   const rendererContext = useContext(RendererContext);
   const viewer = rendererContext.viewer;
   const [selectedTool, setSelectedTool] = useState("selectiontool");
@@ -17,15 +25,14 @@ const Toolbar = () => {
         flexDirection: "row",
         justifyContent: "space-between",
         justifySelf: "center",
-        color: "white",
         alignItems: "center",
         padding: "0.5rem 2rem",
         fontWeight: "bold",
         fontSize: "x-large",
         height: "3.5rem",
-        boxShadow: "0px 5px 5px 0px rgba(0,0,0,0.2)",
       }}
       bgcolor="primary.dark"
+      color="primary.contrastText"
       component="nav"
     >
       <Typography
@@ -101,13 +108,22 @@ const Toolbar = () => {
           padding: "0.3rem",
         }}
       >
-        <Typography
-          variant="h6"
-          component="p"
-          sx={{
-            fontWeight: "bold",
-          }}
-        ></Typography>
+        {!isLightMode && (
+          <LightModeIcon
+            sx={{ cursor: "pointer" }}
+            onClick={() => {
+              toggleLightMode();
+            }}
+          />
+        )}
+        {isLightMode && (
+          <DarkModeIcon
+            sx={{ cursor: "pointer" }}
+            onClick={() => {
+              toggleLightMode();
+            }}
+          />
+        )}
       </Box>
     </Box>
   );

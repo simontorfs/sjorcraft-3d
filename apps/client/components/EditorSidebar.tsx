@@ -1,30 +1,49 @@
-import React, { useContext } from "react";
+import React from "react";
 import PoleTable from "./PoleTable";
 import CoffeeIcon from "../assets/icons/coffee.svg?react";
-import { RendererContext } from "../contexts/rendererContext";
-import { Box, Button, Divider, Stack } from "@mui/material";
-import FileDownloadIcon from "@mui/icons-material/FileDownload";
-import FileUploadIcon from "@mui/icons-material/FileUpload";
+import {
+  Box,
+  Button,
+  Divider,
+  Stack,
+  Tab,
+  Tabs,
+  Typography,
+} from "@mui/material";
+import ImportExportButtons from "./ImportExportButtons";
+import InfoIcon from "@mui/icons-material/Info";
+import ImportExportIcon from "@mui/icons-material/ImportExport";
+interface TabPanelProps {
+  children?: React.ReactNode;
+  index: number;
+  value: number;
+}
+
+function CustomTabPanel(props: TabPanelProps) {
+  const { children, value, index, ...other } = props;
+
+  return (
+    <div
+      role="tabpanel"
+      hidden={value !== index}
+      id={`information-tabs-${index}`}
+      aria-labelledby={`information-tabs-${index}`}
+      {...other}
+    >
+      {value === index && <Box sx={{ p: 3 }}>{children}</Box>}
+    </div>
+  );
+}
+
+function a11yProps(index: number) {
+  return {
+    id: `information-tabs-${index}`,
+    "aria-controls": `information-tabs-${index}`,
+  };
+}
 
 const EditorSidebar = () => {
-  const rendererContext = useContext(RendererContext);
-  const viewer = rendererContext.viewer;
-
-  const onExportJpg = () => {
-    viewer?.imageExporter.exportImage();
-  };
-
-  const onExportSjor = () => {
-    viewer?.saveTool.exportAll("sjorcraft_export");
-  };
-
-  const onExportDae = () => {
-    console.log("Exporting to dae");
-  };
-
-  const onImportSjor = () => {
-    viewer?.saveTool.importAll();
-  };
+  const [value, setValue] = React.useState(0);
 
   const onCoffeeBreak = () => {
     window.open(
@@ -34,79 +53,108 @@ const EditorSidebar = () => {
     );
   };
 
+  const handleChange = (event: React.SyntheticEvent, newValue: number) => {
+    setValue(newValue);
+  };
+
   return (
     <Box
       sx={{
-        color: "black",
-        width: "15rem",
+        width: "18rem",
         right: "0",
-        height: "100%",
-        borderTop: "1px solid #6b7280",
-        padding: "2rem",
+        padding: "1rem",
         flexShrink: "0",
         boxShadow: "-5px 0px 5px 0px rgba(0,0,0,0.2)",
+        overflow: "scroll",
       }}
       bgcolor="primary.light"
+      color="primary.contrastText"
     >
-      <PoleTable />
-      <Divider color="gray" style={{ margin: "1rem 0rem" }} />
-      <Stack
-        sx={{
-          display: "flex",
-          flexDirection: "column",
-          justifyContent: "space-between",
-          gap: "1rem",
-        }}
+      <Box
+        sx={{ borderBottom: 1, borderColor: "divider" }}
+        color="primary.contrastText"
       >
-        <Button
-          variant="contained"
-          color="primary"
-          startIcon={<FileDownloadIcon />}
-          onClick={onExportSjor}
+        <Tabs
+          value={value}
+          onChange={handleChange}
+          aria-label="Information Tabs"
+          variant="fullWidth"
+          indicatorColor="secondary"
+          textColor="secondary"
         >
-          .sjor
-        </Button>
-        <Button
-          variant="contained"
-          color="primary"
-          startIcon={<FileDownloadIcon />}
-          onClick={onExportJpg}
+          <Tab
+            icon={<InfoIcon />}
+            label="Pole Info"
+            {...a11yProps(0)}
+            sx={{
+              color: "primary.contrastText",
+            }}
+          />
+          <Tab
+            icon={<ImportExportIcon />}
+            label="Export and Import"
+            {...a11yProps(1)}
+            sx={{
+              color: "primary.contrastText",
+            }}
+          />
+          <Tab
+            icon={<CoffeeIcon />}
+            label="Buy Us a Coffee"
+            {...a11yProps(2)}
+            sx={{
+              color: "primary.contrastText",
+            }}
+          />
+        </Tabs>
+      </Box>
+      <CustomTabPanel value={value} index={0}>
+        <PoleTable />
+      </CustomTabPanel>
+      <CustomTabPanel value={value} index={1}>
+        <ImportExportButtons />
+      </CustomTabPanel>
+      <CustomTabPanel value={value} index={2}>
+        <Box
+          sx={{
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            alignContent: "center",
+            alignSelf: "center",
+            justifyContent: "center",
+            justifyItems: "center",
+            gap: "1rem",
+          }}
         >
-          .jpg
-        </Button>
-        <Button
-          sx={{ color: "primary.contrastText" }}
-          variant="contained"
-          disabled={true}
-          startIcon={<FileDownloadIcon />}
-          onClick={onExportDae}
-        >
-          .dae
-        </Button>
-      </Stack>
-      <Divider color="gray" style={{ margin: "1rem 0rem" }} />
-      <Stack>
-        <Button
-          variant="contained"
-          color="primary"
-          startIcon={<FileUploadIcon />}
-          onClick={onImportSjor}
-        >
-          .sjor
-        </Button>
-      </Stack>
-      <input type="file" id="file" accept=".sjor" style={{ display: "none" }} />
-      <Divider color="gray" style={{ margin: "1rem 0rem" }} />
-      <Stack>
-        <Button
-          variant="contained"
-          color="primary"
-          startIcon={<CoffeeIcon />}
-          onClick={onCoffeeBreak}
-        >
-          Coffee break
-        </Button>
-      </Stack>
+          <Typography variant="h6" color="primary.contrastText">
+            Buy us a coffee
+          </Typography>
+          <Typography
+            variant="body1"
+            color="primary.contrastText"
+            sx={{ textAlign: "center" }}
+          >
+            This project is free to use. If you like it, please consider buying
+            us a coffee. It would help us a lot to keep this project up and
+            running.
+          </Typography>
+          <Divider
+            sx={{
+              width: "100%",
+              backgroundColor: "secondary.light",
+            }}
+          />
+          <Button
+            variant="contained"
+            color="secondary"
+            startIcon={<CoffeeIcon />}
+            onClick={onCoffeeBreak}
+          >
+            Coffee break
+          </Button>
+        </Box>
+      </CustomTabPanel>
     </Box>
   );
 };

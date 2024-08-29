@@ -2,12 +2,31 @@
 import React from "react";
 import { Route, Routes } from "react-router-dom";
 import SjorcraftEditor from "./components/SjorcraftEditor";
+import { darkTheme, defaultTheme } from "./contexts/colorContext";
+import { ThemeProvider } from "@mui/material";
+
 //@ts-ignore
 const App = () => {
+  const [isLightMode, setIsLightMode] = React.useState(true);
+
+  const toggleLightmode = () => {
+    setIsLightMode(!isLightMode);
+  };
+
   return (
-    <Routes>
-      <Route path="/" element={<SjorcraftEditor />} />
-    </Routes>
+    <ThemeProvider theme={isLightMode ? defaultTheme : darkTheme}>
+      <Routes>
+        <Route
+          path="/"
+          element={
+            <SjorcraftEditor
+              isLightMode={isLightMode}
+              toggleLightmode={toggleLightmode}
+            />
+          }
+        />
+      </Routes>
+    </ThemeProvider>
   );
 };
 
