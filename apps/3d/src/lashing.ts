@@ -137,88 +137,93 @@ class SquareLashingCurve extends THREE.Curve<THREE.Vector3> {
   }
 
   getPoint(t: number, optionalTarget = new THREE.Vector3()) {
-    const p = 12;
-    if (t < 1 / p) {
-      const r = p * t * 0.12 - 0.06;
-      const tx = r;
-      const ty = 0.06 + 0.5 * Math.sqrt(0.12 * 0.12 - 4 * r * r);
-      const tz = -0.06;
+    const parts = 12;
+    const rp1 = 0.06; // Radius pole 1
+    const rp2 = 0.06; // Radius Pole 2
+    const ropeDiameter = 0.004;
+    const spacing = ropeDiameter + 0.001;
+    if (t < 1 / parts) {
+      // First part of the rope curve follows a half circle around pole1
+      const r = parts * t * 2 * rp1 - rp1; // Map t on a value between -pr1 and +pr1, the range of a half circle around pole1
+      const tx = r; // x-coordinate of a point on a circle in the x-y plane
+      const ty = rp1 + Math.sqrt(rp1 * rp1 - r * r); // y-coordinate of a point on a circle in the x-y plane
+      const tz = -rp2; // The z-coordinate is offset from the center of the lashing by the radius of pole2
 
       return optionalTarget.set(tx, ty, tz);
-    } else if (t < 2 / p) {
-      const r = (p * t - 1) * 0.12 - 0.06;
-      const tx = 0.06;
-      const ty = -0.06 - 0.5 * Math.sqrt(0.12 * 0.12 - 4 * r * r);
+    } else if (t < 2 / parts) {
+      const r = (parts * t - 1) * 2 * rp2 - rp2;
+      const tx = rp1;
+      const ty = -rp2 - Math.sqrt(rp2 * rp2 - r * r);
       const tz = r;
 
       return optionalTarget.set(tx, ty, tz);
-    } else if (t < 3 / p) {
-      const r = (p * t - 2) * 0.12 - 0.06;
+    } else if (t < 3 / parts) {
+      const r = (parts * t - 2) * 2 * rp1 - rp1;
       const tx = -r;
-      const ty = 0.06 + 0.5 * Math.sqrt(0.12 * 0.12 - 4 * r * r);
-      const tz = 0.06;
+      const ty = rp1 + Math.sqrt(rp1 * rp1 - r * r);
+      const tz = rp2;
 
       return optionalTarget.set(tx, ty, tz);
-    } else if (t < 4 / p) {
-      const r = (p * t - 3) * 0.12 - 0.06;
-      const tx = -0.06;
-      const ty = -0.06 - 0.5 * Math.sqrt(0.12 * 0.12 - 4 * r * r);
+    } else if (t < 4 / parts) {
+      const r = (parts * t - 3) * 2 * rp2 - rp2;
+      const tx = -rp1;
+      const ty = -rp2 - Math.sqrt(rp2 * rp2 - r * r);
       const tz = -r;
 
       return optionalTarget.set(tx, ty, tz);
-    } else if (t < 5 / p) {
-      const r = (p * t - 4) * 0.12 - 0.06;
+    } else if (t < 5 / parts) {
+      const r = (parts * t - 4) * 2 * rp1 - rp1;
       const tx = r;
-      const ty = 0.06 + 0.5 * Math.sqrt(0.12 * 0.12 - 4 * r * r);
-      const tz = -0.06 - 0.005;
+      const ty = rp1 + Math.sqrt(rp1 * rp1 - r * r);
+      const tz = -rp2 - spacing;
 
       return optionalTarget.set(tx, ty, tz);
-    } else if (t < 6 / p) {
-      const r = (p * t - 5) * 0.12 - 0.06;
-      const tx = 0.06 - 0.005;
-      const ty = -0.06 - 0.5 * Math.sqrt(0.12 * 0.12 - 4 * r * r);
+    } else if (t < 6 / parts) {
+      const r = (parts * t - 5) * 2 * rp2 - rp2;
+      const tx = rp1 - spacing;
+      const ty = -rp2 - Math.sqrt(rp2 * rp2 - r * r);
       const tz = r;
 
       return optionalTarget.set(tx, ty, tz);
-    } else if (t < 7 / p) {
-      const r = (p * t - 6) * 0.12 - 0.06;
+    } else if (t < 7 / parts) {
+      const r = (parts * t - 6) * 2 * rp1 - rp1;
       const tx = -r;
-      const ty = 0.06 + 0.5 * Math.sqrt(0.12 * 0.12 - 4 * r * r);
-      const tz = 0.06 + 0.005;
+      const ty = rp1 + Math.sqrt(rp1 * rp1 - r * r);
+      const tz = rp2 + spacing;
 
       return optionalTarget.set(tx, ty, tz);
-    } else if (t < 8 / p) {
-      const r = (p * t - 7) * 0.12 - 0.06;
-      const tx = -0.06 + 0.005;
-      const ty = -0.06 - 0.5 * Math.sqrt(0.12 * 0.12 - 4 * r * r);
+    } else if (t < 8 / parts) {
+      const r = (parts * t - 7) * 2 * rp2 - rp2;
+      const tx = -rp1 + spacing;
+      const ty = -rp2 - Math.sqrt(rp2 * rp2 - r * r);
       const tz = -r;
 
       return optionalTarget.set(tx, ty, tz);
-    } else if (t < 9 / p) {
-      const r = (p * t - 8) * 0.12 - 0.06;
+    } else if (t < 9 / parts) {
+      const r = (parts * t - 8) * 2 * rp1 - rp1;
       const tx = r;
-      const ty = 0.06 + 0.5 * Math.sqrt(0.12 * 0.12 - 4 * r * r);
-      const tz = -0.06 - 0.01;
+      const ty = rp1 + Math.sqrt(rp1 * rp1 - r * r);
+      const tz = -rp2 - 2 * spacing;
 
       return optionalTarget.set(tx, ty, tz);
-    } else if (t < 10 / p) {
-      const r = (p * t - 9) * 0.12 - 0.06;
-      const tx = 0.06 - 0.01;
-      const ty = -0.06 - 0.5 * Math.sqrt(0.12 * 0.12 - 4 * r * r);
+    } else if (t < 10 / parts) {
+      const r = (parts * t - 9) * 2 * rp2 - rp2;
+      const tx = rp1 - 2 * spacing;
+      const ty = -rp2 - Math.sqrt(rp2 * rp2 - r * r);
       const tz = r;
 
       return optionalTarget.set(tx, ty, tz);
-    } else if (t < 11 / p) {
-      const r = (p * t - 10) * 0.12 - 0.06;
+    } else if (t < 11 / parts) {
+      const r = (parts * t - 10) * 2 * rp1 - rp1;
       const tx = -r;
-      const ty = 0.06 + 0.5 * Math.sqrt(0.12 * 0.12 - 4 * r * r);
-      const tz = 0.06 + 0.01;
+      const ty = rp1 + Math.sqrt(rp1 * rp1 - r * r);
+      const tz = rp2 + 2 * spacing;
 
       return optionalTarget.set(tx, ty, tz);
     } else {
-      const r = (p * t - 11) * 0.12 - 0.06;
-      const tx = -0.06 + 0.01;
-      const ty = -0.06 - 0.5 * Math.sqrt(0.12 * 0.12 - 4 * r * r);
+      const r = (parts * t - 11) * 2 * rp2 - rp2;
+      const tx = -rp1 + 2 * spacing;
+      const ty = -rp2 - Math.sqrt(rp2 * rp2 - r * r);
       const tz = -r;
 
       return optionalTarget.set(tx, ty, tz);
