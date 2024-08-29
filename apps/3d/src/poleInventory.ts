@@ -37,6 +37,12 @@ export class PoleInventory {
     });
   }
 
+  removePoles(polesToRemove: Pole[]) {
+    for (const pole of polesToRemove) {
+      this.removePole(pole);
+    }
+  }
+
   removeAll() {
     for (const pole of this.poles) {
       this.viewer.scene.remove(pole);

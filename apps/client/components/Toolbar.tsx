@@ -6,6 +6,7 @@ import LightModeIcon from "@mui/icons-material/LightMode";
 import DarkModeIcon from "@mui/icons-material/DarkMode";
 import MenuIcon from "@mui/icons-material/Menu";
 import MenuOpenIcon from "@mui/icons-material/MenuOpen";
+import AxeIcon from "../assets/icons/axe.svg?react";
 import React, { useContext, useState } from "react";
 import { Tool } from "./ToolbarItem";
 import { RendererContext } from "../contexts/rendererContext";
@@ -98,6 +99,15 @@ const Toolbar = ({
           onClick={() => {
             viewer?.inputHandler.onActivateTool("tripodtool");
             setSelectedTool("tripodtool");
+          }}
+        />
+        <Tool
+          active={selectedTool === "destructiontool"}
+          disabled={false}
+          icon={AxeIcon}
+          onClick={() => {
+            viewer?.inputHandler.onActivateTool("destructiontool");
+            setSelectedTool("destructiontool");
           }}
         />
       </Box>

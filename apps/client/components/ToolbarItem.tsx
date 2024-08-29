@@ -7,12 +7,13 @@ export type ButtonType =
   | "bipodtool"
   | "tripodtool"
   | "polytool"
-  | "lashingtool";
-type ToolbarItemProps = {
+  | "lashingtool"
+  | "destructiontool";
+interface ToolbarItemProps {
   active?: boolean;
   disabled?: boolean;
   icon: React.FC;
-};
+}
 export const Tool: React.FC<ToolbarItemProps> = ({
   active,
   icon: Icon,
