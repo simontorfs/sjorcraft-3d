@@ -29,15 +29,23 @@ export class Pole extends THREE.Object3D {
   constructor() {
     super();
     const textureLoader = new THREE.TextureLoader();
-    const colorTexture = textureLoader.load("./wood/Wood_025_basecolor.jpg");
+    const colorTexture = textureLoader.load(
+      "./textures/wood/Wood_025_basecolor.jpg"
+    );
     colorTexture.repeat.y = this.length * 2;
     colorTexture.wrapT = THREE.MirroredRepeatWrapping;
-    const heightTexture = textureLoader.load("./wood/Wood_025_height.png");
-    const normalTexture = textureLoader.load("./wood/Wood_025_normal.jpg");
+    const heightTexture = textureLoader.load(
+      "./textures/wood/Wood_025_height.png"
+    );
+    const normalTexture = textureLoader.load(
+      "./textures/wood/Wood_025_normal.jpg"
+    );
     const roughnessTexture = textureLoader.load(
       "./wood/Wood_025_roughness.jpg"
     );
-    const metalnessTexture = textureLoader.load("./wood/Wood_025_height.png");
+    const metalnessTexture = textureLoader.load(
+      "./textures/wood/Wood_025_height.png"
+    );
 
     const geometry = new THREE.CylinderGeometry(
       this.radius,
@@ -152,6 +160,16 @@ export class Pole extends THREE.Object3D {
     // @ts-ignore
     this.mesh.material.color = new THREE.Color(1, 1, 1);
     this.selected = false;
+  }
+
+  threatenWithDestruction() {
+    // @ts-ignore
+    this.mesh.material.color = new THREE.Color(1, 0.5, 0);
+  }
+
+  stopThreatening() {
+    // @ts-ignore
+    this.mesh.material.color = new THREE.Color(1, 1, 1);
   }
 
   isParallelTo(direction: THREE.Vector3) {

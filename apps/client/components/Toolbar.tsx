@@ -2,6 +2,7 @@ import ArrowIcon from "../assets/icons/arrow.svg?react";
 import BipodIcon from "../assets/icons/bipod.svg?react";
 import PoleIcon from "../assets/icons/pole.svg?react";
 import TripodIcon from "../assets/icons/tripod.svg?react";
+import AxeIcon from "../assets/icons/axe.svg?react";
 import React, { useContext, useState } from "react";
 import { Tool } from "./ToolbarItem";
 import { RendererContext } from "../contexts/rendererContext";
@@ -48,6 +49,15 @@ const Toolbar = () => {
           onClick={() => {
             viewer?.inputHandler.onActivateTool("tripodtool");
             setSelectedTool("tripodtool");
+          }}
+        />
+        <Tool
+          active={selectedTool === "destructiontool"}
+          disabled={false}
+          icon={AxeIcon}
+          onClick={() => {
+            viewer?.inputHandler.onActivateTool("destructiontool");
+            setSelectedTool("destructiontool");
           }}
         />
       </div>
