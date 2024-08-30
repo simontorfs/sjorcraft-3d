@@ -21,6 +21,7 @@ export class Floor extends THREE.Object3D {
    * @param length this is the length of the floor
    * @param width this is the width of the floor
    * @param color if provided, this is the color of the floor, default is green
+   * @param texture if provided, this is the texture of the floor, default is false
    * @description This method sets the floor of the scene
    */
   setFloor(
@@ -88,6 +89,7 @@ export class Floor extends THREE.Object3D {
    * @param length this is the length of the floor
    * @param width this is the width of the floor
    * @param color if provided, this is the color of the floor, default is green
+   * @param texture if provided, this is the texture of the floor, default is false
    * @description This method sets a completly new floor and grid
    */
   setNewFloor(
