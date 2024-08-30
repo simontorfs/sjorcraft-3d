@@ -68,6 +68,7 @@ const Toolbar = ({
           style={{ margin: "0 50px 0 0" }}
           active={selectedTool === "selectiontool"}
           disabled={false}
+          //@ts-ignore
           icon={ArrowIcon}
           onClick={() => {
             viewer?.inputHandler.onActivateTool("selectiontool");
@@ -77,6 +78,7 @@ const Toolbar = ({
         <Tool
           active={selectedTool === "poletool"}
           disabled={false}
+          //@ts-ignore
           icon={PoleIcon}
           onClick={() => {
             viewer?.inputHandler.onActivateTool("poletool");
@@ -86,6 +88,7 @@ const Toolbar = ({
         <Tool
           active={selectedTool === "bipodtool"}
           disabled={false}
+          //@ts-ignore
           icon={BipodIcon}
           onClick={() => {
             viewer?.inputHandler.onActivateTool("bipodtool");
@@ -95,6 +98,7 @@ const Toolbar = ({
         <Tool
           active={selectedTool === "tripodtool"}
           disabled={false}
+          //@ts-ignore
           icon={TripodIcon}
           onClick={() => {
             viewer?.inputHandler.onActivateTool("tripodtool");
@@ -104,6 +108,7 @@ const Toolbar = ({
         <Tool
           active={selectedTool === "destructiontool"}
           disabled={false}
+          //@ts-ignore
           icon={AxeIcon}
           onClick={() => {
             viewer?.inputHandler.onActivateTool("destructiontool");
