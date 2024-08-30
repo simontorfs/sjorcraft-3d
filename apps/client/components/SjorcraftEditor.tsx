@@ -19,7 +19,7 @@ type SjorcraftEditorProps = {
     floorColor: string;
     setFloorColor: (color: string) => void;
     isGrassTexture: boolean;
-    setIsGrassTexture: (isGrassTexture: boolean) => void;
+    toggleFloorTexture: () => void;
   };
 };
 const SjorcraftEditor = ({ parameterObject }: SjorcraftEditorProps) => {

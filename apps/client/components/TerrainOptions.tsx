@@ -10,17 +10,21 @@ import {
   TableRow,
   Typography,
 } from "@mui/material";
-import React from "react";
+import React, { useContext } from "react";
+import { RendererContext } from "../contexts/rendererContext";
+import { Color } from "three";
 
 type TerrainOptionsProps = {
   parameterObject: {
     isGrassTexture: boolean;
-    setIsGrassTexture: (isGrassTexture: boolean) => void;
+    toggleFloorTexture: () => void;
     floorColor: string;
     setFloorColor: (color: string) => void;
   };
 };
 const TerrainOptions = ({ parameterObject }: TerrainOptionsProps) => {
+  const rendererContext = useContext(RendererContext);
+  const viewer = rendererContext.viewer;
   return (
     <Box>
       <Typography variant="h6">Terrain Options</Typography>
@@ -46,9 +50,13 @@ const TerrainOptions = ({ parameterObject }: TerrainOptionsProps) => {
                 <input
                   type="color"
                   value={parameterObject.floorColor}
-                  onChange={(event) =>
-                    parameterObject.setFloorColor(event.target.value)
-                  }
+                  onChange={(event) => {
+                    viewer?.floor.onUpdateFromClient(
+                      parameterObject.isGrassTexture,
+                      new Color(event.target.value)
+                    );
+                    parameterObject.setFloorColor(event.target.value);
+                  }}
                 />
               </TableCell>
             </TableRow>
@@ -58,10 +66,11 @@ const TerrainOptions = ({ parameterObject }: TerrainOptionsProps) => {
                 <Switch
                   aria-label=""
                   color="secondary"
-                  onChange={() => {
-                    parameterObject.setIsGrassTexture(
+                  onClick={() => {
+                    viewer?.floor.onUpdateFromClient(
                       !parameterObject.isGrassTexture
                     );
+                    parameterObject.toggleFloorTexture();
                   }}
                 />
               </TableCell>

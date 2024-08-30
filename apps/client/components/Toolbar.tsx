@@ -129,14 +129,14 @@ const Toolbar = ({
       >
         {isLightMode ? (
           <DarkModeIcon
-            sx={{ cursor: "pointer" }}
+            sx={{ cursor: "pointer", fontSize: "2rem" }}
             onClick={() => {
               toggleLightMode();
             }}
           />
         ) : (
           <LightModeIcon
-            sx={{ cursor: "pointer" }}
+            sx={{ cursor: "pointer", fontSize: "2rem" }}
             onClick={() => {
               toggleLightMode();
             }}
@@ -144,14 +144,14 @@ const Toolbar = ({
         )}
         {isSidebarOpen ? (
           <MenuIcon
-            sx={{ cursor: "pointer" }}
+            sx={{ cursor: "pointer", fontSize: "2rem" }}
             onClick={() => {
               toggleSidebar();
             }}
           />
         ) : (
           <MenuOpenIcon
-            sx={{ cursor: "pointer" }}
+            sx={{ cursor: "pointer", fontSize: "2rem" }}
             onClick={() => {
               toggleSidebar();
             }}
