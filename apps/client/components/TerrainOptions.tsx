@@ -26,7 +26,11 @@ const TerrainOptions = ({ parameterObject }: TerrainOptionsProps) => {
   const rendererContext = useContext(RendererContext);
   const viewer = rendererContext.viewer;
   return (
-    <Box>
+    <Box
+      sx={{
+        overflowY: "scroll",
+      }}
+    >
       <Typography variant="h6">Terrain Options</Typography>
       <Divider
         sx={{

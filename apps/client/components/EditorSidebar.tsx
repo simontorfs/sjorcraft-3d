@@ -79,9 +79,9 @@ const EditorSidebar = ({ parameterObject }: EditorSidebarProps) => {
             width: "30rem",
             right: "0",
             padding: "1rem",
+            margin: "0 0 3rem 0",
             flexShrink: "0",
             boxShadow: "-3px 5px 8px 0px rgba(0,0,0,0.2)",
-            overflow: "scroll",
             height: "100%",
             zIndex: 10,
           }}
@@ -154,6 +154,7 @@ const EditorSidebar = ({ parameterObject }: EditorSidebarProps) => {
                 justifyContent: "center",
                 justifyItems: "center",
                 gap: "1rem",
+                overflowY: "scroll",
               }}
             >
               <Typography variant="h6" color="primary.contrastText">
