@@ -5,7 +5,7 @@ import TripodIcon from "../assets/icons/tripod.svg?react";
 import LightModeIcon from "@mui/icons-material/LightMode";
 import DarkModeIcon from "@mui/icons-material/DarkMode";
 import MenuIcon from "@mui/icons-material/Menu";
-import MenuOpenIcon from "@mui/icons-material/MenuOpen";
+import CloseIcon from "@mui/icons-material/Close";
 import AxeIcon from "../assets/icons/axe.svg?react";
 import React, { useContext, useState } from "react";
 import { Tool } from "./ToolbarItem";
@@ -129,29 +129,51 @@ const Toolbar = ({
       >
         {isLightMode ? (
           <DarkModeIcon
-            sx={{ cursor: "pointer", fontSize: "2rem" }}
+            sx={{
+              cursor: "pointer",
+              fontSize: "2rem",
+              "&:hover": {
+                color: "secondary.main",
+              },
+            }}
             onClick={() => {
               toggleLightMode();
             }}
           />
         ) : (
           <LightModeIcon
-            sx={{ cursor: "pointer", fontSize: "2rem" }}
+            sx={{
+              cursor: "pointer",
+              fontSize: "2rem",
+              "&:hover": {
+                color: "secondary.main",
+              },
+            }}
             onClick={() => {
               toggleLightMode();
             }}
           />
         )}
         {isSidebarOpen ? (
-          <MenuIcon
-            sx={{ cursor: "pointer", fontSize: "2rem" }}
+          <CloseIcon
+            sx={{
+              cursor: "pointer",
+              fontSize: "2rem",
+              "&:hover": {
+                color: "secondary.main",
+              },
+            }}
             onClick={() => {
               toggleSidebar();
             }}
           />
         ) : (
-          <MenuOpenIcon
-            sx={{ cursor: "pointer", fontSize: "2rem" }}
+          <MenuIcon
+            sx={{
+              cursor: "pointer",
+              fontSize: "2rem",
+              "&:hover": { color: "secondary.main" },
+            }}
             onClick={() => {
               toggleSidebar();
             }}
