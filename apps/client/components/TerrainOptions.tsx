@@ -72,7 +72,8 @@ const TerrainOptions = ({ parameterObject }: TerrainOptionsProps) => {
                   color="secondary"
                   onClick={() => {
                     viewer?.floor.onUpdateFromClient(
-                      !parameterObject.isGrassTexture
+                      !parameterObject.isGrassTexture,
+                      new Color(parameterObject.floorColor)
                     );
                     parameterObject.toggleFloorTexture();
                   }}
