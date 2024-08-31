@@ -18,6 +18,7 @@ export class SelectionTool {
   deactivate() {
     this.active = false;
     this.deselectAll();
+    this.viewer.poleTransformer.setActivePole(undefined);
     document.body.style.cursor = "default";
   }
 
@@ -57,7 +58,7 @@ export class SelectionTool {
     }
   }
 
-  delete() {
+  deleteSelectedPoles() {
     if (!this.active || !this.selectedPoles.length) return;
     this.viewer.inventory.removePoles(this.selectedPoles);
     this.viewer.poleTransformer.setActivePole(undefined);
