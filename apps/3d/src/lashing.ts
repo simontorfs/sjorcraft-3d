@@ -29,10 +29,10 @@ export class Lashing extends THREE.Object3D {
 
     this.remove(this.mesh);
     const path = new SquareLashingCurve(this.fixedPole, this.loosePole);
-    const geometry = new THREE.TubeGeometry(path, 120, 0.002, 8, true);
+    const geometry = new THREE.TubeGeometry(path, 1200, 0.003, 8, true);
     const material = new THREE.MeshBasicMaterial({
       color: 0xc9bd97,
-      wireframe: true,
+      wireframe: false,
     });
     this.mesh = new THREE.Mesh(geometry, material);
     this.position.set(
@@ -110,6 +110,12 @@ export class Lashing extends THREE.Object3D {
     if (this.fixedHeight) {
       this.snapLoosePole(this.fixedHeight);
     }
+
+    const pos = this.centerLoosePole
+      .clone()
+      .add(this.centerFixedPole)
+      .divideScalar(2.0);
+    this.position.set(pos.x, pos.y, pos.z);
   }
 
   snapLoosePole(desiredHeight: number) {
@@ -130,103 +136,129 @@ export class Lashing extends THREE.Object3D {
 class SquareLashingCurve extends THREE.Curve<THREE.Vector3> {
   fixedPole: Pole;
   loosePole: Pole;
+
+  dirNormal: THREE.Vector3;
+  dirPerpFixed: THREE.Vector3;
+  dirPerpLoose: THREE.Vector3;
+
   constructor(fixedPole: Pole, loosePole: Pole) {
     super();
     this.fixedPole = fixedPole;
     this.loosePole = loosePole;
+
+    this.dirNormal = new THREE.Vector3()
+      .crossVectors(this.loosePole.direction, this.fixedPole.direction)
+      .normalize();
+
+    this.dirPerpFixed = new THREE.Vector3()
+      .crossVectors(this.fixedPole.direction, this.dirNormal)
+      .normalize();
+
+    this.dirPerpLoose = new THREE.Vector3()
+      .crossVectors(this.loosePole.direction, this.dirNormal)
+      .normalize();
   }
 
   getPoint(t: number, optionalTarget = new THREE.Vector3()) {
     const parts = 12;
     const rp1 = 0.06; // Radius pole 1
     const rp2 = 0.06; // Radius Pole 2
-    const ropeDiameter = 0.004;
+    const ropeDiameter = 0.006;
     const spacing = ropeDiameter + 0.001;
+    let fixedPole = false;
+
+    let r = 0,
+      tx = 0,
+      ty = 0,
+      tz = 0;
+
     if (t < 1 / parts) {
+      fixedPole = true;
       // First part of the rope curve follows a half circle around pole1
-      const r = parts * t * 2 * rp1 - rp1; // Map t on a value between -pr1 and +pr1, the range of a half circle around pole1
-      const tx = r; // x-coordinate of a point on a circle in the x-y plane
-      const ty = rp1 + Math.sqrt(rp1 * rp1 - r * r); // y-coordinate of a point on a circle in the x-y plane
-      const tz = -rp2; // The z-coordinate is offset from the center of the lashing by the radius of pole2
-
-      return optionalTarget.set(tx, ty, tz);
+      r = parts * t * 2 * rp1 - rp1; // Map t on a value between -pr1 and +pr1, the range of a half circle around pole1
+      tx = r; // x-coordinate of a point on a circle in the x-y plane
+      ty = rp1 + Math.sqrt(rp1 * rp1 - r * r); // y-coordinate of a point on a circle in the x-y plane
+      tz = -rp2; // The z-coordinate is offset from the center of the lashing by the radius of pole2
     } else if (t < 2 / parts) {
-      const r = (parts * t - 1) * 2 * rp2 - rp2;
-      const tx = rp1;
-      const ty = -rp2 - Math.sqrt(rp2 * rp2 - r * r);
-      const tz = r;
-
-      return optionalTarget.set(tx, ty, tz);
+      fixedPole = false;
+      r = (parts * t - 1) * 2 * rp2 - rp2;
+      tx = rp1;
+      ty = -rp2 - Math.sqrt(rp2 * rp2 - r * r);
+      tz = r;
     } else if (t < 3 / parts) {
-      const r = (parts * t - 2) * 2 * rp1 - rp1;
-      const tx = -r;
-      const ty = rp1 + Math.sqrt(rp1 * rp1 - r * r);
-      const tz = rp2;
-
-      return optionalTarget.set(tx, ty, tz);
+      fixedPole = true;
+      r = (parts * t - 2) * 2 * rp1 - rp1;
+      tx = -r;
+      ty = rp1 + Math.sqrt(rp1 * rp1 - r * r);
+      tz = rp2;
     } else if (t < 4 / parts) {
-      const r = (parts * t - 3) * 2 * rp2 - rp2;
-      const tx = -rp1;
-      const ty = -rp2 - Math.sqrt(rp2 * rp2 - r * r);
-      const tz = -r;
-
-      return optionalTarget.set(tx, ty, tz);
+      fixedPole = false;
+      r = (parts * t - 3) * 2 * rp2 - rp2;
+      tx = -rp1;
+      ty = -rp2 - Math.sqrt(rp2 * rp2 - r * r);
+      tz = -r;
     } else if (t < 5 / parts) {
-      const r = (parts * t - 4) * 2 * rp1 - rp1;
-      const tx = r;
-      const ty = rp1 + Math.sqrt(rp1 * rp1 - r * r);
-      const tz = -rp2 - spacing;
-
-      return optionalTarget.set(tx, ty, tz);
+      fixedPole = true;
+      r = (parts * t - 4) * 2 * rp1 - rp1;
+      tx = r;
+      ty = rp1 + Math.sqrt(rp1 * rp1 - r * r);
+      tz = -rp2 - spacing;
     } else if (t < 6 / parts) {
-      const r = (parts * t - 5) * 2 * rp2 - rp2;
-      const tx = rp1 - spacing;
-      const ty = -rp2 - Math.sqrt(rp2 * rp2 - r * r);
-      const tz = r;
-
-      return optionalTarget.set(tx, ty, tz);
+      fixedPole = false;
+      r = (parts * t - 5) * 2 * rp2 - rp2;
+      tx = rp1 - spacing;
+      ty = -rp2 - Math.sqrt(rp2 * rp2 - r * r);
+      tz = r;
     } else if (t < 7 / parts) {
-      const r = (parts * t - 6) * 2 * rp1 - rp1;
-      const tx = -r;
-      const ty = rp1 + Math.sqrt(rp1 * rp1 - r * r);
-      const tz = rp2 + spacing;
-
-      return optionalTarget.set(tx, ty, tz);
+      fixedPole = true;
+      r = (parts * t - 6) * 2 * rp1 - rp1;
+      tx = -r;
+      ty = rp1 + Math.sqrt(rp1 * rp1 - r * r);
+      tz = rp2 + spacing;
     } else if (t < 8 / parts) {
-      const r = (parts * t - 7) * 2 * rp2 - rp2;
-      const tx = -rp1 + spacing;
-      const ty = -rp2 - Math.sqrt(rp2 * rp2 - r * r);
-      const tz = -r;
-
-      return optionalTarget.set(tx, ty, tz);
+      fixedPole = false;
+      r = (parts * t - 7) * 2 * rp2 - rp2;
+      tx = -rp1 + spacing;
+      ty = -rp2 - Math.sqrt(rp2 * rp2 - r * r);
+      tz = -r;
     } else if (t < 9 / parts) {
-      const r = (parts * t - 8) * 2 * rp1 - rp1;
-      const tx = r;
-      const ty = rp1 + Math.sqrt(rp1 * rp1 - r * r);
-      const tz = -rp2 - 2 * spacing;
-
-      return optionalTarget.set(tx, ty, tz);
+      fixedPole = true;
+      r = (parts * t - 8) * 2 * rp1 - rp1;
+      tx = r;
+      ty = rp1 + Math.sqrt(rp1 * rp1 - r * r);
+      tz = -rp2 - 2 * spacing;
     } else if (t < 10 / parts) {
-      const r = (parts * t - 9) * 2 * rp2 - rp2;
-      const tx = rp1 - 2 * spacing;
-      const ty = -rp2 - Math.sqrt(rp2 * rp2 - r * r);
-      const tz = r;
-
-      return optionalTarget.set(tx, ty, tz);
+      fixedPole = false;
+      r = (parts * t - 9) * 2 * rp2 - rp2;
+      tx = rp1 - 2 * spacing;
+      ty = -rp2 - Math.sqrt(rp2 * rp2 - r * r);
+      tz = r;
     } else if (t < 11 / parts) {
-      const r = (parts * t - 10) * 2 * rp1 - rp1;
-      const tx = -r;
-      const ty = rp1 + Math.sqrt(rp1 * rp1 - r * r);
-      const tz = rp2 + 2 * spacing;
-
-      return optionalTarget.set(tx, ty, tz);
+      fixedPole = true;
+      r = (parts * t - 10) * 2 * rp1 - rp1;
+      tx = -r;
+      ty = rp1 + Math.sqrt(rp1 * rp1 - r * r);
+      tz = rp2 + 2 * spacing;
     } else {
-      const r = (parts * t - 11) * 2 * rp2 - rp2;
-      const tx = -rp1 + 2 * spacing;
-      const ty = -rp2 - Math.sqrt(rp2 * rp2 - r * r);
-      const tz = -r;
+      fixedPole = false;
+      r = (parts * t - 11) * 2 * rp2 - rp2;
+      tx = -rp1 + 2 * spacing;
+      ty = -rp2 - Math.sqrt(rp2 * rp2 - r * r);
+      tz = -r;
+    }
 
-      return optionalTarget.set(tx, ty, tz);
+    if (fixedPole) {
+      const v = new THREE.Vector3()
+        .sub(this.fixedPole.direction.clone().multiplyScalar(tz))
+        .sub(this.dirNormal.clone().multiplyScalar(ty))
+        .sub(this.dirPerpFixed.clone().multiplyScalar(tx));
+      return optionalTarget.set(v.x, v.y, v.z);
+    } else {
+      const v = new THREE.Vector3()
+        .sub(this.loosePole.direction.clone().multiplyScalar(tx))
+        .sub(this.dirNormal.clone().multiplyScalar(ty))
+        .add(this.dirPerpLoose.clone().multiplyScalar(tz));
+      return optionalTarget.set(v.x, v.y, v.z);
     }
   }
 }
