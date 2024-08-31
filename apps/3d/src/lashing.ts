@@ -31,7 +31,7 @@ export class Lashing extends THREE.Object3D {
     const path = new SquareLashingCurve(
       this.fixedPole,
       this.loosePole,
-      this.anchorPoint
+      this.position
     );
     const geometry = new THREE.TubeGeometry(path, 1200, 0.003, 8, true);
     const material = new THREE.MeshBasicMaterial({
@@ -39,11 +39,6 @@ export class Lashing extends THREE.Object3D {
       wireframe: false,
     });
     this.mesh = new THREE.Mesh(geometry, material);
-    this.position.set(
-      this.anchorPoint.x,
-      this.anchorPoint.y,
-      this.anchorPoint.z
-    );
     this.add(this.mesh);
   }
 
