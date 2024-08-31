@@ -22,7 +22,7 @@ export class DestructionTool {
   leftClick() {
     if (!this.active) return;
     if (this.hoveredPole) {
-      this.viewer.poleInventory.removePole(this.hoveredPole);
+      this.viewer.inventory.removePole(this.hoveredPole);
     }
   }
 
