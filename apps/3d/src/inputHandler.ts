@@ -32,8 +32,7 @@ export class InputHandler {
       case "Backspace":
         if (this.ctrlDown) {
           event.preventDefault();
-          this.viewer.saveTool.removeAllPoles();
-          this.viewer.saveTool.removeAllLashings();
+          this.viewer.inventory.removeAll();
           this.viewer.saveTool.clearLocalStorage();
         } else {
           this.viewer.selectionTool.delete();
@@ -164,7 +163,7 @@ export class InputHandler {
     );
 
     const intersects = raycaster.intersectObjects(
-      this.viewer.poleInventory.poles.map((pole) => pole.mesh)
+      this.viewer.inventory.poles.map((pole) => pole.mesh)
     );
     if (intersects.length) {
       return intersects[0];

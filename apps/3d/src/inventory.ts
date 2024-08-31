@@ -1,3 +1,4 @@
+import { Lashing } from "./lashing";
 import { Pole, colors, allowedLengths } from "./pole";
 import { Viewer } from "./viewer";
 import * as THREE from "three";
@@ -8,9 +9,10 @@ interface IPolesDetail {
   color: string;
 }
 
-export class PoleInventory {
+export class Inventory {
   viewer: Viewer;
   poles: Pole[] = [];
+  lashings: Lashing[] = [];
 
   constructor(viewer: Viewer) {
     this.viewer = viewer;
@@ -24,25 +26,37 @@ export class PoleInventory {
     });
   }
 
+  addLashing(lashing: Lashing) {
+    this.lashings.push(lashing);
+    (this.viewer.scene as any).dispatchEvent({
+      type: "new_lashing_added",
+      lashing: lashing,
+    });
+  }
+
   removePole(poleToRemove: Pole) {
     this.viewer.scene.remove(poleToRemove);
     this.poles = this.poles.filter((pole) => pole !== poleToRemove);
-    for (const lashing of this.viewer.lashings) {
+    for (const lashing of this.viewer.inventory.lashings) {
       if (
         lashing.loosePole === poleToRemove ||
         lashing.fixedPole === poleToRemove
       ) {
-        this.viewer.scene.remove(lashing);
+        this.removeLashing(lashing);
       }
     }
-    this.viewer.lashings = this.viewer.lashings.filter(
-      (lashing) =>
-        lashing.loosePole !== poleToRemove && lashing.fixedPole !== poleToRemove
-    );
     (this.viewer.scene as any).dispatchEvent({
       type: "pole_removed",
       pole: poleToRemove,
     });
+  }
+
+  removeLashing(lashingToRemove: Lashing) {
+    this.viewer.scene.remove(lashingToRemove);
+
+    this.viewer.inventory.lashings = this.lashings.filter(
+      (lashing) => lashing !== lashingToRemove
+    );
   }
 
   removePoles(polesToRemove: Pole[]) {
@@ -56,6 +70,11 @@ export class PoleInventory {
       this.viewer.scene.remove(pole);
     }
     this.poles = [];
+
+    for (const lashing of this.lashings) {
+      this.viewer.scene.remove(lashing);
+    }
+    this.lashings = [];
   }
 
   getPolesGroupedByLength() {

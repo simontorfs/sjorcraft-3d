@@ -21,19 +21,17 @@ export class SaveTool {
           return;
         }
         const data = JSON.parse(reader.result as string);
-        this.removeAllPoles();
+        this.viewer.inventory.removeAll();
         data.poles.forEach((pole: any) => {
           const newPole = new Pole();
           newPole.loadFromJson(pole);
           this.viewer.scene.add(newPole);
-          this.viewer.poleInventory.addPole(newPole);
+          this.viewer.inventory.addPole(newPole);
         });
         data.lashings.forEach((lashing: any) => {
           const newLashing = new Lashing();
-          if (
-            newLashing.loadFromJson(lashing, this.viewer.poleInventory.poles)
-          ) {
-            this.viewer.lashings.push(newLashing);
+          if (newLashing.loadFromJson(lashing, this.viewer.inventory.poles)) {
+            this.viewer.inventory.addLashing(newLashing);
           }
         });
       };
@@ -53,12 +51,12 @@ export class SaveTool {
           return;
         }
         const data = JSON.parse(reader.result as string);
-        this.removeAllPoles();
+        this.viewer.inventory.removeAll();
         data.forEach((pole: any) => {
           const newPole = new Pole();
           newPole.loadFromJson(pole);
           this.viewer.scene.add(newPole);
-          this.viewer.poleInventory.addPole(newPole);
+          this.viewer.inventory.addPole(newPole);
         });
       };
       reader.readAsText(file);
@@ -66,10 +64,8 @@ export class SaveTool {
   }
 
   exportAll(name: string) {
-    const poles = this.viewer.poleInventory.poles.map((pole) =>
-      pole.saveToJson()
-    );
-    const lashings = this.viewer.lashings.map((lashing) =>
+    const poles = this.viewer.inventory.poles.map((pole) => pole.saveToJson());
+    const lashings = this.viewer.inventory.lashings.map((lashing) =>
       lashing.saveToJson()
     );
     const data = JSON.stringify({ poles: poles, lashings: lashings }, null, 2);
@@ -84,9 +80,7 @@ export class SaveTool {
     a.click();
   }
   exportPoles(name: string) {
-    const poles = this.viewer.poleInventory.poles.map((pole) =>
-      pole.saveToJson()
-    );
+    const poles = this.viewer.inventory.poles.map((pole) => pole.saveToJson());
     const data = JSON.stringify(poles, null, 2);
     const blob = new Blob([data], { type: "text/json" });
     const url = URL.createObjectURL(blob);
@@ -99,36 +93,24 @@ export class SaveTool {
     a.click();
   }
 
-  removeAllPoles() {
-    this.viewer.poleInventory.removeAll();
-  }
-
   savePolesToLocalStorage() {
-    const poles = this.viewer.poleInventory.poles.map((pole) =>
-      pole.saveToJson()
-    );
+    const poles = this.viewer.inventory.poles.map((pole) => pole.saveToJson());
     localStorage.setItem("poles", JSON.stringify(poles));
   }
 
   loadPolesFromLocalStorage() {
     const poles = JSON.parse(localStorage.getItem("poles") as string);
-    this.removeAllPoles();
+    this.viewer.inventory.removeAll();
     poles.forEach((pole: any) => {
       const newPole = new Pole();
       newPole.loadFromJson(pole);
       this.viewer.scene.add(newPole);
-      this.viewer.poleInventory.addPole(newPole);
+      this.viewer.inventory.addPole(newPole);
     });
-  }
-  removeAllLashings() {
-    // this.viewer.lashings.forEach((lashing) => {
-    //   this.viewer.scene.remove(lashing);
-    // });
-    this.viewer.lashings = [];
   }
 
   saveLashingsToLocalStorage() {
-    const lashings = this.viewer.lashings.map((lashing) =>
+    const lashings = this.viewer.inventory.lashings.map((lashing) =>
       lashing.saveToJson()
     );
     localStorage.setItem("lashings", JSON.stringify(lashings));
@@ -136,11 +118,11 @@ export class SaveTool {
 
   loadLashingsFromLocalStorage() {
     const lashings = JSON.parse(localStorage.getItem("lashings") as string);
-    this.removeAllLashings();
+    this.viewer.inventory.removeAll();
     lashings.forEach((lashing: any) => {
       const newLashing = new Lashing();
-      if (newLashing.loadFromJson(lashing, this.viewer.poleInventory.poles)) {
-        this.viewer.lashings.push(newLashing);
+      if (newLashing.loadFromJson(lashing, this.viewer.inventory.poles)) {
+        this.viewer.inventory.addLashing(newLashing);
       }
     });
   }
