@@ -20,7 +20,7 @@ const PoleTable = () => {
       sx={{
         backgroundColor: "primary.light",
         color: "primary.contrastText",
-        overflowY: "scroll",
+        overflowY: "auto",
 
         "& th": {
           fontWeight: "bold",

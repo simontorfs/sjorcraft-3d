@@ -16,26 +16,6 @@ body,
     "Lucida Sans Unicode", Geneva, Verdana, sans-serif;
 }
 
-.sjorcraft-editor {
-  margin: 0;
-  padding: 0;
-  height: 100%;
-  width: 100%;
-}
-
-.editor-main-content {
-  height: 100%;
-  display: flex;
-  position: relative;
-}
-
-.webgl {
-  outline: none;
-  height: 100%;
-  width: 100%;
-  min-width: 0;
-}
-
 .toolbar-icon {
   display: flex;
   width: 2.75rem; /* 11 * 0.25rem */

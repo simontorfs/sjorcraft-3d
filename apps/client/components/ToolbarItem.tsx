@@ -12,7 +12,9 @@ export type ButtonType =
 interface ToolbarItemProps {
   active?: boolean;
   disabled?: boolean;
-  icon: React.FC;
+  icon: string;
+  onClick: () => void;
+  style?: React.CSSProperties;
 }
 export const Tool: React.FC<ToolbarItemProps> = ({
   active,
@@ -23,7 +25,7 @@ export const Tool: React.FC<ToolbarItemProps> = ({
   return (
     <Box
       {...props}
-      bgcolor={active ? "secondary.light" : "primary.light"}
+      bgcolor={active ? "secondary.main" : "primary.main"}
       className={active ? "toolbar-icon-active" : "toolbar-icon"}
     >
       <Icon />

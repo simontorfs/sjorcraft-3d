@@ -8,7 +8,7 @@ export class Floor extends THREE.Object3D {
   constructor(viewer: Viewer) {
     super();
     this.viewer = viewer;
-    this.setNewFloor(50, 50, new THREE.Color("#41980a"));
+    this.setNewFloor(50, 50, new THREE.Color("#2a6e3c"), false);
   }
   /**
    * @description This method removes the grid from the scene
@@ -43,7 +43,7 @@ export class Floor extends THREE.Object3D {
     const floorMaterial = new THREE.MeshBasicMaterial({
       map: texture ? colorTexture : null,
       wireframe: false,
-      color: color ? color : "#41980a",
+      color: color ? color : "#2a6e3c",
       transparent: false,
     });
     this.mesh = new THREE.Mesh(floorGeometry, floorMaterial);

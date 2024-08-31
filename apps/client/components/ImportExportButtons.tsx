@@ -76,7 +76,7 @@ const ImportExportButtons = () => {
   return (
     <Box
       sx={{
-        overflowY: "scroll",
+        overflowY: "auto",
       }}
     >
       <Box

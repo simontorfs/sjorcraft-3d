@@ -11,7 +11,7 @@ import { Color } from "three";
 const App = () => {
   const [isLightMode, setIsLightMode] = React.useState(true);
   const [isSidebarOpen, setIsSidebarOpen] = React.useState(true);
-  const [floorColor, setFloorColor] = React.useState<string>("#41980a");
+  const [floorColor, setFloorColor] = React.useState<string>("#2a6e3c");
   const [isGrassTexture, setIsGrassTexture] = React.useState(false);
 
   const toggleLightmode = () => {

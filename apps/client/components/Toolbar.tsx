@@ -6,6 +6,8 @@ import LightModeIcon from "@mui/icons-material/LightMode";
 import DarkModeIcon from "@mui/icons-material/DarkMode";
 import MenuIcon from "@mui/icons-material/Menu";
 import CloseIcon from "@mui/icons-material/Close";
+import FullscreenIcon from "@mui/icons-material/Fullscreen";
+import FullscreenExitIcon from "@mui/icons-material/FullscreenExit";
 import AxeIcon from "../assets/icons/axe.svg?react";
 import React, { useContext, useState } from "react";
 import { Tool } from "./ToolbarItem";
@@ -68,7 +70,6 @@ const Toolbar = ({
           style={{ margin: "0 50px 0 0" }}
           active={selectedTool === "selectiontool"}
           disabled={false}
-          //@ts-ignore
           icon={ArrowIcon}
           onClick={() => {
             viewer?.inputHandler.onActivateTool("selectiontool");
@@ -78,7 +79,6 @@ const Toolbar = ({
         <Tool
           active={selectedTool === "poletool"}
           disabled={false}
-          //@ts-ignore
           icon={PoleIcon}
           onClick={() => {
             viewer?.inputHandler.onActivateTool("poletool");
@@ -88,7 +88,6 @@ const Toolbar = ({
         <Tool
           active={selectedTool === "bipodtool"}
           disabled={false}
-          //@ts-ignore
           icon={BipodIcon}
           onClick={() => {
             viewer?.inputHandler.onActivateTool("bipodtool");
@@ -98,7 +97,6 @@ const Toolbar = ({
         <Tool
           active={selectedTool === "tripodtool"}
           disabled={false}
-          //@ts-ignore
           icon={TripodIcon}
           onClick={() => {
             viewer?.inputHandler.onActivateTool("tripodtool");
@@ -108,7 +106,6 @@ const Toolbar = ({
         <Tool
           active={selectedTool === "destructiontool"}
           disabled={false}
-          //@ts-ignore
           icon={AxeIcon}
           onClick={() => {
             viewer?.inputHandler.onActivateTool("destructiontool");
@@ -159,7 +156,7 @@ const Toolbar = ({
             }}
           />
         )}
-        {isSidebarOpen ? (
+        {/* {isSidebarOpen ? (
           <CloseIcon
             sx={{
               cursor: "pointer",
@@ -183,7 +180,7 @@ const Toolbar = ({
               toggleSidebar();
             }}
           />
-        )}
+        )} */}
       </Box>
     </Box>
   );

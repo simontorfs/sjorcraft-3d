@@ -4,14 +4,12 @@ import React from "react";
 export const SjorcraftCanvas = () => {
   return (
     <Box
-      className="webgl"
       id="render_area"
       sx={{
-        width: "100%",
         height: "100%",
-        top: 0,
-        left: 0,
+        width: "100%",
         zIndex: 0,
+        outline: "none",
       }}
     ></Box>
   );

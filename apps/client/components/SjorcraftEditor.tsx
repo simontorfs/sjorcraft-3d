@@ -9,6 +9,7 @@ import {
 } from "../contexts/rendererContext";
 import EditorSidebar from "./EditorSidebar";
 import { useDeviceSize } from "../src/hooks/useDeviceSize";
+import { Box, Grid, Stack } from "@mui/material";
 
 type SjorcraftEditorProps = {
   parameterObject: {
@@ -41,7 +42,14 @@ const SjorcraftEditor = ({ parameterObject }: SjorcraftEditorProps) => {
   const { smDevice } = useDeviceSize();
 
   return (
-    <div className="sjorcraft-editor">
+    <Box
+      sx={{
+        margin: "0",
+        padding: "0",
+        height: "100%",
+        width: "100%",
+      }}
+    >
       <RendererContext.Provider value={rendererContext}>
         {!smDevice && (
           <Toolbar
@@ -51,12 +59,35 @@ const SjorcraftEditor = ({ parameterObject }: SjorcraftEditorProps) => {
             toggleSidebar={parameterObject.toggleSidebar}
           />
         )}
-        <div className="editor-main-content">
-          <SjorcraftCanvas />
-          {!smDevice && <EditorSidebar parameterObject={parameterObject} />}
-        </div>
+        <Box
+          sx={{
+            height: "calc(100vh - 3.5rem)",
+            width: "100%",
+            display: "flex",
+            flexDirection: "row",
+            gap: "0rem",
+          }}
+        >
+          <Stack
+            direction={"row"}
+            sx={{
+              height: "100%",
+              width: "100%",
+              display: "flex",
+              flexDirection: "row",
+              gap: "0rem",
+              flexWrap: "nowrap",
+              justifyContent: "normal",
+            }}
+          >
+            <SjorcraftCanvas />
+            {!smDevice && parameterObject.isSidebarOpen && (
+              <EditorSidebar parameterObject={parameterObject} />
+            )}
+          </Stack>
+        </Box>
       </RendererContext.Provider>
-    </div>
+    </Box>
   );
 };
 

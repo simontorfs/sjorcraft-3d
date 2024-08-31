@@ -28,7 +28,7 @@ const TerrainOptions = ({ parameterObject }: TerrainOptionsProps) => {
   return (
     <Box
       sx={{
-        overflowY: "scroll",
+        overflowY: "auto",
       }}
     >
       <Typography variant="h6">Terrain Options</Typography>
