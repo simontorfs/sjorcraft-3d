@@ -28,7 +28,11 @@ export class Lashing extends THREE.Object3D {
     this.calculatePositions();
 
     this.remove(this.mesh);
-    const path = new SquareLashingCurve(this.fixedPole, this.loosePole);
+    const path = new SquareLashingCurve(
+      this.fixedPole,
+      this.loosePole,
+      this.anchorPoint
+    );
     const geometry = new THREE.TubeGeometry(path, 1200, 0.003, 8, true);
     const material = new THREE.MeshBasicMaterial({
       color: 0xc9bd97,
@@ -136,19 +140,37 @@ export class Lashing extends THREE.Object3D {
 class SquareLashingCurve extends THREE.Curve<THREE.Vector3> {
   fixedPole: Pole;
   loosePole: Pole;
+  position: THREE.Vector3;
+  fixedPoleOnTop: Boolean; // The 'top' is arbitrary
 
   dirNormal: THREE.Vector3;
   dirPerpFixed: THREE.Vector3;
   dirPerpLoose: THREE.Vector3;
 
-  constructor(fixedPole: Pole, loosePole: Pole) {
+  constructor(fixedPole: Pole, loosePole: Pole, position: THREE.Vector3) {
     super();
     this.fixedPole = fixedPole;
     this.loosePole = loosePole;
+    this.position = position;
 
     this.dirNormal = new THREE.Vector3()
       .crossVectors(this.loosePole.direction, this.fixedPole.direction)
       .normalize();
+
+    const distanceLashingToFixedPole = this.position.distanceTo(
+      this.fixedPole.position
+    );
+
+    const offsetDir = this.position
+      .clone()
+      .add(this.dirNormal.clone().multiplyScalar(0.06));
+
+    const distanceTopPoleToFixedPole = offsetDir.distanceTo(
+      this.fixedPole.position
+    );
+
+    this.fixedPoleOnTop =
+      distanceTopPoleToFixedPole < distanceLashingToFixedPole;
 
     this.dirPerpFixed = new THREE.Vector3()
       .crossVectors(this.fixedPole.direction, this.dirNormal)
@@ -165,7 +187,7 @@ class SquareLashingCurve extends THREE.Curve<THREE.Vector3> {
     const rp2 = 0.06; // Radius Pole 2
     const ropeDiameter = 0.006;
     const spacing = ropeDiameter + 0.001;
-    let fixedPole = false;
+    let fixedPoleStrand = false;
 
     let r = 0,
       tx = 0,
@@ -173,92 +195,108 @@ class SquareLashingCurve extends THREE.Curve<THREE.Vector3> {
       tz = 0;
 
     if (t < 1 / parts) {
-      fixedPole = true;
+      fixedPoleStrand = true;
       // First part of the rope curve follows a half circle around pole1
       r = parts * t * 2 * rp1 - rp1; // Map t on a value between -pr1 and +pr1, the range of a half circle around pole1
       tx = r; // x-coordinate of a point on a circle in the x-y plane
       ty = rp1 + Math.sqrt(rp1 * rp1 - r * r); // y-coordinate of a point on a circle in the x-y plane
       tz = -rp2; // The z-coordinate is offset from the center of the lashing by the radius of pole2
     } else if (t < 2 / parts) {
-      fixedPole = false;
+      fixedPoleStrand = false;
       r = (parts * t - 1) * 2 * rp2 - rp2;
-      tx = rp1;
+      tx = -r;
       ty = -rp2 - Math.sqrt(rp2 * rp2 - r * r);
-      tz = r;
+      tz = rp1;
     } else if (t < 3 / parts) {
-      fixedPole = true;
+      fixedPoleStrand = true;
       r = (parts * t - 2) * 2 * rp1 - rp1;
       tx = -r;
       ty = rp1 + Math.sqrt(rp1 * rp1 - r * r);
       tz = rp2;
     } else if (t < 4 / parts) {
-      fixedPole = false;
+      fixedPoleStrand = false;
       r = (parts * t - 3) * 2 * rp2 - rp2;
-      tx = -rp1;
+      tx = r;
       ty = -rp2 - Math.sqrt(rp2 * rp2 - r * r);
-      tz = -r;
+      tz = -rp1;
     } else if (t < 5 / parts) {
-      fixedPole = true;
+      fixedPoleStrand = true;
       r = (parts * t - 4) * 2 * rp1 - rp1;
       tx = r;
       ty = rp1 + Math.sqrt(rp1 * rp1 - r * r);
       tz = -rp2 - spacing;
     } else if (t < 6 / parts) {
-      fixedPole = false;
+      fixedPoleStrand = false;
       r = (parts * t - 5) * 2 * rp2 - rp2;
-      tx = rp1 - spacing;
+      tx = -r;
       ty = -rp2 - Math.sqrt(rp2 * rp2 - r * r);
-      tz = r;
+      tz = rp1 - spacing;
     } else if (t < 7 / parts) {
-      fixedPole = true;
+      fixedPoleStrand = true;
       r = (parts * t - 6) * 2 * rp1 - rp1;
       tx = -r;
       ty = rp1 + Math.sqrt(rp1 * rp1 - r * r);
       tz = rp2 + spacing;
     } else if (t < 8 / parts) {
-      fixedPole = false;
+      fixedPoleStrand = false;
       r = (parts * t - 7) * 2 * rp2 - rp2;
-      tx = -rp1 + spacing;
+      tx = r;
       ty = -rp2 - Math.sqrt(rp2 * rp2 - r * r);
-      tz = -r;
+      tz = -rp1 + spacing;
     } else if (t < 9 / parts) {
-      fixedPole = true;
+      fixedPoleStrand = true;
       r = (parts * t - 8) * 2 * rp1 - rp1;
       tx = r;
       ty = rp1 + Math.sqrt(rp1 * rp1 - r * r);
       tz = -rp2 - 2 * spacing;
     } else if (t < 10 / parts) {
-      fixedPole = false;
+      fixedPoleStrand = false;
       r = (parts * t - 9) * 2 * rp2 - rp2;
-      tx = rp1 - 2 * spacing;
+      tx = -r;
       ty = -rp2 - Math.sqrt(rp2 * rp2 - r * r);
-      tz = r;
+      tz = rp1 - 2 * spacing;
     } else if (t < 11 / parts) {
-      fixedPole = true;
+      fixedPoleStrand = true;
       r = (parts * t - 10) * 2 * rp1 - rp1;
       tx = -r;
       ty = rp1 + Math.sqrt(rp1 * rp1 - r * r);
       tz = rp2 + 2 * spacing;
     } else {
-      fixedPole = false;
+      fixedPoleStrand = false;
       r = (parts * t - 11) * 2 * rp2 - rp2;
-      tx = -rp1 + 2 * spacing;
+      tx = r;
       ty = -rp2 - Math.sqrt(rp2 * rp2 - r * r);
-      tz = -r;
+      tz = -rp1 + 2 * spacing;
     }
 
-    if (fixedPole) {
-      const v = new THREE.Vector3()
-        .sub(this.fixedPole.direction.clone().multiplyScalar(tz))
-        .sub(this.dirNormal.clone().multiplyScalar(ty))
-        .sub(this.dirPerpFixed.clone().multiplyScalar(tx));
-      return optionalTarget.set(v.x, v.y, v.z);
+    if (this.fixedPoleOnTop) {
+      if (fixedPoleStrand) {
+        const v = new THREE.Vector3()
+          .add(this.fixedPole.direction.clone().multiplyScalar(tz))
+          .add(this.dirNormal.clone().multiplyScalar(ty))
+          .add(this.dirPerpFixed.clone().multiplyScalar(tx));
+        return optionalTarget.set(v.x, v.y, v.z);
+      } else {
+        const v = new THREE.Vector3()
+          .add(this.loosePole.direction.clone().multiplyScalar(tz))
+          .add(this.dirNormal.clone().multiplyScalar(ty))
+          .add(this.dirPerpLoose.clone().multiplyScalar(tx));
+        return optionalTarget.set(v.x, v.y, v.z);
+      }
     } else {
-      const v = new THREE.Vector3()
-        .sub(this.loosePole.direction.clone().multiplyScalar(tx))
-        .sub(this.dirNormal.clone().multiplyScalar(ty))
-        .add(this.dirPerpLoose.clone().multiplyScalar(tz));
-      return optionalTarget.set(v.x, v.y, v.z);
+      if (fixedPoleStrand) {
+        const v = new THREE.Vector3()
+          .sub(this.fixedPole.direction.clone().multiplyScalar(tz))
+          .sub(this.dirNormal.clone().multiplyScalar(ty))
+          .sub(this.dirPerpFixed.clone().multiplyScalar(tx));
+        return optionalTarget.set(v.x, v.y, v.z);
+      } else {
+        const v = new THREE.Vector3()
+          .sub(this.loosePole.direction.clone().multiplyScalar(tz))
+          .sub(this.dirNormal.clone().multiplyScalar(ty))
+          .sub(this.dirPerpLoose.clone().multiplyScalar(tx));
+        return optionalTarget.set(v.x, v.y, v.z);
+      }
     }
   }
 }
