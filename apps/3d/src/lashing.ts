@@ -26,20 +26,6 @@ export class Lashing extends THREE.Object3D {
     this.anchorPoint = position;
     this.anchorPointNormal = normal;
     this.calculatePositions();
-
-    this.remove(this.mesh);
-    const path = new SquareLashingCurve(
-      this.fixedPole,
-      this.loosePole,
-      this.position
-    );
-    const geometry = new THREE.TubeGeometry(path, 1200, 0.003, 8, true);
-    const material = new THREE.MeshBasicMaterial({
-      color: 0xc9bd97,
-      wireframe: false,
-    });
-    this.mesh = new THREE.Mesh(geometry, material);
-    this.add(this.mesh);
   }
 
   loadFromJson(lashing: any, poles: Pole[]) {
@@ -115,6 +101,22 @@ export class Lashing extends THREE.Object3D {
       .add(this.centerFixedPole)
       .divideScalar(2.0);
     this.position.set(pos.x, pos.y, pos.z);
+  }
+
+  updateMesh() {
+    this.remove(this.mesh);
+    const path = new SquareLashingCurve(
+      this.fixedPole,
+      this.loosePole,
+      this.position
+    );
+    const geometry = new THREE.TubeGeometry(path, 1200, 0.003, 8, true);
+    const material = new THREE.MeshBasicMaterial({
+      color: 0xc9bd97,
+      wireframe: false,
+    });
+    this.mesh = new THREE.Mesh(geometry, material);
+    this.add(this.mesh);
   }
 
   snapLoosePole(desiredHeight: number) {

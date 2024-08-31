@@ -156,6 +156,8 @@ export class PoleTool {
       this.fixedLashing.centerLoosePole,
       this.newLashing.centerLoosePole
     );
+    this.fixedLashing.updateMesh();
+    this.newLashing.updateMesh();
   }
 
   placePoleOnOneLashing() {
@@ -173,6 +175,7 @@ export class PoleTool {
       this.newLashing.centerLoosePole.y,
       this.newLashing.centerLoosePole.z
     );
+    this.newLashing.updateMesh();
   }
 
   placePoleBetweenOneLashingAndGround(groundPosition: THREE.Vector3) {
@@ -190,6 +193,7 @@ export class PoleTool {
       groundPosition,
       this.fixedLashing.centerLoosePole
     );
+    this.fixedLashing.updateMesh();
   }
 
   placePoleOnGround(groundPosition: THREE.Vector3) {
