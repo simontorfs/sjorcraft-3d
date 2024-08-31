@@ -128,6 +128,7 @@ export class Lashing extends THREE.Object3D {
         .clone()
         .multiplyScalar(translationDistance);
       this.centerLoosePole.sub(translationVector);
+      this.position.sub(translationVector);
       return true;
     }
     return false;
