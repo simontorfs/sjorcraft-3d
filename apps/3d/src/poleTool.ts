@@ -268,6 +268,9 @@ export class PoleTool {
   rightClick() {
     this.activeScaffold.reset();
 
+    if (this.fixedLashing) {
+      this.viewer.scene.remove(this.fixedLashing);
+    }
     this.newLashing = undefined;
     this.fixedLashing = undefined;
   }
