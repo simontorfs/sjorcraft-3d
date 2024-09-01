@@ -61,7 +61,7 @@ const SjorcraftEditor = ({ parameterObject }: SjorcraftEditorProps) => {
         )}
         <Box
           sx={{
-            height: "calc(100vh - 3.5rem)",
+            height: "100vh",
             width: "100%",
             display: "flex",
             flexDirection: "row",
@@ -81,9 +81,9 @@ const SjorcraftEditor = ({ parameterObject }: SjorcraftEditorProps) => {
             }}
           >
             <SjorcraftCanvas />
-            {!smDevice && parameterObject.isSidebarOpen && (
+            {parameterObject.isSidebarOpen && !smDevice ? (
               <EditorSidebar parameterObject={parameterObject} />
-            )}
+            ) : null}
           </Stack>
         </Box>
       </RendererContext.Provider>

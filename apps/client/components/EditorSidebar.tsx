@@ -70,6 +70,7 @@ const EditorSidebar = ({ parameterObject }: EditorSidebarProps) => {
         zIndex: 10,
         right: parameterObject.isSidebarOpen ? "0" : "-10rem",
         transition: "right 0.5s ease  0s  normal",
+        position: "relative",
       }}
       bgcolor="primary.light"
       color="primary.contrastText"

@@ -10,6 +10,7 @@ export const SjorcraftCanvas = () => {
         width: "100%",
         zIndex: 0,
         outline: "none",
+        position: "relative",
       }}
     ></Box>
   );
