@@ -57,12 +57,12 @@ export class Floor extends THREE.Object3D {
    * @param divisions this is the number of divisions in the grid
    * @description This method sets the grid of the scene
    */
-  setGrid(size: number, divisions: number) {
+  setGrid(size: number, divisions: number, texture?: boolean) {
     this.grid = new THREE.GridHelper(
       size,
       divisions,
-      new THREE.Color("#888888"),
-      new THREE.Color("#888888")
+      texture ? new THREE.Color() : new THREE.Color("#888888"),
+      texture ? new THREE.Color() : new THREE.Color("#888888")
     );
     this.grid.position.y = 0.01;
     this.grid.material.opacity = 0.35;
@@ -102,7 +102,7 @@ export class Floor extends THREE.Object3D {
     this.viewer.scene.remove(this.grid);
     this.setFloor(length, width, color, texture);
     const size = Math.max(length, width);
-    this.setGrid(size, size);
+    this.setGrid(size, size, texture);
   }
 
   onUpdateFromClient(texture?: boolean, color?: THREE.Color) {
