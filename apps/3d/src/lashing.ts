@@ -106,8 +106,10 @@ export class Lashing extends THREE.Object3D {
   updateMesh() {
     this.remove(this.mesh);
     const path = new SquareLashingCurve(
-      this.fixedPole,
-      this.loosePole,
+      this.fixedPole.direction,
+      this.centerFixedPole,
+      this.loosePole.direction,
+      this.centerLoosePole,
       this.position
     );
     const geometry = new THREE.TubeGeometry(path, 1200, 0.003, 8, true);
@@ -128,6 +130,7 @@ export class Lashing extends THREE.Object3D {
         .clone()
         .multiplyScalar(translationDistance);
       this.centerLoosePole.sub(translationVector);
+      this.centerFixedPole.sub(translationVector);
       this.position.sub(translationVector);
       return true;
     }
@@ -136,46 +139,56 @@ export class Lashing extends THREE.Object3D {
 }
 
 class SquareLashingCurve extends THREE.Curve<THREE.Vector3> {
-  fixedPole: Pole;
-  loosePole: Pole;
+  directionFixedPole: THREE.Vector3;
+  directionLoosePole: THREE.Vector3;
+  centerFixedPole: THREE.Vector3;
+  centerLoosePole: THREE.Vector3;
+
   position: THREE.Vector3;
+  offsetFixedPole: THREE.Vector3;
+  offsetLoosePole: THREE.Vector3;
   fixedPoleOnTop: Boolean; // The 'top' is arbitrary
 
   dirNormal: THREE.Vector3;
   dirPerpFixed: THREE.Vector3;
   dirPerpLoose: THREE.Vector3;
 
-  constructor(fixedPole: Pole, loosePole: Pole, position: THREE.Vector3) {
+  constructor(
+    directionFixedPole: THREE.Vector3,
+    centerFixedPole: THREE.Vector3,
+    directionLoosePole: THREE.Vector3,
+    centerLoosePole: THREE.Vector3,
+    position: THREE.Vector3
+  ) {
     super();
-    this.fixedPole = fixedPole;
-    this.loosePole = loosePole;
+    this.directionFixedPole = directionFixedPole;
+    this.directionLoosePole = directionLoosePole;
+    this.centerFixedPole = centerFixedPole.clone().sub(position);
+    this.centerLoosePole = centerLoosePole.clone().sub(position);
     this.position = position;
 
     this.dirNormal = new THREE.Vector3()
-      .crossVectors(this.loosePole.direction, this.fixedPole.direction)
+      .crossVectors(directionLoosePole, directionFixedPole)
       .normalize();
 
-    const distanceLashingToFixedPole = this.position.distanceTo(
-      this.fixedPole.position
-    );
+    const distanceLashingToFixedPole =
+      this.position.distanceTo(centerFixedPole);
 
     const offsetDir = this.position
       .clone()
       .add(this.dirNormal.clone().multiplyScalar(0.06));
 
-    const distanceTopPoleToFixedPole = offsetDir.distanceTo(
-      this.fixedPole.position
-    );
+    const distanceTopPoleToFixedPole = offsetDir.distanceTo(centerFixedPole);
 
     this.fixedPoleOnTop =
       distanceTopPoleToFixedPole < distanceLashingToFixedPole;
 
     this.dirPerpFixed = new THREE.Vector3()
-      .crossVectors(this.fixedPole.direction, this.dirNormal)
+      .crossVectors(this.directionFixedPole, this.dirNormal)
       .normalize();
 
     this.dirPerpLoose = new THREE.Vector3()
-      .crossVectors(this.loosePole.direction, this.dirNormal)
+      .crossVectors(this.directionLoosePole, this.dirNormal)
       .normalize();
   }
 
@@ -197,100 +210,104 @@ class SquareLashingCurve extends THREE.Curve<THREE.Vector3> {
       // First part of the rope curve follows a half circle around pole1
       r = parts * t * 2 * rp1 - rp1; // Map t on a value between -pr1 and +pr1, the range of a half circle around pole1
       tx = r; // x-coordinate of a point on a circle in the x-y plane
-      ty = rp1 + Math.sqrt(rp1 * rp1 - r * r); // y-coordinate of a point on a circle in the x-y plane
+      ty = Math.sqrt(rp1 * rp1 - r * r); // y-coordinate of a point on a circle in the x-y plane
       tz = -rp2; // The z-coordinate is offset from the center of the lashing by the radius of pole2
     } else if (t < 2 / parts) {
       fixedPoleStrand = false;
       r = (parts * t - 1) * 2 * rp2 - rp2;
       tx = -r;
-      ty = -rp2 - Math.sqrt(rp2 * rp2 - r * r);
+      ty = -Math.sqrt(rp2 * rp2 - r * r);
       tz = rp1;
     } else if (t < 3 / parts) {
       fixedPoleStrand = true;
       r = (parts * t - 2) * 2 * rp1 - rp1;
       tx = -r;
-      ty = rp1 + Math.sqrt(rp1 * rp1 - r * r);
+      ty = Math.sqrt(rp1 * rp1 - r * r);
       tz = rp2;
     } else if (t < 4 / parts) {
       fixedPoleStrand = false;
       r = (parts * t - 3) * 2 * rp2 - rp2;
       tx = r;
-      ty = -rp2 - Math.sqrt(rp2 * rp2 - r * r);
+      ty = -Math.sqrt(rp2 * rp2 - r * r);
       tz = -rp1;
     } else if (t < 5 / parts) {
       fixedPoleStrand = true;
       r = (parts * t - 4) * 2 * rp1 - rp1;
       tx = r;
-      ty = rp1 + Math.sqrt(rp1 * rp1 - r * r);
+      ty = Math.sqrt(rp1 * rp1 - r * r);
       tz = -rp2 - spacing;
     } else if (t < 6 / parts) {
       fixedPoleStrand = false;
       r = (parts * t - 5) * 2 * rp2 - rp2;
       tx = -r;
-      ty = -rp2 - Math.sqrt(rp2 * rp2 - r * r);
+      ty = -Math.sqrt(rp2 * rp2 - r * r);
       tz = rp1 - spacing;
     } else if (t < 7 / parts) {
       fixedPoleStrand = true;
       r = (parts * t - 6) * 2 * rp1 - rp1;
       tx = -r;
-      ty = rp1 + Math.sqrt(rp1 * rp1 - r * r);
+      ty = Math.sqrt(rp1 * rp1 - r * r);
       tz = rp2 + spacing;
     } else if (t < 8 / parts) {
       fixedPoleStrand = false;
       r = (parts * t - 7) * 2 * rp2 - rp2;
       tx = r;
-      ty = -rp2 - Math.sqrt(rp2 * rp2 - r * r);
+      ty = -Math.sqrt(rp2 * rp2 - r * r);
       tz = -rp1 + spacing;
     } else if (t < 9 / parts) {
       fixedPoleStrand = true;
       r = (parts * t - 8) * 2 * rp1 - rp1;
       tx = r;
-      ty = rp1 + Math.sqrt(rp1 * rp1 - r * r);
+      ty = Math.sqrt(rp1 * rp1 - r * r);
       tz = -rp2 - 2 * spacing;
     } else if (t < 10 / parts) {
       fixedPoleStrand = false;
       r = (parts * t - 9) * 2 * rp2 - rp2;
       tx = -r;
-      ty = -rp2 - Math.sqrt(rp2 * rp2 - r * r);
+      ty = -Math.sqrt(rp2 * rp2 - r * r);
       tz = rp1 - 2 * spacing;
     } else if (t < 11 / parts) {
       fixedPoleStrand = true;
       r = (parts * t - 10) * 2 * rp1 - rp1;
       tx = -r;
-      ty = rp1 + Math.sqrt(rp1 * rp1 - r * r);
+      ty = Math.sqrt(rp1 * rp1 - r * r);
       tz = rp2 + 2 * spacing;
     } else {
       fixedPoleStrand = false;
       r = (parts * t - 11) * 2 * rp2 - rp2;
       tx = r;
-      ty = -rp2 - Math.sqrt(rp2 * rp2 - r * r);
+      ty = -Math.sqrt(rp2 * rp2 - r * r);
       tz = -rp1 + 2 * spacing;
     }
 
     if (this.fixedPoleOnTop) {
       if (fixedPoleStrand) {
-        const v = new THREE.Vector3()
-          .add(this.fixedPole.direction.clone().multiplyScalar(tz))
+        const v = this.centerFixedPole
+          .clone()
+          .add(this.directionFixedPole.clone().multiplyScalar(tz))
           .add(this.dirNormal.clone().multiplyScalar(ty))
           .add(this.dirPerpFixed.clone().multiplyScalar(tx));
         return optionalTarget.set(v.x, v.y, v.z);
       } else {
-        const v = new THREE.Vector3()
-          .add(this.loosePole.direction.clone().multiplyScalar(tz))
+        const v = this.centerLoosePole
+          .clone()
+          .add(this.directionLoosePole.clone().multiplyScalar(tz))
           .add(this.dirNormal.clone().multiplyScalar(ty))
           .add(this.dirPerpLoose.clone().multiplyScalar(tx));
         return optionalTarget.set(v.x, v.y, v.z);
       }
     } else {
       if (fixedPoleStrand) {
-        const v = new THREE.Vector3()
-          .sub(this.fixedPole.direction.clone().multiplyScalar(tz))
+        const v = this.centerFixedPole
+          .clone()
+          .sub(this.directionFixedPole.clone().multiplyScalar(tz))
           .sub(this.dirNormal.clone().multiplyScalar(ty))
           .sub(this.dirPerpFixed.clone().multiplyScalar(tx));
         return optionalTarget.set(v.x, v.y, v.z);
       } else {
-        const v = new THREE.Vector3()
-          .sub(this.loosePole.direction.clone().multiplyScalar(tz))
+        const v = this.centerLoosePole
+          .clone()
+          .sub(this.directionLoosePole.clone().multiplyScalar(tz))
           .sub(this.dirNormal.clone().multiplyScalar(ty))
           .sub(this.dirPerpLoose.clone().multiplyScalar(tx));
         return optionalTarget.set(v.x, v.y, v.z);
