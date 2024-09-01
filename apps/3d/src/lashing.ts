@@ -191,90 +191,90 @@ class SquareLashingCurve extends THREE.Curve<THREE.Vector3> {
 
   getPoint(t: number, optionalTarget = new THREE.Vector3()) {
     const parts = 12;
-    const rp1 = 0.06; // Radius pole 1
-    const rp2 = 0.06; // Radius Pole 2
+    const rfp = 0.06; // Radius fixed pole
+    const rlp = 0.06; // Radius loose pole
     const ropeDiameter = 0.006;
     const spacing = ropeDiameter + 0.001;
     let fixedPoleStrand = false;
 
-    let r = 0,
+    let x = 0,
       tx = 0,
       ty = 0,
       tz = 0;
 
     if (t < 1 / parts) {
       fixedPoleStrand = true;
-      // First part of the rope curve follows a half circle around pole1
-      r = parts * t * 2 * rp1 - rp1; // Map t on a value between -pr1 and +pr1, the range of a half circle around pole1
-      tx = r; // x-coordinate of a point on a circle in the x-y plane
-      ty = Math.sqrt(rp1 * rp1 - r * r); // y-coordinate of a point on a circle in the x-y plane
-      tz = -rp2; // The z-coordinate is offset from the center of the lashing by the radius of pole2
+      // First part of the rope curve follows a half circle around the fixed pole
+      x = parts * t * 2 * rfp - rfp; // Map t on a value between -pr1 and +pr1, the range of a half circle around the fixed pole
+      tx = x; // x-coordinate of a point on a circle in the x-y plane
+      ty = Math.sqrt(rfp * rfp - x * x); // y-coordinate of a point on a circle in the x-y plane
+      tz = -rlp; // The z-coordinate is offset from the center of the lashing by the radius of the loose pole
     } else if (t < 2 / parts) {
       fixedPoleStrand = false;
-      r = (parts * t - 1) * 2 * rp2 - rp2;
-      tx = -r;
-      ty = Math.sqrt(rp2 * rp2 - r * r);
-      tz = rp1;
+      x = (parts * t - 1) * 2 * rlp - rlp;
+      tx = -x;
+      ty = Math.sqrt(rlp * rlp - x * x);
+      tz = rfp;
     } else if (t < 3 / parts) {
       fixedPoleStrand = true;
-      r = (parts * t - 2) * 2 * rp1 - rp1;
-      tx = -r;
-      ty = Math.sqrt(rp1 * rp1 - r * r);
-      tz = rp2;
+      x = (parts * t - 2) * 2 * rfp - rfp;
+      tx = -x;
+      ty = Math.sqrt(rfp * rfp - x * x);
+      tz = rlp;
     } else if (t < 4 / parts) {
       fixedPoleStrand = false;
-      r = (parts * t - 3) * 2 * rp2 - rp2;
-      tx = r;
-      ty = Math.sqrt(rp2 * rp2 - r * r);
-      tz = -rp1;
+      x = (parts * t - 3) * 2 * rlp - rlp;
+      tx = x;
+      ty = Math.sqrt(rlp * rlp - x * x);
+      tz = -rfp;
     } else if (t < 5 / parts) {
       fixedPoleStrand = true;
-      r = (parts * t - 4) * 2 * rp1 - rp1;
-      tx = r;
-      ty = Math.sqrt(rp1 * rp1 - r * r);
-      tz = -rp2 - spacing;
+      x = (parts * t - 4) * 2 * rfp - rfp;
+      tx = x;
+      ty = Math.sqrt(rfp * rfp - x * x);
+      tz = -rlp - spacing;
     } else if (t < 6 / parts) {
       fixedPoleStrand = false;
-      r = (parts * t - 5) * 2 * rp2 - rp2;
-      tx = -r;
-      ty = Math.sqrt(rp2 * rp2 - r * r);
-      tz = rp1 - spacing;
+      x = (parts * t - 5) * 2 * rlp - rlp;
+      tx = -x;
+      ty = Math.sqrt(rlp * rlp - x * x);
+      tz = rfp - spacing;
     } else if (t < 7 / parts) {
       fixedPoleStrand = true;
-      r = (parts * t - 6) * 2 * rp1 - rp1;
-      tx = -r;
-      ty = Math.sqrt(rp1 * rp1 - r * r);
-      tz = rp2 + spacing;
+      x = (parts * t - 6) * 2 * rfp - rfp;
+      tx = -x;
+      ty = Math.sqrt(rfp * rfp - x * x);
+      tz = rlp + spacing;
     } else if (t < 8 / parts) {
       fixedPoleStrand = false;
-      r = (parts * t - 7) * 2 * rp2 - rp2;
-      tx = r;
-      ty = Math.sqrt(rp2 * rp2 - r * r);
-      tz = -rp1 + spacing;
+      x = (parts * t - 7) * 2 * rlp - rlp;
+      tx = x;
+      ty = Math.sqrt(rlp * rlp - x * x);
+      tz = -rfp + spacing;
     } else if (t < 9 / parts) {
       fixedPoleStrand = true;
-      r = (parts * t - 8) * 2 * rp1 - rp1;
-      tx = r;
-      ty = Math.sqrt(rp1 * rp1 - r * r);
-      tz = -rp2 - 2 * spacing;
+      x = (parts * t - 8) * 2 * rfp - rfp;
+      tx = x;
+      ty = Math.sqrt(rfp * rfp - x * x);
+      tz = -rlp - 2 * spacing;
     } else if (t < 10 / parts) {
       fixedPoleStrand = false;
-      r = (parts * t - 9) * 2 * rp2 - rp2;
-      tx = -r;
-      ty = Math.sqrt(rp2 * rp2 - r * r);
-      tz = rp1 - 2 * spacing;
+      x = (parts * t - 9) * 2 * rlp - rlp;
+      tx = -x;
+      ty = Math.sqrt(rlp * rlp - x * x);
+      tz = rfp - 2 * spacing;
     } else if (t < 11 / parts) {
       fixedPoleStrand = true;
-      r = (parts * t - 10) * 2 * rp1 - rp1;
-      tx = -r;
-      ty = Math.sqrt(rp1 * rp1 - r * r);
-      tz = rp2 + 2 * spacing;
+      x = (parts * t - 10) * 2 * rfp - rfp;
+      tx = -x;
+      ty = Math.sqrt(rfp * rfp - x * x);
+      tz = rlp + 2 * spacing;
     } else {
       fixedPoleStrand = false;
-      r = (parts * t - 11) * 2 * rp2 - rp2;
-      tx = r;
-      ty = Math.sqrt(rp2 * rp2 - r * r);
-      tz = -rp1 + 2 * spacing;
+      x = (parts * t - 11) * 2 * rlp - rlp;
+      tx = x;
+      ty = Math.sqrt(rlp * rlp - x * x);
+      tz = -rfp + 2 * spacing;
     }
 
     if (fixedPoleStrand) {
