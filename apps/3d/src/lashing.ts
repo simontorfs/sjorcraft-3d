@@ -213,7 +213,7 @@ class SquareLashingCurve extends THREE.Curve<THREE.Vector3> {
       fixedPoleStrand = false;
       r = (parts * t - 1) * 2 * rp2 - rp2;
       tx = -r;
-      ty = -Math.sqrt(rp2 * rp2 - r * r);
+      ty = Math.sqrt(rp2 * rp2 - r * r);
       tz = rp1;
     } else if (t < 3 / parts) {
       fixedPoleStrand = true;
@@ -225,7 +225,7 @@ class SquareLashingCurve extends THREE.Curve<THREE.Vector3> {
       fixedPoleStrand = false;
       r = (parts * t - 3) * 2 * rp2 - rp2;
       tx = r;
-      ty = -Math.sqrt(rp2 * rp2 - r * r);
+      ty = Math.sqrt(rp2 * rp2 - r * r);
       tz = -rp1;
     } else if (t < 5 / parts) {
       fixedPoleStrand = true;
@@ -237,7 +237,7 @@ class SquareLashingCurve extends THREE.Curve<THREE.Vector3> {
       fixedPoleStrand = false;
       r = (parts * t - 5) * 2 * rp2 - rp2;
       tx = -r;
-      ty = -Math.sqrt(rp2 * rp2 - r * r);
+      ty = Math.sqrt(rp2 * rp2 - r * r);
       tz = rp1 - spacing;
     } else if (t < 7 / parts) {
       fixedPoleStrand = true;
@@ -249,7 +249,7 @@ class SquareLashingCurve extends THREE.Curve<THREE.Vector3> {
       fixedPoleStrand = false;
       r = (parts * t - 7) * 2 * rp2 - rp2;
       tx = r;
-      ty = -Math.sqrt(rp2 * rp2 - r * r);
+      ty = Math.sqrt(rp2 * rp2 - r * r);
       tz = -rp1 + spacing;
     } else if (t < 9 / parts) {
       fixedPoleStrand = true;
@@ -261,7 +261,7 @@ class SquareLashingCurve extends THREE.Curve<THREE.Vector3> {
       fixedPoleStrand = false;
       r = (parts * t - 9) * 2 * rp2 - rp2;
       tx = -r;
-      ty = -Math.sqrt(rp2 * rp2 - r * r);
+      ty = Math.sqrt(rp2 * rp2 - r * r);
       tz = rp1 - 2 * spacing;
     } else if (t < 11 / parts) {
       fixedPoleStrand = true;
@@ -273,7 +273,7 @@ class SquareLashingCurve extends THREE.Curve<THREE.Vector3> {
       fixedPoleStrand = false;
       r = (parts * t - 11) * 2 * rp2 - rp2;
       tx = r;
-      ty = -Math.sqrt(rp2 * rp2 - r * r);
+      ty = Math.sqrt(rp2 * rp2 - r * r);
       tz = -rp1 + 2 * spacing;
     }
 
@@ -289,7 +289,7 @@ class SquareLashingCurve extends THREE.Curve<THREE.Vector3> {
         const v = this.centerLoosePole
           .clone()
           .add(this.directionLoosePole.clone().multiplyScalar(tz))
-          .add(this.dirNormal.clone().multiplyScalar(ty))
+          .sub(this.dirNormal.clone().multiplyScalar(ty))
           .add(this.dirPerpLoose.clone().multiplyScalar(tx));
         return optionalTarget.set(v.x, v.y, v.z);
       }
@@ -305,7 +305,7 @@ class SquareLashingCurve extends THREE.Curve<THREE.Vector3> {
         const v = this.centerLoosePole
           .clone()
           .sub(this.directionLoosePole.clone().multiplyScalar(tz))
-          .sub(this.dirNormal.clone().multiplyScalar(ty))
+          .add(this.dirNormal.clone().multiplyScalar(ty))
           .sub(this.dirPerpLoose.clone().multiplyScalar(tx));
         return optionalTarget.set(v.x, v.y, v.z);
       }
