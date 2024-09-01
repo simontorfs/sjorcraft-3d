@@ -277,38 +277,22 @@ class SquareLashingCurve extends THREE.Curve<THREE.Vector3> {
       tz = -rp1 + 2 * spacing;
     }
 
-    if (this.fixedPoleOnTop) {
-      if (fixedPoleStrand) {
-        const v = this.centerFixedPole
-          .clone()
-          .add(this.directionFixedPole.clone().multiplyScalar(tz))
-          .add(this.dirNormal.clone().multiplyScalar(ty))
-          .add(this.dirPerpFixed.clone().multiplyScalar(tx));
-        return optionalTarget.set(v.x, v.y, v.z);
-      } else {
-        const v = this.centerLoosePole
-          .clone()
-          .add(this.directionLoosePole.clone().multiplyScalar(tz))
-          .sub(this.dirNormal.clone().multiplyScalar(ty))
-          .add(this.dirPerpLoose.clone().multiplyScalar(tx));
-        return optionalTarget.set(v.x, v.y, v.z);
-      }
+    if (fixedPoleStrand) {
+      const v = new THREE.Vector3()
+        .add(this.directionFixedPole.clone().multiplyScalar(tz))
+        .add(this.dirNormal.clone().multiplyScalar(ty))
+        .add(this.dirPerpFixed.clone().multiplyScalar(tx))
+        .multiplyScalar(this.fixedPoleOnTop ? 1 : -1)
+        .add(this.centerFixedPole);
+      return optionalTarget.set(v.x, v.y, v.z);
     } else {
-      if (fixedPoleStrand) {
-        const v = this.centerFixedPole
-          .clone()
-          .sub(this.directionFixedPole.clone().multiplyScalar(tz))
-          .sub(this.dirNormal.clone().multiplyScalar(ty))
-          .sub(this.dirPerpFixed.clone().multiplyScalar(tx));
-        return optionalTarget.set(v.x, v.y, v.z);
-      } else {
-        const v = this.centerLoosePole
-          .clone()
-          .sub(this.directionLoosePole.clone().multiplyScalar(tz))
-          .add(this.dirNormal.clone().multiplyScalar(ty))
-          .sub(this.dirPerpLoose.clone().multiplyScalar(tx));
-        return optionalTarget.set(v.x, v.y, v.z);
-      }
+      const v = new THREE.Vector3()
+        .add(this.directionLoosePole.clone().multiplyScalar(tz))
+        .sub(this.dirNormal.clone().multiplyScalar(ty))
+        .add(this.dirPerpLoose.clone().multiplyScalar(tx))
+        .multiplyScalar(this.fixedPoleOnTop ? 1 : -1)
+        .add(this.centerLoosePole);
+      return optionalTarget.set(v.x, v.y, v.z);
     }
   }
 }
