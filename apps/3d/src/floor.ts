@@ -61,8 +61,8 @@ export class Floor extends THREE.Object3D {
     this.grid = new THREE.GridHelper(
       size,
       divisions,
-      new THREE.Color("#c0c0c0"),
-      new THREE.Color("#c0c0c0")
+      new THREE.Color("#888888"),
+      new THREE.Color("#888888")
     );
     this.grid.position.y = 0.01;
     this.grid.material.opacity = 0.35;
