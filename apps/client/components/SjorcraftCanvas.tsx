@@ -1,7 +1,18 @@
+import { Box } from "@mui/material";
 import React from "react";
 
 export const SjorcraftCanvas = () => {
-  return <div className="webgl" id="render_area"></div>;
+  return (
+    <Box
+      id="render_area"
+      sx={{
+        height: "100%",
+        width: "100%",
+        zIndex: 0,
+        outline: "none",
+      }}
+    ></Box>
+  );
 };
 
 export default SjorcraftCanvas;

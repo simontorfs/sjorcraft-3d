@@ -1,30 +1,58 @@
 import React from "react";
 import ColorIndicator from "./ColorIndicator";
 import { usePoles } from "../src/hooks/usePoles";
+import {
+  Paper,
+  styled,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+} from "@mui/material";
 
 const PoleTable = () => {
   const poles = usePoles();
   return (
-    <table className="data-table">
-      <thead>
-        <tr>
-          <th></th>
-          <th></th>
-          <th>#</th>
-        </tr>
-      </thead>
-      <tbody>
-        {poles?.map((pole) => (
-          <tr key={pole.length}>
-            <td>
-              <ColorIndicator color={pole.color} />
-            </td>
-            <td>{`${pole.length} m`}</td>
-            <td>{pole.number}</td>
-          </tr>
-        ))}
-      </tbody>
-    </table>
+    <TableContainer
+      component={Paper}
+      sx={{
+        backgroundColor: "primary.light",
+        color: "primary.contrastText",
+        overflowY: "auto",
+
+        "& th": {
+          fontWeight: "bold",
+          backgroundColor: "primary.main",
+        },
+
+        "& td": {
+          fontWeight: "bold",
+        },
+      }}
+    >
+      <Table aria-label="Pole Table">
+        <TableHead>
+          <TableRow>
+            <TableCell align="left">Color</TableCell>
+            <TableCell align="left">Length</TableCell>
+            <TableCell align="left">#</TableCell>
+          </TableRow>
+        </TableHead>
+        <TableBody>
+          {poles?.map((pole) => (
+            <TableRow key={pole.length}>
+              <TableCell>
+                <ColorIndicator color={pole.color} />
+              </TableCell>
+              <TableCell>{`${pole.length} m`}</TableCell>
+              <TableCell>{pole.number}</TableCell>
+            </TableRow>
+          ))}
+        </TableBody>
+      </Table>
+    </TableContainer>
   );
 };
 
