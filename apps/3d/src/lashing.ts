@@ -144,7 +144,6 @@ class SquareLashingCurve extends THREE.Curve<THREE.Vector3> {
   centerFixedPole: THREE.Vector3;
   centerLoosePole: THREE.Vector3;
 
-  position: THREE.Vector3;
   offsetFixedPole: THREE.Vector3;
   offsetLoosePole: THREE.Vector3;
   fixedPoleOnTop: Boolean; // The 'top' is arbitrary
@@ -163,26 +162,24 @@ class SquareLashingCurve extends THREE.Curve<THREE.Vector3> {
     super();
     this.directionFixedPole = directionFixedPole;
     this.directionLoosePole = directionLoosePole;
-    this.centerFixedPole = centerFixedPole.clone().sub(position);
+    this.centerFixedPole = centerFixedPole.clone().sub(position); // Center in local coordinates
     this.centerLoosePole = centerLoosePole.clone().sub(position);
-    this.position = position;
 
     this.dirNormal = new THREE.Vector3()
       .crossVectors(directionLoosePole, directionFixedPole)
       .normalize();
 
-    const distanceLashingToFixedPole =
-      this.position.distanceTo(centerFixedPole);
+    const distanceLashingToFixedPole = this.centerFixedPole.length();
 
-    const offsetDir = this.position
+    const distanceTopPoleToFixedPole = this.dirNormal
       .clone()
-      .add(this.dirNormal.clone().multiplyScalar(0.06));
-
-    const distanceTopPoleToFixedPole = offsetDir.distanceTo(centerFixedPole);
+      .multiplyScalar(0.06)
+      .distanceTo(this.centerFixedPole);
 
     this.fixedPoleOnTop =
       distanceTopPoleToFixedPole < distanceLashingToFixedPole;
 
+    // Directions perpendicular to both pole and the normal
     this.dirPerpFixed = new THREE.Vector3()
       .crossVectors(this.directionFixedPole, this.dirNormal)
       .normalize();
