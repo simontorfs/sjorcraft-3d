@@ -73,7 +73,7 @@ const EditorSidebar = ({ parameterObject }: EditorSidebarProps) => {
         position: "relative",
         width: { xs: "0", md: "100%" },
         minWidth: { xs: "0", md: "25rem" },
-        maxWidth: { xs: "0", md: "20rem" },
+        maxWidth: { xs: "0", md: "25rem" },
         overflowY: "auto",
         overflowX: "hidden",
       }}
