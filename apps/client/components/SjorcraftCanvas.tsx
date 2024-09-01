@@ -7,7 +7,7 @@ export const SjorcraftCanvas = () => {
       id="render_area"
       sx={{
         height: "100%",
-        width: "100%",
+        width: { xs: "100%", md: "calc(100% - 25rem)" },
         zIndex: 0,
         outline: "none",
         position: "relative",
