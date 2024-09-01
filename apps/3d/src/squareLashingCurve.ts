@@ -56,7 +56,7 @@ export class SquareLashingCurve extends THREE.Curve<THREE.Vector3> {
     const rfp = 0.06; // Radius fixed pole
     const rlp = 0.06; // Radius loose pole
     const ropeDiameter = 0.006;
-    const spacing = ropeDiameter + 0.001;
+    const spacing = ropeDiameter;
     let fixedPoleStrand = false;
 
     let x = 0,

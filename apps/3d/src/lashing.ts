@@ -137,4 +137,14 @@ export class Lashing extends THREE.Object3D {
     }
     return false;
   }
+
+  threatenWithDestruction() {
+    // @ts-ignore
+    this.mesh.material.color = new THREE.Color(0x996209);
+  }
+
+  stopThreatening() {
+    // @ts-ignore
+    this.mesh.material.color = new THREE.Color(0x9e9578);
+  }
 }
