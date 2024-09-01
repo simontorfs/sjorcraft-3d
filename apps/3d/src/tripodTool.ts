@@ -356,7 +356,7 @@ export class TripodTool {
 
   checkCollisions() {
     this.tripodIsColliding = false;
-    document.body.style.cursor = "default";
+    this.viewer.domElement.style.cursor = "default";
 
     for (const pole of this.viewer.inventory.poles) {
       if (
@@ -368,7 +368,7 @@ export class TripodTool {
         pole.mesh.material.color = new THREE.Color(1, 0, 0);
         if (this.lashPositionPlaced) {
           this.tripodIsColliding = true;
-          document.body.style.cursor = "not-allowed";
+          this.viewer.domElement.style.cursor = "not-allowed";
         }
       } else {
         // @ts-ignore
