@@ -19,7 +19,7 @@ export class SelectionTool {
     this.active = false;
     this.deselectAll();
     this.viewer.poleTransformer.setActivePole(undefined);
-    document.body.style.cursor = "default";
+    this.viewer.domElement.style.cursor = "default";
   }
 
   deselectAll() {
@@ -67,9 +67,9 @@ export class SelectionTool {
   setHoveredPole(pole: Pole) {
     this.hoveredPole = pole;
     if (this.hoveredPole) {
-      document.body.style.cursor = "pointer";
+      this.viewer.domElement.style.cursor = "pointer";
     } else {
-      document.body.style.cursor = "default";
+      this.viewer.domElement.style.cursor = "default";
     }
   }
 }

@@ -226,7 +226,7 @@ export class BipodTool {
 
   checkCollisions() {
     this.bipodIsColliding = false;
-    document.body.style.cursor = "default";
+    this.viewer.domElement.style.cursor = "default";
 
     for (const pole of this.viewer.poleInventory.poles) {
       if (this.scaffold1.overlaps(pole) || this.scaffold2.overlaps(pole)) {
@@ -234,7 +234,7 @@ export class BipodTool {
         pole.mesh.material.color = new THREE.Color(1, 0, 0);
         if (this.lashPositionPlaced) {
           this.bipodIsColliding = true;
-          document.body.style.cursor = "not-allowed";
+          this.viewer.domElement.style.cursor = "not-allowed";
         }
       } else {
         // @ts-ignore

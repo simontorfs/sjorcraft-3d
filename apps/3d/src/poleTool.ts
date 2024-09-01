@@ -272,7 +272,7 @@ export class PoleTool {
 
   checkCollisions(blockPlacement: boolean) {
     this.activeScaffoldIsColliding = false;
-    document.body.style.cursor = "default";
+    this.viewer.domElement.style.cursor = "default";
 
     for (const pole of this.viewer.poleInventory.poles) {
       if (
@@ -284,7 +284,7 @@ export class PoleTool {
         pole.mesh.material.color = new THREE.Color(1, 0, 0);
         if (blockPlacement) {
           this.activeScaffoldIsColliding = true;
-          document.body.style.cursor = "not-allowed";
+          this.viewer.domElement.style.cursor = "not-allowed";
         }
       } else {
         // @ts-ignore
