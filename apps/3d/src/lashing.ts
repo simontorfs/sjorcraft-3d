@@ -36,24 +36,28 @@ export class Lashing extends THREE.Object3D {
     const loosePole: Pole | undefined = poles.find(
       (pole) => pole.uuid === lashing.loosePole
     );
-    if (fixedPole && loosePole) {
-      this.setProperties(
-        fixedPole,
-        loosePole,
-        new THREE.Vector3(
-          lashing.anchorPoint.x,
-          lashing.anchorPoint.y,
-          lashing.anchorPoint.z
-        ),
-        new THREE.Vector3(
-          lashing.anchorPointNormal.x,
-          lashing.anchorPointNormal.y,
-          lashing.anchorPointNormal.z
-        )
+    if (fixedPole && loosePole && lashing.position) {
+      this.fixedPole = fixedPole;
+      this.loosePole = loosePole;
+      this.centerFixedPole = new THREE.Vector3(
+        lashing.centerFixedPole.x,
+        lashing.centerFixedPole.y,
+        lashing.centerFixedPole.z
       );
+      this.centerLoosePole = new THREE.Vector3(
+        lashing.centerLoosePole.x,
+        lashing.centerLoosePole.y,
+        lashing.centerLoosePole.z
+      );
+      this.position.set(
+        lashing.position.x,
+        lashing.position.y,
+        lashing.position.z
+      );
+      this.updateMesh();
       return true;
     }
-    console.log("Dropping lashing, no valid poles; check order of loading");
+    console.log("Dropping lashing");
     return false;
   }
 
@@ -61,8 +65,9 @@ export class Lashing extends THREE.Object3D {
     return {
       fixedPole: this.fixedPole.uuid,
       loosePole: this.loosePole.uuid,
-      anchorPoint: this.anchorPoint,
-      anchorPointNormal: this.anchorPointNormal,
+      position: this.position,
+      centerFixedPole: this.centerFixedPole,
+      centerLoosePole: this.centerLoosePole,
     };
   }
 

@@ -1,5 +1,4 @@
 import { Pole } from "./pole";
-import * as THREE from "three";
 import { Viewer } from "./viewer";
 import { Lashing } from "./lashing";
 
@@ -32,6 +31,7 @@ export class SaveTool {
           const newLashing = new Lashing();
           if (newLashing.loadFromJson(lashing, this.viewer.inventory.poles)) {
             this.viewer.inventory.addLashing(newLashing);
+            this.viewer.scene.add(newLashing);
           }
         });
       };
