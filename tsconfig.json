@@ -1,7 +1,8 @@
 {
   "compilerOptions": {
     "typeRoots": ["./node_modules/@types", "./declaration.d.ts"],
-    "jsx": "react"
+    "jsx": "react",
+    "esModuleInterop": true
   },
   "include": ["apps/client", "declaration.d.ts"]
 }
