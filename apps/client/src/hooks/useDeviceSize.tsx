@@ -4,11 +4,12 @@ import { useEffect, useState } from "react";
 // https://tailwindcss.com/docs/responsive-design
 
 enum DeviceSize {
-  sm = 640,
-  md = 768,
-  lg = 1024,
-  xl = 1280,
-  xl2 = 1536,
+  xs = 0,
+  sm = 600,
+  md = 900,
+  lg = 1200,
+  xl = 1536,
+  xl2 = 1920,
 }
 
 export const useDeviceSize = () => {

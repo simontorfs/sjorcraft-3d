@@ -41,7 +41,6 @@ const Toolbar = ({
         padding: "0.5rem 2rem",
         fontWeight: "bold",
         fontSize: "x-large",
-        height: "3.5rem",
       }}
       bgcolor="primary.main"
       color="primary.contrastText"
