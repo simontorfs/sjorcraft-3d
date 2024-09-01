@@ -30,7 +30,7 @@ export class SelectionTool {
   }
 
   selectAll() {
-    this.selectedPoles = this.viewer.poleInventory.poles;
+    this.selectedPoles = this.viewer.inventory.poles;
     for (const pole of this.selectedPoles) {
       pole.select();
     }
@@ -60,7 +60,7 @@ export class SelectionTool {
 
   deleteSelectedPoles() {
     if (!this.active || !this.selectedPoles.length) return;
-    this.viewer.poleInventory.removePoles(this.selectedPoles);
+    this.viewer.inventory.removePoles(this.selectedPoles);
     this.viewer.poleTransformer.setActivePole(undefined);
   }
 

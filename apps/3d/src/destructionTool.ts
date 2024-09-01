@@ -1,10 +1,11 @@
+import { Lashing } from "./lashing";
 import { Pole } from "./pole";
 import { Viewer } from "./viewer";
 
 export class DestructionTool {
   active: boolean;
   viewer: Viewer;
-  hoveredPole: Pole | undefined;
+  hoveredObject: Pole | Lashing | undefined;
   constructor(viewer: Viewer) {
     this.viewer = viewer;
     this.active = false;
@@ -21,17 +22,19 @@ export class DestructionTool {
 
   leftClick() {
     if (!this.active) return;
-    if (this.hoveredPole) {
-      this.viewer.poleInventory.removePole(this.hoveredPole);
+    if (this.hoveredObject instanceof Lashing) {
+      this.viewer.inventory.removeLashing(this.hoveredObject);
+    } else if (this.hoveredObject instanceof Pole) {
+      this.viewer.inventory.removePole(this.hoveredObject);
     }
   }
 
-  setHoveredPole(pole: Pole) {
-    if (pole === this.hoveredPole) return;
-    this.hoveredPole?.stopThreatening();
-    this.hoveredPole = pole;
-    this.hoveredPole?.threatenWithDestruction();
-    if (this.hoveredPole) {
+  setHoveredObject(object: Pole | Lashing) {
+    if (object === this.hoveredObject) return;
+    this.hoveredObject?.stopThreatening();
+    this.hoveredObject = object;
+    this.hoveredObject?.threatenWithDestruction();
+    if (this.hoveredObject) {
       this.viewer.domElement.style.cursor = "url(./cursors/axe.cur) 5 5, auto";
     } else {
       this.viewer.domElement.style.cursor = "default";

@@ -3,6 +3,7 @@ import { Pole } from "./pole";
 import { Viewer } from "./viewer";
 import { ButtonType } from "../../client/components/ToolbarItem";
 import { OrbitControls } from "three/examples/jsm/Addons.js";
+import { Lashing } from "./lashing";
 
 export class InputHandler {
   viewer: Viewer;
@@ -32,8 +33,7 @@ export class InputHandler {
       case "Backspace":
         if (this.ctrlDown) {
           event.preventDefault();
-          this.viewer.saveTool.removeAllPoles();
-          this.viewer.saveTool.removeAllLashings();
+          this.viewer.inventory.removeAll();
           this.viewer.saveTool.clearLocalStorage();
         } else {
           this.viewer.selectionTool.deleteSelectedPoles();
@@ -122,8 +122,12 @@ export class InputHandler {
     this.cursor.y =
       -(event.clientY - rect.top) / this.viewer.sizes.height + 0.5;
     const groundPosition = this.getGroundPosition();
+
     const poleIntersect = this.getPoleIntersect();
     const hoveredPole = poleIntersect?.object.parent as Pole;
+
+    const objectIntersect = this.getObjectIntersect();
+    const hoveredObject = objectIntersect?.object.parent as Pole | Lashing;
 
     if (this.viewer.poleTool.active) {
       if (poleIntersect?.normal) {
@@ -154,11 +158,30 @@ export class InputHandler {
         this.setHoveredHandle();
       }
     } else if (this.viewer.destructionTool.active) {
-      this.viewer.destructionTool.setHoveredPole(hoveredPole);
+      this.viewer.destructionTool.setHoveredObject(hoveredObject);
     } else if (this.viewer.bipodTool.active) {
       this.viewer.bipodTool.drawBipod(groundPosition);
     } else if (this.viewer.tripodTool.active) {
       this.viewer.tripodTool.drawTripod(groundPosition);
+    }
+  }
+
+  getObjectIntersect() {
+    const raycaster = new THREE.Raycaster();
+    raycaster.setFromCamera(
+      new THREE.Vector2(this.cursor.x * 2, this.cursor.y * 2),
+      this.viewer.camera
+    );
+
+    const intersects = raycaster.intersectObjects([
+      ...this.viewer.inventory.poles.map((pole) => pole.mesh),
+      ...this.viewer.inventory.lashings.map((lashing) => lashing.mesh),
+    ]);
+
+    if (intersects.length) {
+      return intersects[0];
+    } else {
+      return undefined;
     }
   }
 
@@ -170,12 +193,14 @@ export class InputHandler {
     );
 
     const intersects = raycaster.intersectObjects(
-      this.viewer.poleInventory.poles.map((pole) => pole.mesh)
+      this.viewer.inventory.poles.map((pole) => pole.mesh)
     );
+
     if (intersects.length) {
       return intersects[0];
+    } else {
+      return undefined;
     }
-    return;
   }
 
   getGroundPosition() {

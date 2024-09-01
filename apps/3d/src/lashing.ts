@@ -1,7 +1,8 @@
 import { Pole } from "./pole";
+import { SquareLashingCurve } from "./squareLashingCurve";
 import * as THREE from "three";
 
-export class Lashing {
+export class Lashing extends THREE.Object3D {
   fixedPole: Pole;
   loosePole: Pole;
   centerFixedPole: THREE.Vector3;
@@ -9,7 +10,11 @@ export class Lashing {
   anchorPoint: THREE.Vector3; // Point on the surface of the fixed pole where the user clicked
   anchorPointNormal: THREE.Vector3;
   fixedHeight: number | undefined;
-  constructor() {}
+
+  mesh: THREE.Mesh = new THREE.Mesh();
+  constructor() {
+    super();
+  }
 
   setProperties(
     fixedPole: Pole,
@@ -91,6 +96,30 @@ export class Lashing {
     if (this.fixedHeight) {
       this.snapLoosePole(this.fixedHeight);
     }
+
+    const pos = this.centerLoosePole
+      .clone()
+      .add(this.centerFixedPole)
+      .divideScalar(2.0);
+    this.position.set(pos.x, pos.y, pos.z);
+  }
+
+  updateMesh() {
+    this.remove(this.mesh);
+    const path = new SquareLashingCurve(
+      this.fixedPole.direction,
+      this.centerFixedPole,
+      this.loosePole.direction,
+      this.centerLoosePole,
+      this.position
+    );
+    const geometry = new THREE.TubeGeometry(path, 360, 0.003, 8, true);
+    const material = new THREE.MeshBasicMaterial({
+      color: 0x9e9578,
+      wireframe: false,
+    });
+    this.mesh = new THREE.Mesh(geometry, material);
+    this.add(this.mesh);
   }
 
   snapLoosePole(desiredHeight: number) {
@@ -102,8 +131,20 @@ export class Lashing {
         .clone()
         .multiplyScalar(translationDistance);
       this.centerLoosePole.sub(translationVector);
+      this.centerFixedPole.sub(translationVector);
+      this.position.sub(translationVector);
       return true;
     }
     return false;
+  }
+
+  threatenWithDestruction() {
+    // @ts-ignore
+    this.mesh.material.color = new THREE.Color(0x996209);
+  }
+
+  stopThreatening() {
+    // @ts-ignore
+    this.mesh.material.color = new THREE.Color(0x9e9578);
   }
 }

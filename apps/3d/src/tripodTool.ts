@@ -358,7 +358,7 @@ export class TripodTool {
     this.tripodIsColliding = false;
     this.viewer.domElement.style.cursor = "default";
 
-    for (const pole of this.viewer.poleInventory.poles) {
+    for (const pole of this.viewer.inventory.poles) {
       if (
         this.scaffold1.overlaps(pole) ||
         this.scaffold2.overlaps(pole) ||

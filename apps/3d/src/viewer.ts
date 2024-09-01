@@ -11,7 +11,7 @@ import { Lashing } from "./lashing";
 import { TripodTool } from "./tripodTool";
 import { DestructionTool } from "./destructionTool";
 import { PoleTransformer } from "./poleTransformer";
-import { PoleInventory } from "./poleInventory";
+import { Inventory } from "./inventory";
 
 export class Viewer {
   domElement: HTMLElement;
@@ -30,8 +30,7 @@ export class Viewer {
   destructionTool: DestructionTool;
   poleTransformer: PoleTransformer;
 
-  poleInventory: PoleInventory;
-  lashings: Lashing[];
+  inventory: Inventory;
   saveTool: SaveTool;
   floor: Floor;
   imageExporter: ImageExporter;
@@ -110,11 +109,8 @@ export class Viewer {
     // Image Exporter
     this.imageExporter = new ImageExporter(this);
 
-    // Poles
-    this.poleInventory = new PoleInventory(this);
-
-    // Lashings
-    this.lashings = [];
+    // Poles and lashings
+    this.inventory = new Inventory(this);
 
     // Tools
     this.selectionTool = new SelectionTool(this);
