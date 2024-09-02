@@ -33,6 +33,9 @@ const ImportExportButtons = () => {
       case ".DAE":
         console.log("Exporting to dae");
         break;
+      case ".STL":
+        viewer?.saveTool.exportToSTL();
+        break;
       default:
         break;
     }
@@ -51,6 +54,10 @@ const ImportExportButtons = () => {
           "This filetype is used to export the current scene as a .jpg image so you can look at your construction even when you are not online."
         );
         break;
+      case ".STL":
+        setDescription(
+          `This filetype is used to export the current scene as a .stl file so you can import it in other 3D modeling software. Such as Blender, 3DS Max, Maya, etc. A .stl file is a 3D model format that is used for 3D printing.`
+        );
       case ".DAE":
         setDescription(
           `This filetype is used to export the current scene as a .dae file so you can import it in other 3D modeling software. Such as Blender, 3DS Max, Maya, etc. 
@@ -100,6 +107,7 @@ const ImportExportButtons = () => {
         >
           <MenuItem value={".SJOR"}>.SJOR</MenuItem>
           <MenuItem value={".JPG"}>.JPG</MenuItem>
+          <MenuItem value={".STL"}>.STL</MenuItem>
           <MenuItem value={".DAE"}>.DAE</MenuItem>
           <MenuItem value={".GLTF"}>.GLTF</MenuItem>
         </Select>

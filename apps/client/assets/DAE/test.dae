@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<COLLADA xmlns="http://www.collada.org/2005/11/COLLADASchema" version="1.4.1">
+	<asset>
+		<contributor>
+			<author>
+				Springbok
+			</author>
+			<authoring_tool>
+				Blender
+			</authoring_tool>
+		</contributor>
+		<created>
+			2024-09-02T12:00:00Z
+		</created>
+		<modified>
+			2024-09-02T12:00:00Z
+		</modified>
+		<unit name="meter" meter="1" />
+		<up_axis>
+			Y_UP
+		</up_axis>
+	</asset>
+	<geometry id="Cube-mesh" name="Cube">
+		<mesh>
+			<source id="Cube-positions">
+				<float_array id="Cube-positions-array" count="24">
+					...
+				</float_array>
+				<technique_common>
+					<accessor source="#Cube-positions-array" count="8" stride="3">
+						<param name="X" type="float" />
+						<param name="Y" type="float" />
+						<param name="Z" type="float" />
+					</accessor>
+				</technique_common>
+			</source>
+			<!-- Meer informatie over de vorm van het object -->
+		</mesh>
+	</geometry>
+</COLLADA>

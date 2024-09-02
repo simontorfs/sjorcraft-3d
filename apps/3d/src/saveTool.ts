@@ -1,6 +1,12 @@
 import { Pole } from "./pole";
 import { Viewer } from "./viewer";
 import { Lashing } from "./lashing";
+import * as THREE from "three";
+import {
+  OBJExporter,
+  STLExporter,
+  USDZExporter,
+} from "three/examples/jsm/Addons";
 
 export class SaveTool {
   viewer: Viewer;
@@ -125,6 +131,58 @@ export class SaveTool {
         this.viewer.inventory.addLashing(newLashing);
       }
     });
+  }
+
+  exportToSTL() {
+    const exporter = new STLExporter();
+    const workingScene = this.viewer.scene.clone();
+    workingScene.updateMatrixWorld();
+    workingScene.updateMatrix();
+    workingScene.updateWorldMatrix(true, true);
+    workingScene.remove(this.viewer.floor);
+    workingScene.rotation.set(0, 0, 0);
+    workingScene.scale.set(1, 1, 1);
+    workingScene.position.set(0, 0, 0);
+    workingScene.rotation.x = Math.PI / 2;
+    workingScene.traverse((child) => {
+      if (child instanceof THREE.Mesh) {
+        child.updateMatrix();
+        child.updateWorldMatrix(true, true);
+      }
+    });
+    const result = exporter.parse(workingScene);
+    const blob = new Blob([result], { type: "text/plain" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = "model.stl";
+    a.click();
+  }
+
+  exportToOBJ() {
+    const exporter = new OBJExporter();
+    const workingScene = this.viewer.scene.clone();
+    workingScene.updateMatrixWorld();
+    workingScene.updateMatrix();
+    workingScene.updateWorldMatrix(true, true);
+    workingScene.remove(this.viewer.floor);
+    workingScene.rotation.set(0, 0, 0);
+    workingScene.scale.set(1, 1, 1);
+    workingScene.position.set(0, 0, 0);
+    workingScene.rotation.x = Math.PI / 2;
+    workingScene.traverse((child) => {
+      if (child instanceof THREE.Mesh) {
+        child.updateMatrix();
+        child.updateWorldMatrix(true, true);
+      }
+    });
+    const result = exporter.parse(workingScene);
+    const blob = new Blob([result], { type: "text/plain" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = "model.obj";
+    a.click();
   }
 
   //clear local storage
