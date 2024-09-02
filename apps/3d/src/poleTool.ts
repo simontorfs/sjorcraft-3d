@@ -29,7 +29,7 @@ export class PoleTool {
     // load poles from local storage if available else add demo poles
     if (localStorage.getItem("poles") !== null) {
       this.viewer.saveTool.loadPolesFromLocalStorage();
-    } else if (this.viewer.poles.length === 0) {
+    } else if (this.viewer.inventory.poles.length === 0) {
       this.addDemoPoles();
     }
     if (localStorage.getItem("lashes") !== null) {
@@ -40,7 +40,7 @@ export class PoleTool {
   addDemoPoles() {
     const demoPole1 = new Pole();
     this.viewer.scene.add(demoPole1);
-    this.viewer.poles.push(demoPole1);
+    this.viewer.inventory.addPole(demoPole1);
     demoPole1.position.x = -0.07;
     demoPole1.position.y = 1.74;
     demoPole1.position.z = 0.1;
@@ -49,7 +49,7 @@ export class PoleTool {
 
     const demoPole2 = new Pole();
     this.viewer.scene.add(demoPole2);
-    this.viewer.poles.push(demoPole2);
+    this.viewer.inventory.addPole(demoPole2);
     demoPole2.position.x = 0.9;
     demoPole2.position.y = 1.74;
     demoPole2.position.z = 0.93;
@@ -58,7 +58,7 @@ export class PoleTool {
 
     const demoPole3 = new Pole();
     this.viewer.scene.add(demoPole3);
-    this.viewer.poles.push(demoPole3);
+    this.viewer.inventory.addPole(demoPole3);
     demoPole3.position.x = 0.07;
     demoPole3.position.y = 1.74;
     demoPole3.position.z = 1.9;
@@ -67,7 +67,7 @@ export class PoleTool {
 
     const demoPole4 = new Pole();
     this.viewer.scene.add(demoPole4);
-    this.viewer.poles.push(demoPole4);
+    this.viewer.inventory.addPole(demoPole4);
     demoPole4.position.x = -0.9;
     demoPole4.position.y = 1.74;
     demoPole4.position.z = 1.07;
@@ -86,17 +86,18 @@ export class PoleTool {
   deactivate() {
     this.activeScaffold.removeFromScene(this.viewer.scene);
     this.active = false;
+    if (this.fixedLashing)
+      this.viewer.inventory.removeLashing(this.fixedLashing);
+    if (this.newLashing) this.viewer.inventory.removeLashing(this.newLashing);
     this.fixedLashing = undefined;
     this.newLashing = undefined;
     this.lastPole = undefined;
 
-    for (const pole of this.viewer.poles) {
-      //@ts-ignore
-      pole.mesh.material.color = new THREE.Color(1, 1, 1);
-    }
+    this.viewer.inventory.resetAllColors();
   }
 
   drawPoleWhileHoveringGound(groundPosition: THREE.Vector3) {
+    if (this.newLashing) this.viewer.scene.remove(this.newLashing);
     this.newLashing = undefined;
     this.hoveringGround = true;
     this.snapHelperLine.visible = false;
@@ -127,6 +128,7 @@ export class PoleTool {
       position,
       normal
     );
+    this.viewer.scene.add(this.newLashing);
 
     if (this.fixedLashing) {
       if (this.fixedLashing.fixedPole === hoveredPole) return;
@@ -154,6 +156,8 @@ export class PoleTool {
       this.fixedLashing.centerLoosePole,
       this.newLashing.centerLoosePole
     );
+    this.fixedLashing.updateMesh();
+    this.newLashing.updateMesh();
   }
 
   placePoleOnOneLashing() {
@@ -171,6 +175,7 @@ export class PoleTool {
       this.newLashing.centerLoosePole.y,
       this.newLashing.centerLoosePole.z
     );
+    this.newLashing.updateMesh();
   }
 
   placePoleBetweenOneLashingAndGround(groundPosition: THREE.Vector3) {
@@ -188,6 +193,7 @@ export class PoleTool {
       groundPosition,
       this.fixedLashing.centerLoosePole
     );
+    this.fixedLashing.updateMesh();
   }
 
   placePoleOnGround(groundPosition: THREE.Vector3) {
@@ -199,7 +205,7 @@ export class PoleTool {
 
     this.currentSnapHeight = undefined;
 
-    const snapLashings = this.viewer.lashings.filter(
+    const snapLashings = this.viewer.inventory.lashings.filter(
       (lashing) =>
         lashing.fixedPole.isVertical() &&
         lashing.anchorPoint.distanceTo(
@@ -257,10 +263,10 @@ export class PoleTool {
 
   commitLashings() {
     if (this.fixedLashing) {
-      this.viewer.lashings.push(this.fixedLashing);
+      this.viewer.inventory.addLashing(this.fixedLashing);
     }
     if (this.newLashing) {
-      this.viewer.lashings.push(this.newLashing);
+      this.viewer.inventory.addLashing(this.newLashing);
     }
     this.fixedLashing = undefined;
     this.newLashing = undefined;
@@ -269,25 +275,31 @@ export class PoleTool {
   rightClick() {
     this.activeScaffold.reset();
 
+    if (this.fixedLashing) {
+      this.viewer.scene.remove(this.fixedLashing);
+    }
+    if (this.newLashing) {
+      this.viewer.scene.remove(this.newLashing);
+    }
     this.newLashing = undefined;
     this.fixedLashing = undefined;
   }
 
   checkCollisions(blockPlacement: boolean) {
     this.activeScaffoldIsColliding = false;
-    document.body.style.cursor = "default";
+    this.viewer.domElement.style.cursor = "default";
 
-    const polesToCheck = this.viewer.poles.filter(
-      (p) =>
-        p !== this.fixedLashing?.fixedPole && p !== this.newLashing?.fixedPole
-    );
-    for (const pole of polesToCheck) {
-      if (this.activeScaffold.overlaps(pole)) {
+    for (const pole of this.viewer.inventory.poles) {
+      if (
+        this.activeScaffold.overlaps(pole) &&
+        pole !== this.fixedLashing?.fixedPole &&
+        pole !== this.newLashing?.fixedPole
+      ) {
         // @ts-ignore
         pole.mesh.material.color = new THREE.Color(1, 0, 0);
         if (blockPlacement) {
           this.activeScaffoldIsColliding = true;
-          document.body.style.cursor = "not-allowed";
+          this.viewer.domElement.style.cursor = "not-allowed";
         }
       } else {
         // @ts-ignore

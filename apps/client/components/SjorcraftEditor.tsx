@@ -7,8 +7,23 @@ import {
   RendererContext,
   RendererContextType,
 } from "../contexts/rendererContext";
+import EditorSidebar from "./EditorSidebar";
+import { useDeviceSize } from "../src/hooks/useDeviceSize";
+import { Box, Grid, Stack } from "@mui/material";
 
-const SjorcraftEditor = () => {
+type SjorcraftEditorProps = {
+  parameterObject: {
+    isLightMode: boolean;
+    toggleLightmode: () => void;
+    isSidebarOpen: boolean;
+    toggleSidebar: () => void;
+    floorColor: string;
+    setFloorColor: (color: string) => void;
+    isGrassTexture: boolean;
+    toggleFloorTexture: () => void;
+  };
+};
+const SjorcraftEditor = ({ parameterObject }: SjorcraftEditorProps) => {
   const [rendererContext, setRendererContext] =
     React.useState<RendererContextType>({});
 
@@ -24,13 +39,55 @@ const SjorcraftEditor = () => {
     initialised = true;
   }, []);
 
+  const { smDevice } = useDeviceSize();
+
   return (
-    <div className="sjorcraft-editor">
+    <Box
+      sx={{
+        margin: "0",
+        padding: "0",
+        height: "100%",
+        width: "100%",
+      }}
+    >
       <RendererContext.Provider value={rendererContext}>
-        <Toolbar />
-        <SjorcraftCanvas />
+        {!smDevice && (
+          <Toolbar
+            isLightMode={parameterObject.isLightMode}
+            toggleLightMode={parameterObject.toggleLightmode}
+            isSidebarOpen={parameterObject.isSidebarOpen}
+            toggleSidebar={parameterObject.toggleSidebar}
+          />
+        )}
+        <Box
+          sx={{
+            height: "100vh",
+            width: "100%",
+            display: "flex",
+            flexDirection: "row",
+            gap: "0rem",
+          }}
+        >
+          <Stack
+            direction={"row"}
+            sx={{
+              height: "100%",
+              width: "100%",
+              display: "flex",
+              flexDirection: "row",
+              gap: "0rem",
+              flexWrap: "nowrap",
+              justifyContent: "normal",
+            }}
+          >
+            <SjorcraftCanvas />
+            {parameterObject.isSidebarOpen && !smDevice ? (
+              <EditorSidebar parameterObject={parameterObject} />
+            ) : null}
+          </Stack>
+        </Box>
       </RendererContext.Provider>
-    </div>
+    </Box>
   );
 };
 

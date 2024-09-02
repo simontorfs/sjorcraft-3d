@@ -1,17 +1,17 @@
 import * as THREE from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
 import { InputHandler } from "./inputHandler";
-import { Pole } from "./pole";
 import { PoleTool } from "./poleTool";
 import { SaveTool } from "./saveTool";
-import { DetailsTool } from "./detailsTool";
 import { SelectionTool } from "./selectionTool";
 import { Floor } from "./floor";
 import { ImageExporter } from "./imageExporter";
 import { BipodTool } from "./bipodTool";
 import { Lashing } from "./lashing";
 import { TripodTool } from "./tripodTool";
+import { DestructionTool } from "./destructionTool";
 import { PoleTransformer } from "./poleTransformer";
+import { Inventory } from "./inventory";
 
 export class Viewer {
   domElement: HTMLElement;
@@ -27,12 +27,11 @@ export class Viewer {
   poleTool: PoleTool;
   bipodTool: BipodTool;
   tripodTool: TripodTool;
+  destructionTool: DestructionTool;
   poleTransformer: PoleTransformer;
 
-  poles: Pole[];
-  lashings: Lashing[];
+  inventory: Inventory;
   saveTool: SaveTool;
-  detailsTool: DetailsTool;
   floor: Floor;
   imageExporter: ImageExporter;
 
@@ -44,14 +43,14 @@ export class Viewer {
     this.scene = new THREE.Scene();
 
     this.sizes = {
-      width: window.innerWidth,
-      height: window.innerHeight,
+      width: domElement.clientWidth,
+      height: domElement.clientHeight,
     };
     this.renderer.setSize(this.sizes.width, this.sizes.height);
 
     window.addEventListener("resize", () => {
-      this.sizes.width = window.innerWidth;
-      this.sizes.height = window.innerHeight;
+      this.sizes.width = domElement.clientWidth;
+      this.sizes.height = domElement.clientHeight;
 
       this.camera.aspect = this.sizes.width / this.sizes.height;
       this.camera.updateProjectionMatrix();
@@ -81,22 +80,28 @@ export class Viewer {
 
     this.inputHandler = new InputHandler(this);
 
-    // Axes helper
-    // const axesHelper = new THREE.AxesHelper();
-    // this.scene.add(axesHelper);
-
     // Floor
     this.floor = new Floor(this);
-    this.floor.setNewFloor(50, 50, new THREE.Color("green"));
+    this.floor.setNewFloor(50, 50, new THREE.Color("#2a6e3c"), false);
+
     // Light
-    const ambientLight = new THREE.AmbientLight();
-    this.scene.add(ambientLight);
+    const ambientLight = new THREE.AmbientLight(
+      new THREE.Color("#ffffff"),
+      0.3
+    );
+    ambientLight.name = "ambient_light";
+    this.camera.add(ambientLight);
+
+    const directionalLight = new THREE.DirectionalLight(
+      new THREE.Color("#ffffff"),
+      1.5
+    );
+    directionalLight.position.set(0.5, 0, 0.866); // ~60º
+    directionalLight.name = "main_light";
+    this.camera.add(directionalLight);
 
     //add background
-    this.scene.background = new THREE.Color(0x87ceeb);
-
-    // Details tool
-    this.detailsTool = new DetailsTool(this);
+    this.scene.background = new THREE.Color("#9bc2f9");
 
     // Save tool
     this.saveTool = new SaveTool(this);
@@ -104,11 +109,8 @@ export class Viewer {
     // Image Exporter
     this.imageExporter = new ImageExporter(this);
 
-    // Poles
-    this.poles = [];
-
-    // Lashings
-    this.lashings = [];
+    // Poles and lashings
+    this.inventory = new Inventory(this);
 
     // Tools
     this.selectionTool = new SelectionTool(this);
@@ -116,6 +118,7 @@ export class Viewer {
     this.poleTool = new PoleTool(this);
     this.bipodTool = new BipodTool(this);
     this.tripodTool = new TripodTool(this);
+    this.destructionTool = new DestructionTool(this);
     this.poleTransformer = new PoleTransformer(this);
     this.scene.add(this.poleTransformer);
 

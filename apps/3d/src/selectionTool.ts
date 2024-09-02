@@ -5,7 +5,7 @@ export class SelectionTool {
   active: boolean;
   viewer: Viewer;
   hoveredPole: Pole | undefined;
-  selectedPole: Pole | undefined;
+  selectedPoles: Pole[] = [];
   constructor(viewer: Viewer) {
     this.viewer = viewer;
     this.active = false;
@@ -17,32 +17,59 @@ export class SelectionTool {
 
   deactivate() {
     this.active = false;
-    this.selectedPole?.deselect();
-    this.selectedPole = undefined;
-    document.body.style.cursor = "default";
+    this.deselectAll();
+    this.viewer.poleTransformer.setActivePole(undefined);
+    this.viewer.domElement.style.cursor = "default";
   }
 
-  leftClick() {
+  deselectAll() {
+    for (const pole of this.selectedPoles) {
+      pole.deselect();
+    }
+    this.selectedPoles = [];
+  }
+
+  selectAll() {
+    this.selectedPoles = this.viewer.inventory.poles;
+    for (const pole of this.selectedPoles) {
+      pole.select();
+    }
+  }
+
+  leftClick(ctrlDown: boolean) {
     if (!this.active) return;
-    this.selectedPole?.deselect();
-    this.hoveredPole?.select();
-    this.selectedPole = this.hoveredPole;
+    if (ctrlDown) {
+      if (!this.hoveredPole) return;
+      if (this.hoveredPole.selected) {
+        this.hoveredPole.deselect();
+        this.selectedPoles = this.selectedPoles.filter(
+          (pole) => pole !== this.hoveredPole
+        );
+      } else {
+        this.hoveredPole.select();
+        this.selectedPoles.push(this.hoveredPole);
+      }
+    } else {
+      this.deselectAll();
+      if (this.hoveredPole) {
+        this.hoveredPole.select();
+        this.selectedPoles.push(this.hoveredPole);
+      }
+    }
   }
 
-  delete() {
-    if (!this.active || !this.selectedPole) return;
-    this.viewer.scene.remove(this.selectedPole);
-    this.viewer.poles = this.viewer.poles.filter(
-      (pole) => pole !== this.selectedPole
-    );
+  deleteSelectedPoles() {
+    if (!this.active || !this.selectedPoles.length) return;
+    this.viewer.inventory.removePoles(this.selectedPoles);
+    this.viewer.poleTransformer.setActivePole(undefined);
   }
 
   setHoveredPole(pole: Pole) {
     this.hoveredPole = pole;
     if (this.hoveredPole) {
-      document.body.style.cursor = "pointer";
+      this.viewer.domElement.style.cursor = "pointer";
     } else {
-      document.body.style.cursor = "default";
+      this.viewer.domElement.style.cursor = "default";
     }
   }
 }

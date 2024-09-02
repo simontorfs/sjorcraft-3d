@@ -3,6 +3,7 @@ import { Pole } from "./pole";
 import { Viewer } from "./viewer";
 import { ButtonType } from "../../client/components/ToolbarItem";
 import { OrbitControls } from "three/examples/jsm/Addons.js";
+import { Lashing } from "./lashing";
 
 export class InputHandler {
   viewer: Viewer;
@@ -10,6 +11,7 @@ export class InputHandler {
   mouseHasMoved: boolean;
   mouseDown: boolean;
   hoveredHandle: THREE.Mesh | undefined = undefined;
+  ctrlDown: boolean;
 
   constructor(viewer: Viewer) {
     this.viewer = viewer;
@@ -19,6 +21,7 @@ export class InputHandler {
 
     this.cursor = { x: 0, y: 0 };
     window.addEventListener("keydown", this.onKeyDown.bind(this));
+    window.addEventListener("keyup", this.onKeyUp.bind(this));
     domElement.addEventListener("mousedown", this.onMouseDown.bind(this));
     domElement.addEventListener("mouseup", this.onMouseUp.bind(this));
     domElement.addEventListener("mousemove", this.onMouseMove.bind(this));
@@ -26,68 +29,47 @@ export class InputHandler {
 
   onKeyDown(event: any) {
     switch (event.key) {
-      case "h":
-        this.onActivateTool("selectiontool");
-        break;
-      case "j":
-        this.onActivateTool("poletool");
-        break;
-      case "k":
-        this.onActivateTool("bipodtool");
-        break;
-      case "l":
-        this.viewer.selectionTool.deactivate();
-        this.viewer.poleTool.deactivate();
-        this.viewer.bipodTool.deactivate();
-
-        // Activate tripodTool
-        break;
-      case "m":
-        this.viewer.selectionTool.deactivate();
-        this.viewer.poleTool.deactivate();
-        this.viewer.bipodTool.deactivate();
-
-        // Activate polypedastraTool
-        break;
       case "Delete":
-        this.viewer.selectionTool.delete();
+      case "Backspace":
+        if (this.ctrlDown) {
+          event.preventDefault();
+          this.viewer.inventory.removeAll();
+          this.viewer.saveTool.clearLocalStorage();
+        } else {
+          this.viewer.selectionTool.deleteSelectedPoles();
+        }
         break;
-      case "e":
-        this.viewer.saveTool.exportAll("demo");
-        this.viewer.saveTool.exportToCollada();
+      case "Control":
+        this.ctrlDown = true;
         break;
-      case "i":
-        this.viewer.saveTool.importAll();
+      case "a":
+        event.preventDefault();
+        if (this.viewer.selectionTool.active && this.ctrlDown) {
+          this.viewer.selectionTool.selectAll();
+        }
         break;
-      case "c":
-        this.viewer.detailsTool.getPolesGroupedByLength();
-        break;
-      case "r":
-        this.viewer.saveTool.removeAllPoles();
-        this.viewer.saveTool.removeAllLashings();
-        this.viewer.saveTool.clearLocalStorage();
-        break;
-      case "s":
-        this.viewer.saveTool.savePolesToLocalStorage();
-        this.viewer.saveTool.saveLashingsToLocalStorage();
-        break;
-      case "f":
-        const length = Number(prompt("Enter the length of the floor"));
-        const width = Number(prompt("Enter the width of the floor"));
-        this.viewer.floor.setDimensions(length, width);
-        break;
-      case "q":
-        console.log(this.viewer.poles);
-        console.log(this.viewer.lashings);
-      case "a": // alles laten zien
-        this.viewer.imageExporter.exportImage();
-      case "w":
-        console.log("camera pos", this.viewer.camera.position);
-        console.log("camera r", this.viewer.camera.rotation);
-        console.log("camera", this.viewer.camera.position);
+      // case "s":
+      //   this.viewer.saveTool.savePolesToLocalStorage();
+      //   this.viewer.saveTool.saveLashingsToLocalStorage();
+      //   break;
+      // case "f":
+      //   const length = Number(prompt("Enter the length of the floor"));
+      //   const width = Number(prompt("Enter the width of the floor"));
+      //   this.viewer.floor.setDimensions(length, width);
+      //   break;
       default:
-        console.log(event.key);
+        console.log("down", event.key);
         break;
+    }
+  }
+
+  onKeyUp(event: any) {
+    switch (event.key) {
+      case "Control":
+        this.ctrlDown = false;
+        break;
+      default:
+        console.log("up", event.key);
     }
   }
 
@@ -111,7 +93,11 @@ export class InputHandler {
         }
       } else if (this.viewer.selectionTool.active) {
         if (event.button === THREE.MOUSE.LEFT) {
-          this.viewer.selectionTool.leftClick();
+          this.viewer.selectionTool.leftClick(this.ctrlDown);
+        }
+      } else if (this.viewer.destructionTool.active) {
+        if (event.button === THREE.MOUSE.LEFT) {
+          this.viewer.destructionTool.leftClick();
         }
       } else if (this.viewer.bipodTool.active) {
         if (event.button === THREE.MOUSE.LEFT) {
@@ -136,8 +122,12 @@ export class InputHandler {
     this.cursor.y =
       -(event.clientY - rect.top) / this.viewer.sizes.height + 0.5;
     const groundPosition = this.getGroundPosition();
+
     const poleIntersect = this.getPoleIntersect();
     const hoveredPole = poleIntersect?.object.parent as Pole;
+
+    const objectIntersect = this.getObjectIntersect();
+    const hoveredObject = objectIntersect?.object.parent as Pole | Lashing;
 
     if (this.viewer.poleTool.active) {
       if (poleIntersect?.normal) {
@@ -161,21 +151,37 @@ export class InputHandler {
     } else if (this.viewer.selectionTool.active) {
       this.viewer.selectionTool.setHoveredPole(hoveredPole);
       if (this.hoveredHandle && this.mouseDown) {
-        if (poleIntersect) {
-          this.viewer.poleTransformer.dragHandle(
-            this.hoveredHandle,
-            poleIntersect.point
-          );
-        }
+        this.viewer.poleTransformer.dragHandle(this.hoveredHandle);
       } else {
         this.viewer.selectionTool.hoveredPole = hoveredPole;
         this.viewer.poleTransformer.setActivePole(hoveredPole);
         this.setHoveredHandle();
       }
+    } else if (this.viewer.destructionTool.active) {
+      this.viewer.destructionTool.setHoveredObject(hoveredObject);
     } else if (this.viewer.bipodTool.active) {
       this.viewer.bipodTool.drawBipod(groundPosition);
     } else if (this.viewer.tripodTool.active) {
       this.viewer.tripodTool.drawTripod(groundPosition);
+    }
+  }
+
+  getObjectIntersect() {
+    const raycaster = new THREE.Raycaster();
+    raycaster.setFromCamera(
+      new THREE.Vector2(this.cursor.x * 2, this.cursor.y * 2),
+      this.viewer.camera
+    );
+
+    const intersects = raycaster.intersectObjects([
+      ...this.viewer.inventory.poles.map((pole) => pole.mesh),
+      ...this.viewer.inventory.lashings.map((lashing) => lashing.mesh),
+    ]);
+
+    if (intersects.length) {
+      return intersects[0];
+    } else {
+      return undefined;
     }
   }
 
@@ -187,12 +193,14 @@ export class InputHandler {
     );
 
     const intersects = raycaster.intersectObjects(
-      this.viewer.poles.map((pole) => pole.mesh)
+      this.viewer.inventory.poles.map((pole) => pole.mesh)
     );
+
     if (intersects.length) {
       return intersects[0];
+    } else {
+      return undefined;
     }
-    return;
   }
 
   getGroundPosition() {
@@ -228,34 +236,52 @@ export class InputHandler {
     this.viewer.poleTransformer.setHoveredHandle(this.hoveredHandle);
   }
 
+  getPointOnLineClosestToCursor(
+    lineOrigin: THREE.Vector3,
+    lineDirection: THREE.Vector3
+  ) {
+    const raycaster = new THREE.Raycaster();
+    raycaster.setFromCamera(
+      new THREE.Vector2(this.cursor.x * 2, this.cursor.y * 2),
+      this.viewer.camera
+    );
+    const w0 = raycaster.ray.origin.clone().sub(lineOrigin);
+    const a = lineDirection.dot(lineDirection);
+    const b = lineDirection.dot(raycaster.ray.direction);
+    const c = raycaster.ray.direction.dot(raycaster.ray.direction);
+    const dDotW0 = lineDirection.dot(w0);
+    const rayDirectionDotW0 = raycaster.ray.direction.dot(w0);
+
+    const denom = a * c - b * b;
+    const s = (b * rayDirectionDotW0 - c * dDotW0) / denom;
+    const target = lineOrigin
+      .clone()
+      .sub(lineDirection.clone().multiplyScalar(s));
+
+    return target;
+  }
+
+  deactiveTools() {
+    this.viewer.selectionTool.deactivate();
+    this.viewer.poleTool.deactivate();
+    this.viewer.bipodTool.deactivate();
+    this.viewer.tripodTool.deactivate();
+    this.viewer.destructionTool.deactivate();
+  }
+
   onActivateTool(tool: ButtonType) {
+    this.deactiveTools();
     switch (tool) {
       case "selectiontool":
-        this.viewer.poleTool.deactivate();
-        this.viewer.bipodTool.deactivate();
-        this.viewer.tripodTool.deactivate();
-
         this.viewer.selectionTool.activate();
         break;
       case "poletool":
-        this.viewer.selectionTool.deactivate();
-        this.viewer.bipodTool.deactivate();
-        this.viewer.tripodTool.deactivate();
-
         this.viewer.poleTool.activate();
         break;
       case "bipodtool":
-        this.viewer.selectionTool.deactivate();
-        this.viewer.poleTool.deactivate();
-        this.viewer.tripodTool.deactivate();
-
         this.viewer.bipodTool.activate();
         break;
       case "tripodtool":
-        this.viewer.selectionTool.deactivate();
-        this.viewer.poleTool.deactivate();
-        this.viewer.bipodTool.deactivate();
-
         this.viewer.tripodTool.activate();
         break;
       case "polytool":
@@ -264,6 +290,8 @@ export class InputHandler {
       case "lashingtool":
         // Activate lashingTool
         break;
+      case "destructiontool":
+        this.viewer.destructionTool.activate();
       default:
         break;
     }
