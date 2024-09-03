@@ -3,6 +3,7 @@ import { Pole } from "./pole";
 import { Viewer } from "./viewer";
 import { ButtonType } from "../../client/components/ToolbarItem";
 import { OrbitControls } from "three/examples/jsm/Addons.js";
+import { Lashing } from "./lashing";
 
 export class InputHandler {
   viewer: Viewer;
@@ -32,15 +33,20 @@ export class InputHandler {
       case "Backspace":
         if (this.ctrlDown) {
           event.preventDefault();
-          this.viewer.saveTool.removeAllPoles();
-          this.viewer.saveTool.removeAllLashings();
+          this.viewer.inventory.removeAll();
           this.viewer.saveTool.clearLocalStorage();
         } else {
-          this.viewer.selectionTool.delete();
+          this.viewer.selectionTool.deleteSelectedPoles();
         }
         break;
       case "Control":
         this.ctrlDown = true;
+        break;
+      case "a":
+        event.preventDefault();
+        if (this.viewer.selectionTool.active && this.ctrlDown) {
+          this.viewer.selectionTool.selectAll();
+        }
         break;
       // case "s":
       //   this.viewer.saveTool.savePolesToLocalStorage();
@@ -90,7 +96,11 @@ export class InputHandler {
         }
       } else if (this.viewer.selectionTool.active) {
         if (event.button === THREE.MOUSE.LEFT) {
-          this.viewer.selectionTool.leftClick();
+          this.viewer.selectionTool.leftClick(this.ctrlDown);
+        }
+      } else if (this.viewer.destructionTool.active) {
+        if (event.button === THREE.MOUSE.LEFT) {
+          this.viewer.destructionTool.leftClick();
         }
       } else if (this.viewer.bipodTool.active) {
         if (event.button === THREE.MOUSE.LEFT) {
@@ -115,8 +125,12 @@ export class InputHandler {
     this.cursor.y =
       -(event.clientY - rect.top) / this.viewer.sizes.height + 0.5;
     const groundPosition = this.getGroundPosition();
+
     const poleIntersect = this.getPoleIntersect();
     const hoveredPole = poleIntersect?.object.parent as Pole;
+
+    const objectIntersect = this.getObjectIntersect();
+    const hoveredObject = objectIntersect?.object.parent as Pole | Lashing;
 
     if (this.viewer.poleTool.active) {
       if (poleIntersect?.normal) {
@@ -146,10 +160,31 @@ export class InputHandler {
         this.viewer.poleTransformer.setActivePole(hoveredPole);
         this.setHoveredHandle();
       }
+    } else if (this.viewer.destructionTool.active) {
+      this.viewer.destructionTool.setHoveredObject(hoveredObject);
     } else if (this.viewer.bipodTool.active) {
       this.viewer.bipodTool.drawBipod(groundPosition);
     } else if (this.viewer.tripodTool.active) {
       this.viewer.tripodTool.drawTripod(groundPosition);
+    }
+  }
+
+  getObjectIntersect() {
+    const raycaster = new THREE.Raycaster();
+    raycaster.setFromCamera(
+      new THREE.Vector2(this.cursor.x * 2, this.cursor.y * 2),
+      this.viewer.camera
+    );
+
+    const intersects = raycaster.intersectObjects([
+      ...this.viewer.inventory.poles.map((pole) => pole.mesh),
+      ...this.viewer.inventory.lashings.map((lashing) => lashing.mesh),
+    ]);
+
+    if (intersects.length) {
+      return intersects[0];
+    } else {
+      return undefined;
     }
   }
 
@@ -161,12 +196,14 @@ export class InputHandler {
     );
 
     const intersects = raycaster.intersectObjects(
-      this.viewer.poleInventory.poles.map((pole) => pole.mesh)
+      this.viewer.inventory.poles.map((pole) => pole.mesh)
     );
+
     if (intersects.length) {
       return intersects[0];
+    } else {
+      return undefined;
     }
-    return;
   }
 
   getGroundPosition() {
@@ -227,34 +264,27 @@ export class InputHandler {
     return target;
   }
 
+  deactiveTools() {
+    this.viewer.selectionTool.deactivate();
+    this.viewer.poleTool.deactivate();
+    this.viewer.bipodTool.deactivate();
+    this.viewer.tripodTool.deactivate();
+    this.viewer.destructionTool.deactivate();
+  }
+
   onActivateTool(tool: ButtonType) {
+    this.deactiveTools();
     switch (tool) {
       case "selectiontool":
-        this.viewer.poleTool.deactivate();
-        this.viewer.bipodTool.deactivate();
-        this.viewer.tripodTool.deactivate();
-
         this.viewer.selectionTool.activate();
         break;
       case "poletool":
-        this.viewer.selectionTool.deactivate();
-        this.viewer.bipodTool.deactivate();
-        this.viewer.tripodTool.deactivate();
-
         this.viewer.poleTool.activate();
         break;
       case "bipodtool":
-        this.viewer.selectionTool.deactivate();
-        this.viewer.poleTool.deactivate();
-        this.viewer.tripodTool.deactivate();
-
         this.viewer.bipodTool.activate();
         break;
       case "tripodtool":
-        this.viewer.selectionTool.deactivate();
-        this.viewer.poleTool.deactivate();
-        this.viewer.bipodTool.deactivate();
-
         this.viewer.tripodTool.activate();
         break;
       case "polytool":
@@ -263,6 +293,8 @@ export class InputHandler {
       case "lashingtool":
         // Activate lashingTool
         break;
+      case "destructiontool":
+        this.viewer.destructionTool.activate();
       default:
         break;
     }

@@ -24,22 +24,29 @@ export class Pole extends THREE.Object3D {
   capLength: number = 0.1;
   capOffset: number = 0.001; //makes the render look great
   color: THREE.Color = new THREE.Color(0x0000ff);
+  selected: Boolean = false;
 
   constructor() {
     super();
     const textureLoader = new THREE.TextureLoader();
-    const colorTexture = textureLoader.load("./wood/Wood_025_basecolor.jpg");
+    const colorTexture = textureLoader.load(
+      "./textures/wood/v1/wood_basecolor.jpg"
+    );
     colorTexture.repeat.y = this.length * 2;
     colorTexture.wrapT = THREE.MirroredRepeatWrapping;
-    const heightTexture = textureLoader.load("./wood/Wood_025_height.png");
-    const normalTexture = textureLoader.load("./wood/Wood_025_normal.jpg");
-    const roughnessTexture = textureLoader.load(
-      "./wood/Wood_025_roughness.jpg"
+    const heightTexture = textureLoader.load(
+      "./textures//wood/v1/wood_height.png"
     );
-    const metalnessTexture = textureLoader.load("./wood/Wood_025_height.png");
-    /* const metalRougnessTexture = textureLoader.load(
-      "./wood/Wood_025_roughness.jpg"
-    );*/
+    const normalTexture = textureLoader.load(
+      "./textures/wood/v1/wood_normal.jpg"
+    );
+    const roughnessTexture = textureLoader.load(
+      "./textures/wood/v1/wood_roughness.jpg"
+    );
+    const metalnessTexture = textureLoader.load(
+      "./textures/wood/v1/wood_height.png"
+    );
+    const aoTexture = textureLoader.load("./textures/wood/v1/wood_ao.jpg");
 
     const geometry = new THREE.CylinderGeometry(
       this.radius,
@@ -51,6 +58,7 @@ export class Pole extends THREE.Object3D {
       roughnessMap: roughnessTexture,
       metalnessMap: metalnessTexture,
       normalMap: normalTexture,
+      aoMap: aoTexture,
       metalness: 0.2,
       roughness: 1,
       wireframe: false,
@@ -147,9 +155,21 @@ export class Pole extends THREE.Object3D {
   select() {
     // @ts-ignore
     this.mesh.material.color = new THREE.Color(0, 1, 1);
+    this.selected = true;
   }
 
   deselect() {
+    // @ts-ignore
+    this.mesh.material.color = new THREE.Color(1, 1, 1);
+    this.selected = false;
+  }
+
+  threatenWithDestruction() {
+    // @ts-ignore
+    this.mesh.material.color = new THREE.Color(1, 0.5, 0);
+  }
+
+  stopThreatening() {
     // @ts-ignore
     this.mesh.material.color = new THREE.Color(1, 1, 1);
   }

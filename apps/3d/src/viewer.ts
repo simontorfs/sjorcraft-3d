@@ -9,8 +9,9 @@ import { ImageExporter } from "./imageExporter";
 import { BipodTool } from "./bipodTool";
 import { Lashing } from "./lashing";
 import { TripodTool } from "./tripodTool";
+import { DestructionTool } from "./destructionTool";
 import { PoleTransformer } from "./poleTransformer";
-import { PoleInventory } from "./poleInventory";
+import { Inventory } from "./inventory";
 
 export class Viewer {
   domElement: HTMLElement;
@@ -26,10 +27,10 @@ export class Viewer {
   poleTool: PoleTool;
   bipodTool: BipodTool;
   tripodTool: TripodTool;
+  destructionTool: DestructionTool;
   poleTransformer: PoleTransformer;
 
-  poleInventory: PoleInventory;
-  lashings: Lashing[];
+  inventory: Inventory;
   saveTool: SaveTool;
   floor: Floor;
   imageExporter: ImageExporter;
@@ -79,13 +80,9 @@ export class Viewer {
 
     this.inputHandler = new InputHandler(this);
 
-    // Axes helper
-    // const axesHelper = new THREE.AxesHelper();
-    // this.scene.add(axesHelper);
-
     // Floor
     this.floor = new Floor(this);
-    this.floor.setNewFloor(50, 50, new THREE.Color("#2a6e3c"));
+    this.floor.setNewFloor(50, 50, new THREE.Color("#2a6e3c"), false);
 
     // Light
     const ambientLight = new THREE.AmbientLight(
@@ -104,7 +101,7 @@ export class Viewer {
     this.camera.add(directionalLight);
 
     //add background
-    this.scene.background = new THREE.Color(0x87ceeb);
+    this.scene.background = new THREE.Color("#9bc2f9");
 
     // Save tool
     this.saveTool = new SaveTool(this);
@@ -112,11 +109,8 @@ export class Viewer {
     // Image Exporter
     this.imageExporter = new ImageExporter(this);
 
-    // Poles
-    this.poleInventory = new PoleInventory(this);
-
-    // Lashings
-    this.lashings = [];
+    // Poles and lashings
+    this.inventory = new Inventory(this);
 
     // Tools
     this.selectionTool = new SelectionTool(this);
@@ -124,6 +118,7 @@ export class Viewer {
     this.poleTool = new PoleTool(this);
     this.bipodTool = new BipodTool(this);
     this.tripodTool = new TripodTool(this);
+    this.destructionTool = new DestructionTool(this);
     this.poleTransformer = new PoleTransformer(this);
     this.scene.add(this.poleTransformer);
 

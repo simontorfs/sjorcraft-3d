@@ -3,7 +3,7 @@ import react from "@vitejs/plugin-react";
 
 export default {
   root: "./",
-  publicDir: "apps/3d/resources/textures",
+  publicDir: "apps/3d/resources",
   base: "./",
   server: {
     host: true, // Open to local network and display URL
