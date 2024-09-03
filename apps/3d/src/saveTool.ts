@@ -173,23 +173,6 @@ export class SaveTool {
     a.remove();
   }
 
-  exportToOBJ() {
-    const exporter = new OBJExporter();
-    const workingScene = this.viewer.scene.clone();
-    // vertices.count must be more then 0
-    workingScene.updateMatrixWorld();
-    workingScene.updateMatrix();
-    workingScene.updateWorldMatrix(true, true);
-
-    const data = exporter.parse(workingScene);
-    const blob = new Blob([data], { type: "text/plain" });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = "model.obj";
-    a.click();
-  }
-
   //clear local storage
   clearLocalStorage() {
     localStorage.clear();
