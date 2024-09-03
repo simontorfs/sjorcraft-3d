@@ -111,6 +111,15 @@ const Toolbar = ({
             setSelectedTool("destructiontool");
           }}
         />
+        <Tool
+          active={selectedTool === "lashingtool"}
+          disabled={false}
+          icon={AxeIcon}
+          onClick={() => {
+            viewer?.inputHandler.onActivateTool("lashingtool");
+            setSelectedTool("lashingtool");
+          }}
+        />
       </Box>
       <Box
         component={"div"}
