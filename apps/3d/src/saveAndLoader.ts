@@ -1,8 +1,10 @@
 import { Pole } from "./pole";
 import { Viewer } from "./viewer";
 import { Lashing } from "./lashing";
-import { PoleInventory } from "./poleInventory";
-import { GLTFExporter } from "three/examples/jsm/exporters/GLTFExporter";
+import {
+  GLTFExporter,
+  GLTFExporterOptions,
+} from "three/examples/jsm/exporters/GLTFExporter";
 
 export class SaveTool {
   viewer: Viewer;
@@ -130,17 +132,19 @@ export class SaveTool {
   }
 
   exportGLTF(name: string) {
+    const filename = name ? name : "gltf_export";
     const gltfExporter = new GLTFExporter();
 
-    const options = {
+    const options: GLTFExporterOptions = {
       trs: true,
       onlyVisible: true,
       binary: false,
+      forceIndices: false,
     };
 
-    let input = this.viewer.scene;
+    const workingScene = this.viewer.scene.clone();
     gltfExporter.parse(
-      input,
+      workingScene,
       function (result) {
         let output: string = JSON.stringify(result, null, 2);
         const blob = new Blob([output], { type: "text/json" });
@@ -150,11 +154,11 @@ export class SaveTool {
         a.download = `${new Date()
           .toISOString()
           .slice(0, 10)
-          .replace(/-/g, "")}-${name}.gltf`;
+          .replace(/-/g, "")}-${filename}.gltf`;
         a.click();
       },
       function (error) {
-        console.log("An error happened during parsing", error);
+        console.error("error #%d", error);
       },
       options
     );

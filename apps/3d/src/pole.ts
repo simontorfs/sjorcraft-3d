@@ -35,7 +35,7 @@ export class Pole extends THREE.Object3D {
     colorTexture.repeat.y = this.length * 2;
     colorTexture.wrapT = THREE.MirroredRepeatWrapping;
     const heightTexture = textureLoader.load(
-      "./textures//wood/v1/wood_height.png"
+      "./textures/wood/v1/wood_height.png"
     );
     const normalTexture = textureLoader.load(
       "./textures/wood/v1/wood_normal.jpg"

@@ -33,6 +33,8 @@ const ImportExportButtons = () => {
       case ".DAE":
         console.log("Exporting to dae");
         break;
+      case ".GLTF":
+        viewer?.saveTool.exportGLTF("sjorcraft_export");
       default:
         break;
     }
@@ -111,7 +113,7 @@ const ImportExportButtons = () => {
           color="secondary"
           startIcon={<FileDownloadIcon />}
           onClick={() => exportFile(type)}
-          disabled={type === ".DAE" || type === ".GLTF"}
+          disabled={type === ".DAE"}
         >
           Download {type}
         </Button>
