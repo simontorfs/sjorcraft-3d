@@ -31,7 +31,7 @@ const ImportExportButtons = () => {
         viewer?.imageExporter.exportImage();
         break;
       case ".DAE":
-        console.log("Exporting to dae");
+        viewer?.saveTool.exportToDAE("dae_export");
         break;
       case ".STL":
         viewer?.saveTool.exportToSTL();
@@ -61,7 +61,7 @@ const ImportExportButtons = () => {
       case ".DAE":
         setDescription(
           `This filetype is used to export the current scene as a .dae file so you can import it in other 3D modeling software. Such as Blender, 3DS Max, Maya, etc. 
-          Coming soon!`
+          `
         );
         break;
       case ".GLTF":
@@ -107,8 +107,8 @@ const ImportExportButtons = () => {
         >
           <MenuItem value={".SJOR"}>.SJOR</MenuItem>
           <MenuItem value={".JPG"}>.JPG</MenuItem>
-          <MenuItem value={".STL"}>.STL</MenuItem>
           <MenuItem value={".DAE"}>.DAE</MenuItem>
+          <MenuItem value={".STL"}>.STL</MenuItem>
           <MenuItem value={".GLTF"}>.GLTF</MenuItem>
         </Select>
         <Typography variant="body1" color="primary.contrastText">
@@ -119,7 +119,7 @@ const ImportExportButtons = () => {
           color="secondary"
           startIcon={<FileDownloadIcon />}
           onClick={() => exportFile(type)}
-          disabled={type === ".DAE" || type === ".GLTF"}
+          disabled={type === ".GLTF"}
         >
           Download {type}
         </Button>

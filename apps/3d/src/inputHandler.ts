@@ -49,15 +49,6 @@ export class InputHandler {
           this.viewer.selectionTool.selectAll();
         }
         break;
-      // case "s":
-      //   this.viewer.saveTool.savePolesToLocalStorage();
-      //   this.viewer.saveTool.saveLashingsToLocalStorage();
-      //   break;
-      // case "f":
-      //   const length = Number(prompt("Enter the length of the floor"));
-      //   const width = Number(prompt("Enter the width of the floor"));
-      //   this.viewer.floor.setDimensions(length, width);
-      //   break;
       default:
         console.log("down", event.key);
         break;
