@@ -119,7 +119,7 @@ export class Lashing extends THREE.Object3D {
       this.position
     );
     const geometry = new THREE.TubeGeometry(path, 360, 0.003, 8, true);
-    const material = new THREE.MeshBasicMaterial({
+    const material = new THREE.MeshStandardMaterial({
       color: 0x9e9578,
       wireframe: false,
     });
