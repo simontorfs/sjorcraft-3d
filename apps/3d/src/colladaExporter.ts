@@ -28,7 +28,11 @@ export class ColladaExporter {
 
     xmlParts.push("<library_geometries>");
     this.scene.traverse((child) => {
-      if (child instanceof THREE.Mesh && child.name !== "floor") {
+      if (
+        child instanceof THREE.Mesh &&
+        child.name !== "floor" &&
+        child.visible
+      ) {
         this.addGeometry(xmlParts, child);
       }
     });
@@ -37,7 +41,11 @@ export class ColladaExporter {
     xmlParts.push("<library_visual_scenes>");
     xmlParts.push('<visual_scene id="Scene" name="Scene">');
     this.scene.traverse((child) => {
-      if (child instanceof THREE.Mesh && child.name !== "floor") {
+      if (
+        child instanceof THREE.Mesh &&
+        child.name !== "floor" &&
+        child.visible
+      ) {
         this.addNode(xmlParts, child);
       }
     });
