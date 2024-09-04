@@ -1,9 +1,9 @@
 import { Pole } from "./pole";
 import { Viewer } from "./viewer";
 import { Lashing } from "./lashing";
-import * as THREE from "three";
-import { OBJExporter, STLExporter } from "three/examples/jsm/Addons";
-import { ColladaExporter } from "./colladaExporter";
+import { STLExporterOptions } from "three/examples/jsm/Addons";
+import { ColladaExporter } from "./exporters/colladaExporter";
+import { STLExporter } from "./exporters/stlExporter";
 
 export class SaveTool {
   viewer: Viewer;
@@ -133,21 +133,12 @@ export class SaveTool {
   exportToSTL() {
     const exporter = new STLExporter();
     const workingScene = this.viewer.scene.clone();
-    workingScene.updateMatrixWorld();
-    workingScene.updateMatrix();
-    workingScene.updateWorldMatrix(true, true);
-    workingScene.remove(this.viewer.floor);
-    workingScene.rotation.set(0, 0, 0);
-    workingScene.scale.set(1, 1, 1);
-    workingScene.position.set(0, 0, 0);
-    workingScene.rotation.x = Math.PI / 2;
-    workingScene.traverse((child) => {
-      if (child instanceof THREE.Mesh) {
-        child.updateMatrix();
-        child.updateWorldMatrix(true, true);
-      }
-    });
-    const result = exporter.parse(workingScene);
+    const options: STLExporterOptions = {
+      binary: false,
+    };
+    workingScene.rotation.y = Math.PI / 2;
+
+    const result = exporter.parse(workingScene, options);
     const blob = new Blob([result], { type: "text/plain" });
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");

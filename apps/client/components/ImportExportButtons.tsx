@@ -56,11 +56,11 @@ const ImportExportButtons = () => {
         break;
       case ".STL":
         setDescription(
-          `This filetype is used to export the current scene as a .stl file so you can import it in other 3D modeling software. Such as Blender, 3DS Max, Maya, etc. A .stl file is a 3D model format that is used for 3D printing.`
+          `Export the current scene as an .stl file so you can import it in other 3D modeling software such as Blender, 3DS Max, Maya, etc. An .stl file is a 3D model format that is commonly used for 3D printing.`
         );
       case ".DAE":
         setDescription(
-          `This filetype is used to export the current scene as a .dae file so you can import it in other 3D modeling software. Such as Blender, 3DS Max, Maya, etc. 
+          `Export the current scene as a .dae file so you can import it in other 3D modeling software. Such as Blender, 3DS Max, Maya, etc. 
           `
         );
         break;

@@ -2,9 +2,7 @@ import * as THREE from "three";
 import { Pole } from "./pole";
 import { Viewer } from "./viewer";
 import { ButtonType } from "../../client/components/ToolbarItem";
-import { OrbitControls } from "three/examples/jsm/Addons.js";
 import { Lashing } from "./lashing";
-import { i } from "vite/dist/node/types.d-FdqQ54oU";
 
 export class InputHandler {
   viewer: Viewer;
