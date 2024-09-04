@@ -1,9 +1,8 @@
 import React from "react";
 import ColorIndicator from "./ColorIndicator";
-import { usePoles } from "../src/hooks/usePoles";
+import { useLashings } from "../src/hooks/useLashings";
 import {
   Paper,
-  styled,
   Table,
   TableBody,
   TableCell,
@@ -13,13 +12,14 @@ import {
 } from "@mui/material";
 
 const PoleTable = () => {
-  const poles = usePoles();
+  const lashings = useLashings();
   return (
     <TableContainer
       component={Paper}
       sx={{
         backgroundColor: "primary.light",
         color: "primary.contrastText",
+        overflowY: "auto",
 
         "& th": {
           fontWeight: "bold",
@@ -34,21 +34,15 @@ const PoleTable = () => {
       <Table aria-label="Pole Table">
         <TableHead>
           <TableRow>
-            <TableCell align="left">Color</TableCell>
-            <TableCell align="left">Length</TableCell>
+            <TableCell align="left">Type of lashings</TableCell>
             <TableCell align="left">#</TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
-          {poles?.map((pole) => (
-            <TableRow key={pole.length}>
-              <TableCell>
-                <ColorIndicator color={pole.color} />
-              </TableCell>
-              <TableCell>{`${pole.length} m`}</TableCell>
-              <TableCell>{pole.number}</TableCell>
-            </TableRow>
-          ))}
+          <TableRow key={lashings}>
+            <TableCell>{`Square Lashing`}</TableCell>
+            <TableCell>{lashings}</TableCell>
+          </TableRow>
         </TableBody>
       </Table>
     </TableContainer>
