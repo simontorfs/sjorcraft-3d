@@ -29,7 +29,7 @@ export class Inventory {
   addLashing(lashing: Lashing) {
     this.lashings.push(lashing);
     (this.viewer.scene as any).dispatchEvent({
-      type: "new_lashing_added",
+      type: "new_lashing_placed",
       lashing: lashing,
     });
   }
