@@ -18,7 +18,7 @@ export class ColladaExporter {
 
     xmlParts.push("<asset>");
     xmlParts.push(
-      "<contributor><authoring_tool>Three.js Collada Exporter</authoring_tool></contributor>"
+      "<contributor><authoring_tool>Created with SjorCraft</authoring_tool></contributor>"
     );
     xmlParts.push("<created>" + new Date().toISOString() + "</created>");
     xmlParts.push("<modified>" + new Date().toISOString() + "</modified>");
