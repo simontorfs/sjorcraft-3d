@@ -99,6 +99,10 @@ export class Inventory {
     return polesGroupedByLength;
   }
 
+  getAmountOfLashings() {
+    return this.lashings.length;
+  }
+
   resetAllColors() {
     for (const pole of this.poles) {
       //@ts-ignore
