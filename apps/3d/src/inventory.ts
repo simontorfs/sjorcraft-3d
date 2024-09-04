@@ -57,6 +57,10 @@ export class Inventory {
     this.viewer.inventory.lashings = this.lashings.filter(
       (lashing) => lashing !== lashingToRemove
     );
+    (this.viewer.scene as any).dispatchEvent({
+      type: "lashing_removed",
+      lashing: lashingToRemove,
+    });
   }
 
   removePoles(polesToRemove: Pole[]) {
