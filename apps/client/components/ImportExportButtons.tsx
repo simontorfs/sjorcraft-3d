@@ -34,7 +34,7 @@ const ImportExportButtons = () => {
         viewer?.saveTool.exportToDAE("dae_export");
         break;
       case ".STL":
-        viewer?.saveTool.exportToSTL();
+        viewer?.saveTool.exportToSTL("stl_export");
         break;
       default:
         break;

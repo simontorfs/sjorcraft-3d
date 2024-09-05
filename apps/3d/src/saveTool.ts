@@ -130,7 +130,9 @@ export class SaveTool {
     });
   }
 
-  exportToSTL() {
+  exportToSTL(name?: string) {
+    7;
+    const filename = name ? name : "model";
     const exporter = new STLExporter();
     const options = {
       binary: false,
@@ -148,7 +150,10 @@ export class SaveTool {
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
     a.href = url;
-    a.download = "model.stl";
+    a.download = `${new Date()
+      .toISOString()
+      .slice(0, 10)
+      .replace(/-/g, "")}-${filename}.dae`;
     a.click();
     a.remove();
   }
