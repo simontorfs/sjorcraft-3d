@@ -101,6 +101,10 @@ export class InputHandler {
         } else {
           this.viewer.tripodTool.rightClick();
         }
+      } else if (this.viewer.lashingTool.active) {
+        if (event.button === THREE.MOUSE.LEFT) {
+          this.viewer.lashingTool.leftClick();
+        }
       }
     }
   }
@@ -153,6 +157,8 @@ export class InputHandler {
       this.viewer.bipodTool.drawBipod(groundPosition);
     } else if (this.viewer.tripodTool.active) {
       this.viewer.tripodTool.drawTripod(groundPosition);
+    } else if (this.viewer.lashingTool.active) {
+      this.viewer.lashingTool.setHoveredPole(hoveredPole);
     }
   }
 
@@ -257,6 +263,7 @@ export class InputHandler {
     this.viewer.bipodTool.deactivate();
     this.viewer.tripodTool.deactivate();
     this.viewer.destructionTool.deactivate();
+    this.viewer.lashingTool.deactivate();
   }
 
   onActivateTool(tool: ButtonType) {
@@ -278,7 +285,7 @@ export class InputHandler {
         // Activate polypedastraTool
         break;
       case "lashingtool":
-        // Activate lashingTool
+        this.viewer.lashingTool.activate();
         break;
       case "destructiontool":
         this.viewer.destructionTool.activate();

@@ -7,6 +7,7 @@ import InfoIcon from "@mui/icons-material/Info";
 import ImportExportIcon from "@mui/icons-material/ImportExport";
 import TerrainIcon from "@mui/icons-material/Terrain";
 import TerrainOptions from "./TerrainOptions";
+import LashingTable from "./LashingTable";
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -127,7 +128,21 @@ const EditorSidebar = ({ parameterObject }: EditorSidebarProps) => {
         </Tabs>
       </Box>
       <CustomTabPanel value={value} index={0}>
-        <PoleTable />
+        <Box
+          sx={{
+            overflowY: "auto",
+          }}
+        >
+          <PoleTable />
+          <Divider
+            sx={{
+              width: "100%",
+              backgroundColor: "primary.light",
+              margin: "1rem 0",
+            }}
+          />
+          <LashingTable />
+        </Box>
       </CustomTabPanel>
       <CustomTabPanel value={value} index={1}>
         <ImportExportButtons />
