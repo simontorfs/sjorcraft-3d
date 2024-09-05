@@ -1,7 +1,9 @@
 import { Vector3 } from "three";
+import * as THREE from "three";
+import { TObjectArray } from "../saveTool";
 
 class STLExporter {
-  parse(scene, options) {
+  parse(objectArray: TObjectArray, options) {
     options = Object.assign(
       {
         binary: false,
@@ -13,27 +15,23 @@ class STLExporter {
     const objects = [];
     let triangles = 0;
 
-    scene.traverse((object) => {
-      if (
-        STLExporter.isValidForExport(object) &&
-        object.isMesh &&
-        object.geometry &&
-        object.name !== "floor" &&
-        object.visible === true
-      ) {
-        const geometry = object.geometry;
-        const index = geometry.index;
-        const positionAttribute = geometry.getAttribute("position");
+    for (const obj of objectArray) {
+      obj.traverseVisible((object) => {
+        if (object instanceof THREE.Mesh) {
+          const geometry = object.geometry;
+          const index = geometry.index;
+          const positionAttribute = geometry.getAttribute("position");
 
-        triangles +=
-          index !== null ? index.count / 3 : positionAttribute.count / 3;
+          triangles +=
+            index !== null ? index.count / 3 : positionAttribute.count / 3;
 
-        objects.push({
-          object3d: object,
-          geometry: geometry,
-        });
-      }
-    });
+          objects.push({
+            object3d: object,
+            geometry: geometry,
+          });
+        }
+      });
+    }
 
     let output;
     let offset = 80; // skip header

@@ -1,10 +1,10 @@
 import { Pole } from "./pole";
 import { Viewer } from "./viewer";
 import { Lashing } from "./lashing";
-import { STLExporterOptions } from "three/examples/jsm/Addons";
 import { ColladaExporter } from "./exporters/colladaExporter";
 import { STLExporter } from "./exporters/stlExporter";
 
+export type TObjectArray = Array<Pole | Lashing>;
 export class SaveTool {
   viewer: Viewer;
   constructor(viewer: Viewer) {
@@ -132,13 +132,18 @@ export class SaveTool {
 
   exportToSTL() {
     const exporter = new STLExporter();
-    const workingScene = this.viewer.scene.clone();
-    const options: STLExporterOptions = {
+    const options = {
       binary: false,
     };
-    workingScene.rotation.y = Math.PI / 2;
 
-    const result = exporter.parse(workingScene, options);
+    const objects = [
+      ...this.viewer.inventory.poles,
+      ...this.viewer.inventory.lashings,
+    ];
+    const workingScene = this.viewer.scene.clone();
+    workingScene.rotation.x = Math.PI / 2;
+
+    const result = exporter.parse(objects, options);
     const blob = new Blob([result], { type: "text/plain" });
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
@@ -151,7 +156,11 @@ export class SaveTool {
   exportToDAE(name?: string) {
     const filename = name ? name : "model";
     const exporter = new ColladaExporter();
-    const result = exporter.parse(this.viewer.scene);
+    const objects = [
+      ...this.viewer.inventory.poles,
+      ...this.viewer.inventory.lashings,
+    ];
+    const result = exporter.parse(objects);
     const blob = new Blob([result], { type: "text/plain" });
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");

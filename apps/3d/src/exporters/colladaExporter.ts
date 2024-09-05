@@ -1,14 +1,8 @@
 import * as THREE from "three";
+import { TObjectArray } from "../saveTool";
 
 export class ColladaExporter {
-  private scene: THREE.Scene;
-
-  constructor() {
-    // Leeg laten, de scene wordt in parse() gezet
-  }
-
-  public parse(scene: THREE.Scene): string {
-    this.scene = scene;
+  public parse(objectArray: TObjectArray): string {
     const xmlParts: string[] = [];
 
     xmlParts.push('<?xml version="1.0" encoding="UTF-8"?>');
@@ -27,28 +21,30 @@ export class ColladaExporter {
     xmlParts.push("</asset>");
 
     xmlParts.push("<library_geometries>");
-    this.scene.traverse((child) => {
-      if (
-        child instanceof THREE.Mesh &&
-        child.name !== "floor" &&
-        child.visible
-      ) {
-        this.addGeometry(xmlParts, child);
-      }
-    });
+    for (const obj of objectArray) {
+      obj.traverseVisible((child) => {
+        if (
+          child instanceof THREE.Mesh &&
+          ColladaExporter.isValidForExport(child)
+        ) {
+          this.addGeometry(xmlParts, child);
+        }
+      });
+    }
     xmlParts.push("</library_geometries>");
 
     xmlParts.push("<library_visual_scenes>");
     xmlParts.push('<visual_scene id="Scene" name="Scene">');
-    this.scene.traverse((child) => {
-      if (
-        child instanceof THREE.Mesh &&
-        child.name !== "floor" &&
-        child.visible
-      ) {
-        this.addNode(xmlParts, child);
-      }
-    });
+    for (const obj of objectArray) {
+      obj.traverseVisible((child) => {
+        if (
+          child instanceof THREE.Mesh &&
+          ColladaExporter.isValidForExport(child)
+        ) {
+          this.addNode(xmlParts, child);
+        }
+      });
+    }
     xmlParts.push("</visual_scene>");
     xmlParts.push("</library_visual_scenes>");
 
@@ -68,7 +64,6 @@ export class ColladaExporter {
     xmlParts.push(`<geometry id="geometry_${id}" name="${mesh.name}">`);
     xmlParts.push("<mesh>");
 
-    // Positions
     const position = geometry.getAttribute("position");
     xmlParts.push('<source id="positions_' + id + '">');
     xmlParts.push(
@@ -95,7 +90,6 @@ export class ColladaExporter {
     xmlParts.push("</technique_common>");
     xmlParts.push("</source>");
 
-    // Indices
     const index = geometry.getIndex();
     xmlParts.push('<vertices id="vertices_' + id + '">');
     xmlParts.push(
@@ -119,7 +113,6 @@ export class ColladaExporter {
   private addNode(xmlParts: string[], mesh: THREE.Mesh) {
     const id = mesh.uuid;
 
-    // Verkrijg de wereldmatrix om transformaties toe te passen
     const matrix = new THREE.Matrix4();
     mesh.updateMatrixWorld(true);
     matrix.copy(mesh.matrixWorld);
@@ -129,12 +122,10 @@ export class ColladaExporter {
     const scale = new THREE.Vector3();
     matrix.decompose(position, quaternion, scale);
 
-    // Converteer de quaternion naar een Euler om de rotaties in graden te verkrijgen
     const rotation = new THREE.Euler().setFromQuaternion(quaternion);
 
     xmlParts.push(`<node id="node_${id}" name="${mesh.name}">`);
 
-    // Transformations
     xmlParts.push(
       `<translate>${position.x} ${position.y} ${position.z}</translate>`
     );
@@ -152,5 +143,40 @@ export class ColladaExporter {
     xmlParts.push(`<instance_geometry url="#geometry_${id}">`);
     xmlParts.push("</instance_geometry>");
     xmlParts.push("</node>");
+  }
+
+  static isValidForExport(object) {
+    if (
+      object.visible === false ||
+      ColladaExporter.hasGeometry(object) === false ||
+      object.userData.isRaycasted === true ||
+      object.name === "floor"
+    ) {
+      return false;
+    }
+
+    let currentObject = object;
+    while (currentObject) {
+      if (!currentObject.visible) return false;
+      currentObject = currentObject.parent;
+    }
+
+    if (object.material) {
+      if (Array.isArray(object.material)) {
+        return object.material.some((mat) => mat.opacity > 0 && mat.visible);
+      } else {
+        return object.material.opacity > 0 && object.material.visible;
+      }
+    }
+
+    return true;
+  }
+
+  static hasGeometry(object) {
+    return (
+      object.geometry &&
+      object.geometry.attributes &&
+      object.geometry.attributes.position
+    );
   }
 }
