@@ -153,7 +153,7 @@ export class SaveTool {
     a.download = `${new Date()
       .toISOString()
       .slice(0, 10)
-      .replace(/-/g, "")}-${filename}.dae`;
+      .replace(/-/g, "")}-${filename}.stl`;
     a.click();
     a.remove();
   }
