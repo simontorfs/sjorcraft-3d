@@ -21,6 +21,7 @@ export class LashingTool {
 
   deactivate() {
     this.active = false;
+    this.activeLashing.visible = false;
   }
 
   leftClick() {
