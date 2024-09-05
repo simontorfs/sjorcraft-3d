@@ -13,13 +13,13 @@ class STLExporter {
     const objects = [];
     let triangles = 0;
 
-    // Traverse de scene en verzamel enkel zichtbare, geplaatste objecten
     scene.traverse((object) => {
       if (
-        STLExporter.isValidForExport(object) && // Controleer of object geldig is voor export
-        object.isMesh && // Alleen meshes
-        object.geometry && // Met geometrie
-        object.name !== "floor" // En geen objecten met de naam "floor"
+        STLExporter.isValidForExport(object) &&
+        object.isMesh &&
+        object.geometry &&
+        object.name !== "floor" &&
+        object.visible === true
       ) {
         const geometry = object.geometry;
         const index = geometry.index;
@@ -166,22 +166,23 @@ class STLExporter {
 
   // Controleer of een object geldig is voor export
   static isValidForExport(object) {
-    // Object moet zichtbaar zijn, geen geraycasted object en geen "floor"
     if (
-      !object.visible || // Moet zichtbaar zijn
-      !STLExporter.hasGeometry(object) || // Moet geometrie hebben
-      object.userData.isRaycasted || // Moet geen geraycasted object zijn
+      object.visible === false || // Object moet zichtbaar zijn
+      STLExporter.hasGeometry(object) === false || // Object moet geometrie hebben
+      object.userData.isRaycasted === true || // Moet geen geraycasted object zijn
       object.name === "floor" // Moet geen "floor" object zijn
     ) {
       return false;
     }
 
+    // Controleer zichtbaarheid van ouderobjecten
     let currentObject = object;
     while (currentObject) {
       if (!currentObject.visible) return false; // Als een ouder onzichtbaar is, is het object onzichtbaar
       currentObject = currentObject.parent;
     }
 
+    // Controleer of het materiaal zichtbaar is
     if (object.material) {
       if (Array.isArray(object.material)) {
         return object.material.some((mat) => mat.opacity > 0 && mat.visible);
