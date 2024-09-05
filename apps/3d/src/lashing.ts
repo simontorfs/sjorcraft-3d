@@ -16,7 +16,7 @@ export class Lashing extends THREE.Object3D {
     super();
   }
 
-  setProperties(
+  setPropertiesFromAnchorPoint(
     fixedPole: Pole,
     loosePole: Pole,
     position: THREE.Vector3,
@@ -27,6 +27,57 @@ export class Lashing extends THREE.Object3D {
     this.anchorPoint = position;
     this.anchorPointNormal = normal;
     this.calculatePositions();
+  }
+
+  setPropertiesFromTwoPoles(pole1: Pole, pole2: Pole) {
+    this.fixedPole = pole1;
+    this.loosePole = pole2;
+    const p1 = pole1.position
+      .clone()
+      .sub(pole1.direction.clone().multiplyScalar(pole1.length / 2));
+
+    const p2 = pole2.position
+      .clone()
+      .sub(pole2.direction.clone().multiplyScalar(pole2.length / 2));
+
+    const v12 = new THREE.Vector3().subVectors(p1, p2);
+
+    const d2 = pole2.direction.clone().multiplyScalar(pole2.length);
+    const d1 = pole1.direction.clone().multiplyScalar(pole1.length);
+
+    const d1343 = v12.dot(d2);
+    const d4321 = d2.dot(d1);
+    const d1321 = v12.dot(d1);
+    const d4343 = d2.dot(d2);
+    const d2121 = d1.dot(d1);
+
+    const denom = d2121 * d4343 - d4321 * d4321;
+    if (Math.abs(denom) < Number.EPSILON) {
+      // The poles are parallel
+      return false; // TODO: implement this
+    }
+
+    const numer = d1343 * d4321 - d1321 * d4343;
+    let mu1 = numer / denom;
+    if (mu1 > 1) mu1 = 1;
+    if (mu1 < 0) mu1 = 0;
+    let mu2 = (d1343 + d4321 * mu1) / d4343;
+    if (mu2 > 1) mu2 = 1;
+    if (mu2 < 0) mu2 = 0;
+
+    this.centerFixedPole = new THREE.Vector3()
+      .copy(p1)
+      .add(d1.multiplyScalar(mu1));
+    this.centerLoosePole = new THREE.Vector3()
+      .copy(p2)
+      .add(d2.multiplyScalar(mu2));
+
+    const pos = this.centerFixedPole
+      .clone()
+      .add(this.centerLoosePole)
+      .divideScalar(2.0);
+    this.position.set(pos.x, pos.y, pos.z);
+    this.updateMesh();
   }
 
   loadFromJson(lashing: any, poles: Pole[]) {

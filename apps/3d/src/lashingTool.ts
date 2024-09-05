@@ -1,3 +1,4 @@
+import { Lashing } from "./lashing";
 import { Pole } from "./pole";
 import { Viewer } from "./viewer";
 import * as THREE from "three";
@@ -6,9 +7,12 @@ export class LashingTool {
   active: boolean;
   viewer: Viewer;
   hoveredPole: Pole | undefined;
+  activeLashing: Lashing = new Lashing();
   constructor(viewer: Viewer) {
     this.viewer = viewer;
     this.active = false;
+    this.activeLashing.visible = false;
+    this.viewer.scene.add(this.activeLashing);
   }
 
   activate() {
@@ -26,9 +30,10 @@ export class LashingTool {
 
   setHoveredPole(hoveredPole: Pole) {
     this.hoveredPole = hoveredPole;
-    if (!hoveredPole) return;
-    //@ts-ignore
-    hoveredPole.mesh.material.color = new THREE.Color(0xffffff);
+    if (!hoveredPole) {
+      this.activeLashing.visible = false;
+      return;
+    }
 
     const point1 = this.viewer.inputHandler.getPointOnLineClosestToCursor(
       hoveredPole.position,
@@ -72,14 +77,13 @@ export class LashingTool {
           closestPoleDist = polesDistance;
           closestPole = pole;
         }
-      } else {
-        // @ts-ignore
-        pole.mesh.material.color = new THREE.Color(0xffffff);
       }
     }
     if (closestPole) {
-      // @ts-ignore
-      closestPole.mesh.material.color = new THREE.Color(0x00ff00);
+      this.activeLashing.visible = true;
+      this.activeLashing.setPropertiesFromTwoPoles(hoveredPole, closestPole);
+    } else {
+      this.activeLashing.visible = false;
     }
   }
 }

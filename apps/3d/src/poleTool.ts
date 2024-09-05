@@ -122,7 +122,7 @@ export class PoleTool {
     if (!this.newLashing) {
       this.newLashing = new Lashing();
     }
-    this.newLashing.setProperties(
+    this.newLashing.setPropertiesFromAnchorPoint(
       hoveredPole,
       this.activeScaffold.mainPole,
       position,
