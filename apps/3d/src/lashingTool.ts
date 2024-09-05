@@ -25,7 +25,12 @@ export class LashingTool {
 
   leftClick() {
     if (!this.active) return;
-    console.log(this.hoveredPole);
+    if (this.activeLashing.visible) {
+      this.viewer.inventory.addLashing(this.activeLashing);
+      this.activeLashing = new Lashing();
+      this.activeLashing.visible = false;
+      this.viewer.scene.add(this.activeLashing);
+    }
   }
 
   setHoveredPole(hoveredPole: Pole) {
@@ -35,7 +40,7 @@ export class LashingTool {
       return;
     }
 
-    const point1 = this.viewer.inputHandler.getPointOnLineClosestToCursor(
+    const cursorPoint = this.viewer.inputHandler.getPointOnLineClosestToCursor(
       hoveredPole.position,
       hoveredPole.direction
     );
@@ -52,29 +57,19 @@ export class LashingTool {
     );
 
     for (const pole of this.viewer.inventory.poles.filter(
-      (p) => p !== hoveredPole && !polesLashedToHovered.includes(p)
+      (p) =>
+        p !== hoveredPole &&
+        !polesLashedToHovered.includes(p) &&
+        !p.isParallelTo(hoveredPole.direction)
     )) {
-      const poleDiff = hoveredPole.position.clone().sub(pole.position);
-      const polesDistance =
-        Math.abs(
-          hoveredPole.direction
-            .clone()
-            .cross(pole.direction)
-            .normalize()
-            .dot(poleDiff)
-        ) -
-        hoveredPole.radius -
-        pole.radius;
+      const { closestPoint, closestPointOnOtherPole } =
+        hoveredPole.getClosestApproach(pole);
+      const poleDistance = closestPoint.distanceTo(closestPointOnOtherPole);
+      const pointsDistance = closestPoint.distanceTo(cursorPoint);
 
-      const point2 = this.viewer.inputHandler.getPointOnLineClosestToCursor(
-        pole.position,
-        pole.direction
-      );
-      const pointsDistance = point1.distanceTo(point2);
-
-      if (polesDistance < 0.2 && pointsDistance < polesDistance + 0.17) {
-        if (polesDistance < closestPoleDist) {
-          closestPoleDist = polesDistance;
+      if (poleDistance < 0.25 && pointsDistance < 0.1) {
+        if (pointsDistance < closestPoleDist) {
+          closestPoleDist = pointsDistance;
           closestPole = pole;
         }
       }
