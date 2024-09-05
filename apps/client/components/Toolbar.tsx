@@ -2,6 +2,7 @@ import ArrowIcon from "../assets/icons/arrow.svg?react";
 import BipodIcon from "../assets/icons/bipod.svg?react";
 import PoleIcon from "../assets/icons/pole.svg?react";
 import TripodIcon from "../assets/icons/tripod.svg?react";
+import RopeIcon from "../assets/icons/rope.svg?react";
 import LightModeIcon from "@mui/icons-material/LightMode";
 import DarkModeIcon from "@mui/icons-material/DarkMode";
 import MenuIcon from "@mui/icons-material/Menu";
@@ -114,7 +115,7 @@ const Toolbar = ({
         <Tool
           active={selectedTool === "lashingtool"}
           disabled={false}
-          icon={AxeIcon}
+          icon={RopeIcon}
           onClick={() => {
             viewer?.inputHandler.onActivateTool("lashingtool");
             setSelectedTool("lashingtool");
