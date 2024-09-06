@@ -1,3 +1,4 @@
+import { c } from "vite/dist/node/types.d-FdqQ54oU";
 import { Pole } from "./pole";
 import { SquareLashingCurve } from "./squareLashingCurve";
 import * as THREE from "three";
@@ -139,8 +140,10 @@ export class Lashing extends THREE.Object3D {
     const geometry = new THREE.TubeGeometry(path, 360, 0.003, 8, true);
     const textureLoader = new THREE.TextureLoader();
     const colorTexture = textureLoader.load("./textures/rope/rope_color.png");
-    colorTexture.repeat.y = 50;
-    colorTexture.wrapT = THREE.MirroredRepeatWrapping;
+    colorTexture.repeat.set(55, 1);
+    colorTexture.wrapS = THREE.RepeatWrapping;
+    colorTexture.wrapT = THREE.RepeatWrapping;
+    colorTexture.anisotropy = 16;
 
     const material = new THREE.MeshStandardMaterial({
       color: 0x9e9578,
