@@ -47,6 +47,7 @@ export class Floor extends THREE.Object3D {
       transparent: false,
     });
     this.mesh = new THREE.Mesh(floorGeometry, floorMaterial);
+    this.mesh.name = "floor";
     this.mesh.rotation.x = -Math.PI / 2;
     this.viewer.scene.add(this.mesh);
   }

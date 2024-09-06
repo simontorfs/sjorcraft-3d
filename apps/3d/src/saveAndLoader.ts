@@ -5,7 +5,10 @@ import {
   GLTFExporter,
   GLTFExporterOptions,
 } from "three/examples/jsm/exporters/GLTFExporter";
+import { ColladaExporter } from "./exporters/colladaExporter";
+import { STLExporter } from "./exporters/stlExporter";
 
+export type TObjectArray = Array<Pole | Lashing>;
 export class SaveTool {
   viewer: Viewer;
   constructor(viewer: Viewer) {
@@ -165,6 +168,63 @@ export class SaveTool {
   }
 
   exportDAE() {}
+  exportToSTL(name?: string, exportLashings?: boolean) {
+    7;
+    const filename = name ? name : "model";
+    const exporter = new STLExporter();
+    const options = {
+      binary: false,
+    };
+
+    let objects: TObjectArray = [];
+    if (exportLashings) {
+      objects = [
+        ...this.viewer.inventory.poles,
+        ...this.viewer.inventory.lashings,
+      ];
+    } else {
+      objects = this.viewer.inventory.poles;
+    }
+    const workingScene = this.viewer.scene.clone();
+    workingScene.rotation.x = Math.PI / 2;
+
+    const result = exporter.parse(objects, options);
+    const blob = new Blob([result], { type: "text/plain" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `${new Date()
+      .toISOString()
+      .slice(0, 10)
+      .replace(/-/g, "")}-${filename}.stl`;
+    a.click();
+    a.remove();
+  }
+
+  exportToDAE(name?: string, exportLashings?: boolean) {
+    const filename = name ? name : "model";
+    const exporter = new ColladaExporter();
+    let objects: TObjectArray = [];
+    if (exportLashings) {
+      objects = [
+        ...this.viewer.inventory.poles,
+        ...this.viewer.inventory.lashings,
+      ];
+    } else {
+      objects = this.viewer.inventory.poles;
+    }
+    const result = exporter.parse(objects);
+    const blob = new Blob([result], { type: "text/plain" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `${new Date()
+      .toISOString()
+      .slice(0, 10)
+      .replace(/-/g, "")}-${filename}.dae`;
+    a.click();
+    a.remove();
+  }
 
   //clear local storage
   clearLocalStorage() {

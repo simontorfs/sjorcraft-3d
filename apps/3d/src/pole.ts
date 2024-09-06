@@ -185,6 +185,20 @@ export class Pole extends THREE.Object3D {
   }
 
   overlaps(otherPole: Pole) {
+    const { closestPoint, closestPointOnOtherPole } =
+      this.getClosestApproach(otherPole);
+    if (!closestPoint || !closestPointOnOtherPole) return false;
+
+    const poleSeparation = closestPoint
+      .clone()
+      .sub(closestPointOnOtherPole)
+      .length();
+
+    const collision = poleSeparation < 0.9 * (this.radius + otherPole.radius);
+    return collision;
+  }
+
+  getClosestApproach(otherPole: Pole) {
     const p1 = this.position
       .clone()
       .sub(this.direction.clone().multiplyScalar(this.length / 2));
@@ -207,7 +221,7 @@ export class Pole extends THREE.Object3D {
     const denom = d2121 * d4343 - d4321 * d4321;
     if (Math.abs(denom) < Number.EPSILON) {
       // The poles are parallel
-      return false; // TODO: implement this
+      return { closestPoint: undefined, closestPointOnOtherPole: undefined }; // TODO: implement this
     }
 
     const numer = d1343 * d4321 - d1321 * d4343;
@@ -225,9 +239,9 @@ export class Pole extends THREE.Object3D {
       .copy(p2)
       .add(d2.multiplyScalar(mu2));
 
-    const poleSeparation = closestPoint1.clone().sub(closestPoint2).length();
-
-    const collision = poleSeparation < 0.9 * (this.radius + otherPole.radius);
-    return collision;
+    return {
+      closestPoint: closestPoint1,
+      closestPointOnOtherPole: closestPoint2,
+    };
   }
 }

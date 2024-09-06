@@ -8,13 +8,19 @@ import {
   Select,
   SelectChangeEvent,
   Stack,
+  Switch,
+  Table,
+  TableBody,
+  TableCell,
   Typography,
 } from "@mui/material";
 import FileDownloadIcon from "@mui/icons-material/FileDownload";
 import FileUploadIcon from "@mui/icons-material/FileUpload";
 import { RendererContext } from "../contexts/rendererContext";
+import { CheckBox } from "@mui/icons-material";
+import { SjorcraftEditorProps } from "./SjorcraftEditor";
 
-const ImportExportButtons = () => {
+const ImportExportButtons = ({ parameterObject }: SjorcraftEditorProps) => {
   const [type, setType] = React.useState(".SJOR");
   const [description, setDescription] = React.useState(
     "This filetype can only be used in our platform to share amazing ideas with other people."
@@ -31,7 +37,16 @@ const ImportExportButtons = () => {
         viewer?.imageExporter.exportImage();
         break;
       case ".DAE":
-        console.log("Exporting to dae");
+        viewer?.saveTool.exportToDAE(
+          "dae_export",
+          parameterObject.exportLashings
+        );
+        break;
+      case ".STL":
+        viewer?.saveTool.exportToSTL(
+          "stl_export",
+          parameterObject.exportLashings
+        );
         break;
       case ".GLTF":
         viewer?.saveTool.exportGLTF("sjorcraft_export");
@@ -53,10 +68,15 @@ const ImportExportButtons = () => {
           "This filetype is used to export the current scene as a .jpg image so you can look at your construction even when you are not online."
         );
         break;
+      case ".STL":
+        setDescription(
+          `Export the current scene as an .stl file so you can import it in other 3D modeling software such as Blender, 3DS Max, Maya, etc. An .stl file is a 3D model format that is commonly used for 3D printing.`
+        );
+        break;
       case ".DAE":
         setDescription(
-          `This filetype is used to export the current scene as a .dae file so you can import it in other 3D modeling software. Such as Blender, 3DS Max, Maya, etc. 
-          Coming soon!`
+          `Export the current scene as a .dae file so you can import it in other 3D modeling software. Such as Blender, 3DS Max, Maya, etc. 
+          `
         );
         break;
       case ".GLTF":
@@ -103,17 +123,35 @@ const ImportExportButtons = () => {
           <MenuItem value={".SJOR"}>.SJOR</MenuItem>
           <MenuItem value={".JPG"}>.JPG</MenuItem>
           <MenuItem value={".DAE"}>.DAE</MenuItem>
+          <MenuItem value={".STL"}>.STL</MenuItem>
           <MenuItem value={".GLTF"}>.GLTF</MenuItem>
         </Select>
         <Typography variant="body1" color="primary.contrastText">
           {description}
         </Typography>
+        {type !== ".SJOR" && type !== ".JPG" && (
+          <Table>
+            <TableBody>
+              <TableCell>Export Lashings</TableCell>
+              <TableCell>
+                <Switch
+                  aria-label=""
+                  color="secondary"
+                  checked={parameterObject.exportLashings}
+                  onClick={() => {
+                    parameterObject.toggleExportLashings();
+                  }}
+                />
+              </TableCell>
+            </TableBody>
+          </Table>
+        )}
         <Button
           variant="contained"
           color="secondary"
           startIcon={<FileDownloadIcon />}
           onClick={() => exportFile(type)}
-          disabled={type === ".DAE"}
+          disabled={type === ".GLTF"}
         >
           Download {type}
         </Button>

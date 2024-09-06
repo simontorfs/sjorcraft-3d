@@ -16,7 +16,7 @@ export class Lashing extends THREE.Object3D {
     super();
   }
 
-  setProperties(
+  setPropertiesFromAnchorPoint(
     fixedPole: Pole,
     loosePole: Pole,
     position: THREE.Vector3,
@@ -27,6 +27,24 @@ export class Lashing extends THREE.Object3D {
     this.anchorPoint = position;
     this.anchorPointNormal = normal;
     this.calculatePositions();
+  }
+
+  setPropertiesFromTwoPoles(pole1: Pole, pole2: Pole) {
+    this.fixedPole = pole1;
+    this.loosePole = pole2;
+
+    const { closestPoint, closestPointOnOtherPole } =
+      this.fixedPole.getClosestApproach(this.loosePole);
+
+    this.centerFixedPole = closestPoint;
+    this.centerLoosePole = closestPointOnOtherPole;
+
+    const pos = this.centerFixedPole
+      .clone()
+      .add(this.centerLoosePole)
+      .divideScalar(2.0);
+    this.position.set(pos.x, pos.y, pos.z);
+    this.updateMesh();
   }
 
   loadFromJson(lashing: any, poles: Pole[]) {

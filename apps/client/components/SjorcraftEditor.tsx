@@ -11,7 +11,7 @@ import EditorSidebar from "./EditorSidebar";
 import { useDeviceSize } from "../src/hooks/useDeviceSize";
 import { Box, Grid, Stack } from "@mui/material";
 
-type SjorcraftEditorProps = {
+export type SjorcraftEditorProps = {
   parameterObject: {
     isLightMode: boolean;
     toggleLightmode: () => void;
@@ -21,6 +21,8 @@ type SjorcraftEditorProps = {
     setFloorColor: (color: string) => void;
     isGrassTexture: boolean;
     toggleFloorTexture: () => void;
+    exportLashings: boolean;
+    toggleExportLashings: () => void;
   };
 };
 const SjorcraftEditor = ({ parameterObject }: SjorcraftEditorProps) => {

@@ -29,7 +29,7 @@ export class Inventory {
   addLashing(lashing: Lashing) {
     this.lashings.push(lashing);
     (this.viewer.scene as any).dispatchEvent({
-      type: "new_lashing_added",
+      type: "new_lashing_placed",
       lashing: lashing,
     });
   }
@@ -57,6 +57,10 @@ export class Inventory {
     this.viewer.inventory.lashings = this.lashings.filter(
       (lashing) => lashing !== lashingToRemove
     );
+    (this.viewer.scene as any).dispatchEvent({
+      type: "lashing_removed",
+      lashing: lashingToRemove,
+    });
   }
 
   removePoles(polesToRemove: Pole[]) {
@@ -97,6 +101,10 @@ export class Inventory {
       });
     }
     return polesGroupedByLength;
+  }
+
+  getAmountOfLashings() {
+    return this.lashings.length;
   }
 
   resetAllColors() {
