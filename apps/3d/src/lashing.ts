@@ -137,9 +137,17 @@ export class Lashing extends THREE.Object3D {
       this.position
     );
     const geometry = new THREE.TubeGeometry(path, 360, 0.003, 8, true);
+    const textureLoader = new THREE.TextureLoader();
+    const colorTexture = textureLoader.load("./textures/rope/rope_color.png");
+    colorTexture.repeat.y = 50;
+    colorTexture.wrapT = THREE.MirroredRepeatWrapping;
+
     const material = new THREE.MeshStandardMaterial({
       color: 0x9e9578,
       wireframe: false,
+      map: colorTexture,
+      roughness: 1,
+      metalness: 0.2,
     });
     this.mesh = new THREE.Mesh(geometry, material);
     this.add(this.mesh);
