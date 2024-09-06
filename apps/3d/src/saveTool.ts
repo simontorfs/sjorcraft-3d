@@ -135,7 +135,7 @@ export class SaveTool {
     const filename = name ? name : "model";
     const exporter = new STLExporter();
     const options = {
-      binary: false,
+      binary: true,
     };
 
     let objects: TObjectArray = [];
