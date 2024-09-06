@@ -8,13 +8,19 @@ import {
   Select,
   SelectChangeEvent,
   Stack,
+  Switch,
+  Table,
+  TableBody,
+  TableCell,
   Typography,
 } from "@mui/material";
 import FileDownloadIcon from "@mui/icons-material/FileDownload";
 import FileUploadIcon from "@mui/icons-material/FileUpload";
 import { RendererContext } from "../contexts/rendererContext";
+import { CheckBox } from "@mui/icons-material";
+import { SjorcraftEditorProps } from "./SjorcraftEditor";
 
-const ImportExportButtons = () => {
+const ImportExportButtons = ({ parameterObject }: SjorcraftEditorProps) => {
   const [type, setType] = React.useState(".SJOR");
   const [description, setDescription] = React.useState(
     "This filetype can only be used in our platform to share amazing ideas with other people."
@@ -31,10 +37,19 @@ const ImportExportButtons = () => {
         viewer?.imageExporter.exportImage();
         break;
       case ".DAE":
-        viewer?.saveTool.exportToDAE("dae_export");
+        viewer?.saveTool.exportToDAE(
+          "dae_export",
+          parameterObject.exportLashings
+        );
         break;
       case ".STL":
-        viewer?.saveTool.exportToSTL("stl_export");
+        viewer?.saveTool.exportToSTL(
+          "stl_export",
+          parameterObject.exportLashings
+        );
+        break;
+      case ".GLTF":
+        console.log("Exporting to GLTF");
         break;
       default:
         break;
@@ -115,6 +130,23 @@ const ImportExportButtons = () => {
         <Typography variant="body1" color="primary.contrastText">
           {description}
         </Typography>
+        {type !== ".SJOR" && type !== ".JPG" && (
+          <Table>
+            <TableBody>
+              <TableCell>Export Lashings</TableCell>
+              <TableCell>
+                <Switch
+                  aria-label=""
+                  color="secondary"
+                  checked={parameterObject.exportLashings}
+                  onClick={() => {
+                    parameterObject.toggleExportLashings();
+                  }}
+                />
+              </TableCell>
+            </TableBody>
+          </Table>
+        )}
         <Button
           variant="contained"
           color="secondary"

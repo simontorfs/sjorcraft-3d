@@ -46,6 +46,8 @@ type EditorSidebarProps = {
     setFloorColor: (color: string) => void;
     isGrassTexture: boolean;
     toggleFloorTexture: () => void;
+    exportLashings: boolean;
+    toggleExportLashings: () => void;
   };
 };
 const EditorSidebar = ({ parameterObject }: EditorSidebarProps) => {
@@ -145,7 +147,7 @@ const EditorSidebar = ({ parameterObject }: EditorSidebarProps) => {
         </Box>
       </CustomTabPanel>
       <CustomTabPanel value={value} index={1}>
-        <ImportExportButtons />
+        <ImportExportButtons parameterObject={parameterObject} />
       </CustomTabPanel>
       <CustomTabPanel value={value} index={2}>
         <TerrainOptions parameterObject={parameterObject} />

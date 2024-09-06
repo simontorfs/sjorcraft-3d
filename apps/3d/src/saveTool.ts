@@ -130,7 +130,7 @@ export class SaveTool {
     });
   }
 
-  exportToSTL(name?: string) {
+  exportToSTL(name?: string, exportLashings?: boolean) {
     7;
     const filename = name ? name : "model";
     const exporter = new STLExporter();
@@ -138,10 +138,15 @@ export class SaveTool {
       binary: false,
     };
 
-    const objects = [
-      ...this.viewer.inventory.poles,
-      ...this.viewer.inventory.lashings,
-    ];
+    let objects: TObjectArray = [];
+    if (exportLashings) {
+      objects = [
+        ...this.viewer.inventory.poles,
+        ...this.viewer.inventory.lashings,
+      ];
+    } else {
+      objects = this.viewer.inventory.poles;
+    }
     const workingScene = this.viewer.scene.clone();
     workingScene.rotation.x = Math.PI / 2;
 
@@ -158,13 +163,18 @@ export class SaveTool {
     a.remove();
   }
 
-  exportToDAE(name?: string) {
+  exportToDAE(name?: string, exportLashings?: boolean) {
     const filename = name ? name : "model";
     const exporter = new ColladaExporter();
-    const objects = [
-      ...this.viewer.inventory.poles,
-      ...this.viewer.inventory.lashings,
-    ];
+    let objects: TObjectArray = [];
+    if (exportLashings) {
+      objects = [
+        ...this.viewer.inventory.poles,
+        ...this.viewer.inventory.lashings,
+      ];
+    } else {
+      objects = this.viewer.inventory.poles;
+    }
     const result = exporter.parse(objects);
     const blob = new Blob([result], { type: "text/plain" });
     const url = URL.createObjectURL(blob);
