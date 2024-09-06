@@ -2,12 +2,10 @@ import React, { useContext } from "react";
 import {
   Box,
   Button,
-  ButtonGroup,
   Divider,
   MenuItem,
   Select,
   SelectChangeEvent,
-  Stack,
   Switch,
   Table,
   TableBody,
@@ -49,7 +47,10 @@ const ImportExportButtons = ({ parameterObject }: SjorcraftEditorProps) => {
         );
         break;
       case ".GLTF":
-        viewer?.saveTool.exportGLTF("sjorcraft_export");
+        viewer?.saveTool.exportToGLTF(
+          "gltf_export",
+          parameterObject.exportLashings
+        );
       default:
         break;
     }
@@ -75,13 +76,13 @@ const ImportExportButtons = ({ parameterObject }: SjorcraftEditorProps) => {
         break;
       case ".DAE":
         setDescription(
-          `Export the current scene as a .dae file so you can import it in other 3D modeling software. Such as Blender, 3DS Max, Maya, etc. 
+          `Export the current scene as a .dae file so you can import it in other 3D modeling software. Such as Blender, 3DS Max, Maya, Sketchup, etc. 
           `
         );
         break;
       case ".GLTF":
         setDescription(
-          `This filetype is used to export the current scene as a .gltf file so you can import it in other 3D modeling software. Such as Blender, 3DS Max, Maya, etc. 
+          `Export the current scene as a .gltf file so you can import it in other 3D modeling software. Such as Blender, 3DS Max, Maya, etc. 
           Coming soon!`
         );
         break;
@@ -151,7 +152,6 @@ const ImportExportButtons = ({ parameterObject }: SjorcraftEditorProps) => {
           color="secondary"
           startIcon={<FileDownloadIcon />}
           onClick={() => exportFile(type)}
-          disabled={type === ".GLTF"}
         >
           Download {type}
         </Button>

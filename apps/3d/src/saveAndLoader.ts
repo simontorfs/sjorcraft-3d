@@ -1,16 +1,19 @@
 import { Pole } from "./pole";
 import { Viewer } from "./viewer";
 import { Lashing } from "./lashing";
+import { ColladaExporter } from "./exporters/colladaExporter";
+import { STLExporter } from "./exporters/stlExporter";
 import {
   GLTFExporter,
   GLTFExporterOptions,
 } from "three/examples/jsm/exporters/GLTFExporter";
-import { ColladaExporter } from "./exporters/colladaExporter";
-import { STLExporter } from "./exporters/stlExporter";
+import * as THREE from "three";
 
 export type TObjectArray = Array<Pole | Lashing>;
+
 export class SaveTool {
   viewer: Viewer;
+
   constructor(viewer: Viewer) {
     this.viewer = viewer;
   }
@@ -22,7 +25,6 @@ export class SaveTool {
       const file = fileInput.files![0];
       const reader = new FileReader();
       reader.onload = () => {
-        // check if extension is .sjor otherwise ignore
         if (file.name.split(".").pop() !== "sjor") {
           return;
         }
@@ -53,7 +55,6 @@ export class SaveTool {
       const file = fileInput.files![0];
       const reader = new FileReader();
       reader.onload = () => {
-        // check if extension is .sjor otherwise ignore
         if (file.name.split(".").pop() !== "sjor") {
           return;
         }
@@ -86,6 +87,7 @@ export class SaveTool {
       .replace(/-/g, "")}-${name}.sjor`;
     a.click();
   }
+
   exportPoles(name: string) {
     const poles = this.viewer.inventory.poles.map((pole) => pole.saveToJson());
     const data = JSON.stringify(poles, null, 2);
@@ -134,42 +136,7 @@ export class SaveTool {
     });
   }
 
-  exportGLTF(name: string) {
-    const filename = name ? name : "gltf_export";
-    const gltfExporter = new GLTFExporter();
-
-    const options: GLTFExporterOptions = {
-      trs: true,
-      onlyVisible: true,
-      binary: false,
-      forceIndices: false,
-    };
-
-    const workingScene = this.viewer.scene.clone();
-    gltfExporter.parse(
-      workingScene,
-      function (result) {
-        let output: string = JSON.stringify(result, null, 2);
-        const blob = new Blob([output], { type: "text/json" });
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement("a");
-        a.href = url;
-        a.download = `${new Date()
-          .toISOString()
-          .slice(0, 10)
-          .replace(/-/g, "")}-${filename}.gltf`;
-        a.click();
-      },
-      function (error) {
-        console.error("error #%d", error);
-      },
-      options
-    );
-  }
-
-  exportDAE() {}
   exportToSTL(name?: string, exportLashings?: boolean) {
-    7;
     const filename = name ? name : "model";
     const exporter = new STLExporter();
     const options = {
@@ -226,7 +193,64 @@ export class SaveTool {
     a.remove();
   }
 
-  //clear local storage
+  exportToGLTF(name?: string, exportLashings?: boolean) {
+    const filename = name ? name : "model";
+    let objects: TObjectArray = [];
+
+    if (exportLashings) {
+      objects = [
+        ...this.viewer.inventory.poles,
+        ...this.viewer.inventory.lashings,
+      ];
+    } else {
+      objects = this.viewer.inventory.poles;
+    }
+
+    const exporter = new GLTFExporter();
+
+    const options: GLTFExporterOptions = {
+      binary: true, // Gebruik GLB-formaat (binair) voor kleinere bestandsgrootte
+      includeCustomExtensions: true,
+      trs: false,
+      onlyVisible: true,
+      embedImages: false, // Gebruik externe verwijzingen voor textures, geen inbedding
+    };
+
+    exporter.parse(
+      objects,
+      (result) => {
+        let output;
+
+        // Resultaat is al binair in het geval van GLB
+        if (result instanceof ArrayBuffer) {
+          output = result;
+        } else {
+          // In het geval van een JSON, stringificeer het resultaat
+          output = JSON.stringify(result);
+        }
+
+        // Maak het juiste bestandstype aan, afhankelijk van of het GLB of GLTF is
+        const blob = new Blob([output], {
+          type: options.binary ? "application/octet-stream" : "text/plain",
+        });
+
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = `${new Date()
+          .toISOString()
+          .slice(0, 10)
+          .replace(/-/g, "")}-${filename}.${options.binary ? "glb" : "gltf"}`;
+        a.click();
+        a.remove();
+      },
+      (error) => {
+        console.error(error);
+      },
+      options
+    );
+  }
+
   clearLocalStorage() {
     localStorage.clear();
   }
