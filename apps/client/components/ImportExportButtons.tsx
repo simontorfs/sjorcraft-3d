@@ -125,7 +125,6 @@ const ImportExportButtons = ({ parameterObject }: SjorcraftEditorProps) => {
           <MenuItem value={".JPG"}>.JPG</MenuItem>
           <MenuItem value={".DAE"}>.DAE</MenuItem>
           <MenuItem value={".STL"}>.STL</MenuItem>
-          <MenuItem value={".GLTF"}>.GLTF</MenuItem>
         </Select>
         <Typography variant="body1" color="primary.contrastText">
           {description}
@@ -152,7 +151,6 @@ const ImportExportButtons = ({ parameterObject }: SjorcraftEditorProps) => {
           color="secondary"
           startIcon={<FileDownloadIcon />}
           onClick={() => exportFile(type)}
-          disabled={type === ".GLTF"}
         >
           Download {type}
         </Button>
