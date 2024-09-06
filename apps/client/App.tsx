@@ -13,6 +13,7 @@ const App = () => {
   const [isSidebarOpen, setIsSidebarOpen] = React.useState(true);
   const [floorColor, setFloorColor] = React.useState<string>("#2a6e3c");
   const [isGrassTexture, setIsGrassTexture] = React.useState(false);
+  const [exportLashings, setExportLashings] = React.useState(false);
 
   const toggleLightmode = () => {
     setIsLightMode(!isLightMode);
@@ -30,6 +31,10 @@ const App = () => {
     setFloorColor(color);
   };
 
+  const toggleExportLashings = () => {
+    setExportLashings(!exportLashings);
+  };
+
   const parameterObject = {
     isLightMode: isLightMode,
     toggleLightmode: toggleLightmode,
@@ -39,6 +44,8 @@ const App = () => {
     setFloorColor: setFloorColor,
     isGrassTexture: isGrassTexture,
     toggleFloorTexture: toggleFloorTexture,
+    exportLashings: exportLashings,
+    toggleExportLashings: toggleExportLashings,
   };
 
   return (
