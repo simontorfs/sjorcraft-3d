@@ -263,28 +263,15 @@ export class PoleTool {
 
   commitLashings() {
     if (this.fixedLashing) {
-      this.relashToRighScaffoldPole(this.fixedLashing);
+      this.fixedLashing.relashToRightScaffoldPole(this.activeScaffold);
       this.viewer.inventory.addLashing(this.fixedLashing);
     }
     if (this.newLashing) {
-      this.relashToRighScaffoldPole(this.newLashing);
+      this.newLashing.relashToRightScaffoldPole(this.activeScaffold);
       this.viewer.inventory.addLashing(this.newLashing);
     }
     this.fixedLashing = undefined;
     this.newLashing = undefined;
-  }
-
-  relashToRighScaffoldPole(lashing: Lashing) {
-    if (this.activeScaffold.length < 6.0) return;
-    const distanceToExtension = lashing.position.distanceTo(
-      this.activeScaffold.extensionPole.position
-    );
-    const distanceToMain = lashing.position.distanceTo(
-      this.activeScaffold.mainPole.position
-    );
-    if (distanceToExtension < distanceToMain) {
-      lashing.loosePole = this.activeScaffold.extensionPole;
-    }
   }
 
   rightClick() {
