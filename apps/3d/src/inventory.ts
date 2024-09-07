@@ -63,14 +63,6 @@ export class Inventory {
     });
   }
 
-  removeHiddenLashings() {
-    for (const lashing of this.lashings) {
-      if (!lashing.visible) {
-        this.removeLashing(lashing);
-      }
-    }
-  }
-
   removePoles(polesToRemove: Pole[]) {
     for (const pole of polesToRemove) {
       this.removePole(pole);
