@@ -103,6 +103,23 @@ export class PoleTransformer extends THREE.Object3D {
         this.dragScaleHandle(false);
         break;
     }
+
+    const lashingsOnActiveScaffold = this.viewer.inventory.lashings.filter(
+      (lashing) =>
+        lashing.fixedPole === this.activeScaffold.mainPole ||
+        lashing.loosePole === this.activeScaffold.mainPole
+    );
+    for (const lashing of lashingsOnActiveScaffold) {
+      const distance = this.activeScaffold.extensionPole.visible
+        ? Math.min(
+            lashing.position.distanceTo(this.activeScaffold.mainPole.position),
+            lashing.position.distanceTo(
+              this.activeScaffold.extensionPole.position
+            )
+          )
+        : lashing.position.distanceTo(this.activeScaffold.mainPole.position);
+      lashing.visible = distance < this.activeScaffold.mainPole.length / 2.0;
+    }
   }
 
   dragTranslationHandle() {
@@ -161,6 +178,7 @@ export class PoleTransformer extends THREE.Object3D {
         this.dropScaleHandle();
         break;
     }
+    this.viewer.inventory.removeHiddenLashings();
   }
 
   dropScaleHandle() {
