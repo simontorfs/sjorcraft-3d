@@ -1,4 +1,3 @@
-import { c } from "vite/dist/node/types.d-FdqQ54oU";
 import { Pole } from "./pole";
 import { SquareLashingCurve } from "./squareLashingCurve";
 import * as THREE from "three";
@@ -137,13 +136,42 @@ export class Lashing extends THREE.Object3D {
       this.centerLoosePole,
       this.position
     );
-    const geometry = new THREE.TubeGeometry(path, 360, 0.003, 8, true);
+    const tubePoints = path.getSpacedPoints(200);
+    const geometry = new THREE.TubeGeometry(
+      new THREE.CatmullRomCurve3(tubePoints),
+      720,
+      0.003,
+      8,
+      true
+    );
+
+    // Aanpassen van UV-coördinaten op basis van de curve-lengte
+    geometry.computeBoundingBox();
+    const size = new THREE.Vector3();
+    geometry.boundingBox.getSize(size); // Haal de grootte op van de bounding box
+
+    const uvAttribute = geometry.getAttribute("uv");
+
+    if (uvAttribute instanceof THREE.BufferAttribute) {
+      // Alleen verwerken als het een BufferAttribute is
+      for (let i = 0; i < uvAttribute.count; i++) {
+        const uv = new THREE.Vector2().fromBufferAttribute(uvAttribute, i);
+        uv.y = uv.y * size.y; // Normeer de UV-coördinaten langs de Y-as om rekening te houden met de lengte van de lashing
+        uvAttribute.setXY(i, uv.x, uv.y);
+      }
+      geometry.attributes.uv.needsUpdate = true;
+    } else {
+      console.warn(
+        "UV attribute is not a BufferAttribute, skipping UV update."
+      );
+    }
+
     const textureLoader = new THREE.TextureLoader();
-    const colorTexture = textureLoader.load("./textures/rope/rope_color.png");
-    colorTexture.repeat.set(55, 1);
+    const colorTexture = textureLoader.load("./textures/rope/rope_color5.jpg");
+    colorTexture.repeat.set(78, 1); // Verhoog de repeat-waarde voor langere lashings
     colorTexture.wrapS = THREE.RepeatWrapping;
-    colorTexture.wrapT = THREE.RepeatWrapping;
-    colorTexture.anisotropy = 16;
+    colorTexture.wrapT = THREE.MirroredRepeatWrapping;
+    colorTexture.anisotropy = 64;
 
     const material = new THREE.MeshStandardMaterial({
       color: 0x9e9578,
