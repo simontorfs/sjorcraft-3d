@@ -179,7 +179,13 @@ export class Lashing extends THREE.Object3D {
     );
     const distanceToMain = this.position.distanceTo(scaffold.mainPole.position);
     if (distanceToExtension < distanceToMain) {
-      this.loosePole = scaffold.extensionPole;
+      if (this.loosePole === scaffold.mainPole) {
+        this.loosePole = scaffold.extensionPole;
+      } else if (this.fixedPole === scaffold.mainPole) {
+        this.fixedPole = scaffold.extensionPole;
+      } else {
+        console.error(this.relashToRightScaffoldPole.name);
+      }
     }
   }
 }
