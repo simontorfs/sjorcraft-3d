@@ -2,11 +2,13 @@ import * as THREE from "three";
 import { Pole } from "./pole";
 import { Viewer } from "./viewer";
 import { Scaffold } from "./scaffold";
+import { Lashing } from "./lashing";
 
 export class PoleTransformer extends THREE.Object3D {
   viewer: Viewer;
   activeScaffold: Scaffold | undefined = undefined;
   originalPosition: THREE.Vector3 = new THREE.Vector3();
+  lashingsOnActiveScaffold: Lashing[] = [];
 
   translationHandle: THREE.Mesh;
   scaleHandleTop: THREE.Mesh;
@@ -51,6 +53,7 @@ export class PoleTransformer extends THREE.Object3D {
       this.visible = true;
       this.setHandlePositions();
       this.setHandleColor();
+      this.getActiveLashings();
     } else {
       this.activeScaffold = undefined;
       this.visible = false;
@@ -79,6 +82,14 @@ export class PoleTransformer extends THREE.Object3D {
     }
   }
 
+  getActiveLashings() {
+    this.lashingsOnActiveScaffold = this.viewer.inventory.lashings.filter(
+      (lashing) =>
+        lashing.fixedPole === this.activeScaffold.mainPole ||
+        lashing.loosePole === this.activeScaffold.mainPole
+    );
+  }
+
   setHoveredHandle(hoveredHandle: THREE.Mesh | undefined) {
     for (const handle of this.handles) {
       if (handle === hoveredHandle) {
@@ -102,6 +113,18 @@ export class PoleTransformer extends THREE.Object3D {
       case this.scaleHandleBottom:
         this.dragScaleHandle(false);
         break;
+    }
+
+    for (const lashing of this.lashingsOnActiveScaffold) {
+      const distance = this.activeScaffold.extensionPole.visible
+        ? Math.min(
+            lashing.position.distanceTo(this.activeScaffold.mainPole.position),
+            lashing.position.distanceTo(
+              this.activeScaffold.extensionPole.position
+            )
+          )
+        : lashing.position.distanceTo(this.activeScaffold.mainPole.position);
+      lashing.visible = distance < this.activeScaffold.mainPole.length / 2.0;
     }
   }
 
@@ -160,6 +183,12 @@ export class PoleTransformer extends THREE.Object3D {
       case this.scaleHandleBottom:
         this.dropScaleHandle();
         break;
+    }
+    for (const lashing of this.lashingsOnActiveScaffold) {
+      lashing.relashToRightScaffoldPole(this.activeScaffold);
+      if (!lashing.visible) {
+        this.viewer.inventory.removeLashing(lashing);
+      }
     }
   }
 
