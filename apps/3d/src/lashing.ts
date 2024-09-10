@@ -1,4 +1,5 @@
 import { Pole } from "./pole";
+import { Scaffold } from "./scaffold";
 import { SquareLashingCurve } from "./squareLashingCurve";
 import * as THREE from "three";
 
@@ -169,5 +170,22 @@ export class Lashing extends THREE.Object3D {
   stopThreatening() {
     // @ts-ignore
     this.mesh.material.color = new THREE.Color(0x9e9578);
+  }
+
+  relashToRightScaffoldPole(scaffold: Scaffold) {
+    if (scaffold.length < 6.0) return;
+    const distanceToExtension = this.position.distanceTo(
+      scaffold.extensionPole.position
+    );
+    const distanceToMain = this.position.distanceTo(scaffold.mainPole.position);
+    if (distanceToExtension < distanceToMain) {
+      if (this.loosePole === scaffold.mainPole) {
+        this.loosePole = scaffold.extensionPole;
+      } else if (this.fixedPole === scaffold.mainPole) {
+        this.fixedPole = scaffold.extensionPole;
+      } else {
+        console.error(this.relashToRightScaffoldPole.name);
+      }
+    }
   }
 }

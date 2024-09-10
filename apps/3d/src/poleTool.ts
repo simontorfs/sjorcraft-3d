@@ -263,9 +263,11 @@ export class PoleTool {
 
   commitLashings() {
     if (this.fixedLashing) {
+      this.fixedLashing.relashToRightScaffoldPole(this.activeScaffold);
       this.viewer.inventory.addLashing(this.fixedLashing);
     }
     if (this.newLashing) {
+      this.newLashing.relashToRightScaffoldPole(this.activeScaffold);
       this.viewer.inventory.addLashing(this.newLashing);
     }
     this.fixedLashing = undefined;
