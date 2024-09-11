@@ -121,7 +121,7 @@ const EditorSidebar = ({ parameterObject }: EditorSidebarProps) => {
           />
           <Tab
             icon={<CoffeeIcon />}
-            label="Buy Us a Coffee"
+            label="Coffee Break"
             {...a11yProps(3)}
             sx={{
               color: "primary.contrastText",
@@ -167,7 +167,7 @@ const EditorSidebar = ({ parameterObject }: EditorSidebarProps) => {
           }}
         >
           <Typography variant="h6" color="primary.contrastText">
-            Coffe break
+            Coffee break
           </Typography>
           <Typography
             variant="body1"
