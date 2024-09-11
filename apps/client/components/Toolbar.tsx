@@ -139,7 +139,7 @@ const Toolbar = ({
         }}
       >
         {isLightMode ? (
-          <DarkModeIcon
+          <LightModeIcon
             sx={{
               cursor: "pointer",
               fontSize: "2rem",
@@ -152,7 +152,7 @@ const Toolbar = ({
             }}
           />
         ) : (
-          <LightModeIcon
+          <DarkModeIcon
             sx={{
               cursor: "pointer",
               fontSize: "2rem",

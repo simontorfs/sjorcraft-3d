@@ -167,7 +167,7 @@ const EditorSidebar = ({ parameterObject }: EditorSidebarProps) => {
           }}
         >
           <Typography variant="h6" color="primary.contrastText">
-            Buy us a coffee
+            Coffe break
           </Typography>
           <Typography
             variant="body1"
@@ -190,7 +190,7 @@ const EditorSidebar = ({ parameterObject }: EditorSidebarProps) => {
             startIcon={<CoffeeIcon />}
             onClick={onCoffeeBreak}
           >
-            Coffee break
+            Buy us a coffee
           </Button>
         </Box>
       </CustomTabPanel>
