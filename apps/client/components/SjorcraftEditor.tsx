@@ -10,6 +10,7 @@ import {
 import EditorSidebar from "./EditorSidebar";
 import { useDeviceSize } from "../src/hooks/useDeviceSize";
 import { Box, Grid, Stack } from "@mui/material";
+import Disclaimer from "./buildingBlocks/Disclaimer";
 
 export type SjorcraftEditorProps = {
   parameterObject: {
@@ -23,6 +24,8 @@ export type SjorcraftEditorProps = {
     toggleFloorTexture: () => void;
     exportLashings: boolean;
     toggleExportLashings: () => void;
+    openDisclaimer?: boolean;
+    toggleDisclaimer?: (open: boolean) => void;
   };
 };
 const SjorcraftEditor = ({ parameterObject }: SjorcraftEditorProps) => {
@@ -70,6 +73,10 @@ const SjorcraftEditor = ({ parameterObject }: SjorcraftEditorProps) => {
             gap: "0rem",
           }}
         >
+          <Disclaimer
+            openDisclaimer={parameterObject.openDisclaimer}
+            toggleDisclaimer={parameterObject.toggleDisclaimer}
+          />
           <Stack
             direction={"row"}
             sx={{
