@@ -130,6 +130,11 @@ export class SaveTool {
     });
   }
 
+  loadFromLocalStorage(poles: boolean, lashings: boolean) {
+    if (poles) this.loadPolesFromLocalStorage();
+    if (lashings) this.loadLashingsFromLocalStorage();
+  }
+
   exportToSTL(name?: string, exportLashings?: boolean) {
     7;
     const filename = name ? name : "model";
@@ -190,6 +195,7 @@ export class SaveTool {
 
   //clear local storage
   clearLocalStorage() {
-    localStorage.clear();
+    localStorage.removeItem("poles");
+    localStorage.removeItem("lashings");
   }
 }

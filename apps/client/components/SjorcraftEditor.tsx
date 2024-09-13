@@ -9,7 +9,7 @@ import {
 } from "../contexts/rendererContext";
 import EditorSidebar from "./EditorSidebar";
 import { useDeviceSize } from "../src/hooks/useDeviceSize";
-import { Box, Grid, Stack } from "@mui/material";
+import { Box, Stack } from "@mui/material";
 import Disclaimer from "./buildingBlocks/Disclaimer";
 
 export type SjorcraftEditorProps = {
@@ -89,7 +89,7 @@ const SjorcraftEditor = ({ parameterObject }: SjorcraftEditorProps) => {
               justifyContent: "normal",
             }}
           >
-            <SjorcraftCanvas />
+            <SjorcraftCanvas parameterObject={parameterObject} />
             {parameterObject.isSidebarOpen && !smDevice ? (
               <EditorSidebar parameterObject={parameterObject} />
             ) : null}
