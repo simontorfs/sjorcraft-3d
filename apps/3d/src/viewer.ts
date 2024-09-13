@@ -8,6 +8,7 @@ import { Floor } from "./floor";
 import { ImageExporter } from "./imageExporter";
 import { BipodTool } from "./bipodTool";
 import { TripodTool } from "./tripodTool";
+import { PolypedestraTool } from "./polypedestraTool";
 import { DestructionTool } from "./destructionTool";
 import { LashingTool } from "./lashingTool";
 import { PoleTransformer } from "./poleTransformer";
@@ -27,6 +28,7 @@ export class Viewer {
   poleTool: PoleTool;
   bipodTool: BipodTool;
   tripodTool: TripodTool;
+  polypedestraTool: PolypedestraTool;
   destructionTool: DestructionTool;
   lashingTool: LashingTool;
   poleTransformer: PoleTransformer;
@@ -119,6 +121,7 @@ export class Viewer {
     this.poleTool = new PoleTool(this);
     this.bipodTool = new BipodTool(this);
     this.tripodTool = new TripodTool(this);
+    this.polypedestraTool = new PolypedestraTool(this);
     this.destructionTool = new DestructionTool(this);
     this.lashingTool = new LashingTool(this);
     this.poleTransformer = new PoleTransformer(this);

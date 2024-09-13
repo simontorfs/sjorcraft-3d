@@ -104,6 +104,15 @@ const Toolbar = ({
           }}
         />
         <Tool
+          active={selectedTool === "polypedestratool"}
+          disabled={false}
+          icon={TripodIcon}
+          onClick={() => {
+            viewer?.inputHandler.onActivateTool("polypedestratool");
+            setSelectedTool("polypedestratool");
+          }}
+        />
+        <Tool
           active={selectedTool === "destructiontool"}
           disabled={false}
           icon={AxeIcon}
