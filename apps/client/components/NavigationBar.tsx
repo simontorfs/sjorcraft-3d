@@ -20,6 +20,7 @@ import DarkModeIcon from "@mui/icons-material/DarkMode";
 import HomeIcon from "@mui/icons-material/Home";
 import HelpIcon from "@mui/icons-material/Help";
 import { Link } from "react-router-dom";
+import NavigationLink from "./buildingBlocks/NavigationLink";
 
 type ToolbarType = {
   parameterObject: {
@@ -48,18 +49,6 @@ const stringToColor = (string: string) => {
   }
   return color;
 };
-
-const NavigationLink = ({ name, link }: { name: string; link: string }) => (
-  <Link
-    to={link}
-    style={{
-      textDecoration: "none",
-      color: "inherit",
-    }}
-  >
-    {name}
-  </Link>
-);
 
 const NavigationBar = ({ parameterObject }: ToolbarType) => {
   const [drawerOpen, setDrawerOpen] = React.useState(false);
