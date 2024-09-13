@@ -6,7 +6,7 @@ import { darkTheme, defaultTheme } from "./contexts/colorContext";
 import { ThemeProvider } from "@mui/material";
 import { RendererContext } from "./contexts/rendererContext";
 import { Color } from "three";
-import Faq from "./components/faq";
+import Faq from "./components/Faq";
 
 //@ts-ignore
 const App = () => {
@@ -56,7 +56,10 @@ const App = () => {
           path="/"
           element={<SjorcraftEditor parameterObject={parameterObject} />}
         />
-        <Route path="/faq" element={<Faq />} />
+        <Route
+          path="/faq"
+          element={<Faq parameterObject={parameterObject} />}
+        />
       </Routes>
     </ThemeProvider>
   );
