@@ -48,6 +48,8 @@ type EditorSidebarProps = {
     toggleFloorTexture: () => void;
     exportLashings: boolean;
     toggleExportLashings: () => void;
+    isLightMode: boolean;
+    toggleLightmode: () => void;
   };
 };
 const EditorSidebar = ({ parameterObject }: EditorSidebarProps) => {
