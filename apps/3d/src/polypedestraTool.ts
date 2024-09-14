@@ -18,7 +18,7 @@ export class PolypedestraTool {
   lashPositionProjectedOnFloor: THREE.Vector3 = new THREE.Vector3();
   defaultLashHeight: number = 3.0;
   lashHeight: number = this.defaultLashHeight;
-  defaultNrOfPoles = 12;
+  defaultNrOfPoles = 4;
   nrOfPoles: number = this.defaultNrOfPoles;
 
   theta: number = 0.0;
@@ -98,7 +98,7 @@ export class PolypedestraTool {
     this.lashPositionProjectedOnFloor = groundPosition.clone();
     this.lashPosition = new THREE.Vector3(
       this.lashPositionProjectedOnFloor.x,
-      this.lashHeight + 0.3,
+      this.lashHeight,
       this.lashPositionProjectedOnFloor.z
     );
 
@@ -166,6 +166,7 @@ export class PolypedestraTool {
       if (Math.abs(d - 0.12) < bestDistanceSoFar) {
         bestDistanceSoFar = Math.abs(d - 0.12);
         bestRotationSoFar = alpha;
+        if (bestDistanceSoFar < 0.001) break;
       }
     }
 
