@@ -13,12 +13,16 @@ export class PolypedestraTool {
 
   onlyGroundPointOffsetDefault: THREE.Vector3;
   onlyGroundPointOffset: THREE.Vector3;
+  lashingOffset: THREE.Vector3;
   lashPosition: THREE.Vector3 = new THREE.Vector3();
   lashPositionProjectedOnFloor: THREE.Vector3 = new THREE.Vector3();
   defaultLashHeight: number = 3.0;
   lashHeight: number = this.defaultLashHeight;
   defaultNrOfPoles = 12;
   nrOfPoles: number = this.defaultNrOfPoles;
+
+  theta: number = 0.0;
+  rotationMatrix: THREE.Matrix4 = new THREE.Matrix4();
 
   constructor(viewer: Viewer) {
     this.viewer = viewer;
@@ -32,11 +36,18 @@ export class PolypedestraTool {
       (this.scaffolds[0].mainRadius + 0.02) /
       Math.sin(Math.PI / this.nrOfPoles);
     this.onlyGroundPointOffsetDefault = new THREE.Vector3(offset, 0, 0);
+    this.setNrOfPoles(this.defaultNrOfPoles);
+  }
+
+  setNrOfPoles(nrOfPoles: number) {
+    this.nrOfPoles = nrOfPoles;
+    this.theta = (2 * Math.PI) / this.nrOfPoles;
+    this.rotationMatrix = new THREE.Matrix4().makeRotationY(this.theta);
   }
 
   activate() {
     this.active = true;
-    this.nrOfPoles = this.defaultNrOfPoles;
+    this.setNrOfPoles(this.defaultNrOfPoles);
     for (let i = 0; i < 16; i++) {
       this.scaffolds[i].setPositions(new THREE.Vector3(0, 200, 0));
       if (i < this.nrOfPoles) this.scaffolds[i].setVisible();
@@ -54,7 +65,7 @@ export class PolypedestraTool {
   resetParameters() {
     this.midPointPlaced = false;
     this.lashHeight = this.defaultLashHeight;
-    this.nrOfPoles = 3;
+    this.nrOfPoles = this.defaultNrOfPoles;
   }
 
   leftClick() {
@@ -85,12 +96,16 @@ export class PolypedestraTool {
 
   drawFirstStep(groundPosition: THREE.Vector3) {
     this.lashPositionProjectedOnFloor = groundPosition.clone();
+    this.lashPosition = new THREE.Vector3(
+      this.lashPositionProjectedOnFloor.x,
+      this.lashHeight + 0.3,
+      this.lashPositionProjectedOnFloor.z
+    );
+
     let v = this.onlyGroundPointOffsetDefault.clone();
-    const theta = (2 * Math.PI) / this.nrOfPoles;
-    const rotationMatrix = new THREE.Matrix4().makeRotationY(theta);
     for (let i = 0; i < this.nrOfPoles; i++) {
       this.scaffolds[i].setPositionOnGround(groundPosition.clone().add(v));
-      v.applyMatrix4(rotationMatrix);
+      v.applyMatrix4(this.rotationMatrix);
     }
   }
 
@@ -99,28 +114,62 @@ export class PolypedestraTool {
       .clone()
       .sub(this.lashPositionProjectedOnFloor);
 
-    this.lashPosition = new THREE.Vector3(
-      this.lashPositionProjectedOnFloor.x,
-      this.lashHeight,
-      this.lashPositionProjectedOnFloor.z
-    );
-
-    const smallOffset = this.onlyGroundPointOffset
+    this.lashingOffset = this.onlyGroundPointOffset
       .clone()
       .normalize()
       .multiplyScalar(this.onlyGroundPointOffsetDefault.length());
 
-    let v = this.onlyGroundPointOffset.clone();
-    const theta = (2 * Math.PI) / this.nrOfPoles;
-    const rotationMatrix = new THREE.Matrix4().makeRotationY(theta);
+    let vBottom = this.onlyGroundPointOffset.clone();
+    let vTop = this.lashingOffset.clone();
+
+    const idealRotationTop = this.getIdealRotationTop();
+    vTop.applyMatrix4(idealRotationTop);
+
     for (let i = 0; i < this.nrOfPoles; i++) {
-      smallOffset.applyMatrix4(rotationMatrix);
       this.scaffolds[i].setPositionBetweenGroundAndPole(
-        this.lashPositionProjectedOnFloor.clone().add(v),
-        this.lashPosition.clone().add(smallOffset)
+        this.lashPositionProjectedOnFloor.clone().add(vBottom),
+        this.lashPosition.clone().add(vTop)
       );
-      v.applyMatrix4(rotationMatrix);
+      vBottom.applyMatrix4(this.rotationMatrix);
+      vTop.applyMatrix4(this.rotationMatrix);
     }
+  }
+
+  getIdealRotationTop() {
+    let bestRotationSoFar = 0.0;
+    let bestDistanceSoFar = Infinity;
+    for (let alpha = 0; alpha < (3 * Math.PI) / 4.0; alpha += 0.01) {
+      const tryRotation = new THREE.Matrix4().makeRotationY(alpha);
+
+      const Pa = this.lashPositionProjectedOnFloor
+        .clone()
+        .add(this.onlyGroundPointOffset);
+      const PaTop = this.lashPosition
+        .clone()
+        .add(this.lashingOffset.clone().applyMatrix4(tryRotation));
+      const Pb = this.lashPositionProjectedOnFloor
+        .clone()
+        .add(
+          this.onlyGroundPointOffset.clone().applyMatrix4(this.rotationMatrix)
+        );
+      const PbTop = this.lashPosition
+        .clone()
+        .add(
+          this.lashingOffset
+            .clone()
+            .applyMatrix4(tryRotation)
+            .applyMatrix4(this.rotationMatrix)
+        );
+      const Da = Pa.clone().sub(PaTop);
+      const Db = Pb.clone().sub(PbTop);
+      const d = this.distanceBetweenLines(Pa, Da, Pb, Db);
+      if (Math.abs(d - 0.12) < bestDistanceSoFar) {
+        bestDistanceSoFar = Math.abs(d - 0.12);
+        bestRotationSoFar = alpha;
+      }
+    }
+
+    return new THREE.Matrix4().makeRotationY(bestRotationSoFar);
   }
 
   distanceBetweenLines = (
