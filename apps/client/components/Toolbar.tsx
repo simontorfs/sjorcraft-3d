@@ -13,7 +13,8 @@ import AxeIcon from "../assets/icons/axe.svg?react";
 import React, { useContext, useState } from "react";
 import { Tool } from "./ToolbarItem";
 import { RendererContext } from "../contexts/rendererContext";
-import { Box, Typography } from "@mui/material";
+import { Box, Link, Typography } from "@mui/material";
+import NavigationLink from "./buildingBlocks/NavigationLink";
 
 type ToolbarType = {
   isLightMode: boolean;
@@ -141,12 +142,23 @@ const Toolbar = ({
           justifySelf: "center",
           alignContent: "center",
           alignItems: "center",
-          gap: "1rem",
+          gap: "2rem",
           width: "20%",
           height: "100%",
           padding: "0.3rem",
         }}
       >
+        <Box
+          sx={{
+            display: "flex",
+            flexDirection: "row",
+            gap: "2rem",
+            fontSize: "1.2rem",
+            fontWeight: "bold",
+          }}
+        >
+          <NavigationLink name={"FAQ"} link={"/faq"} />
+        </Box>
         {isLightMode ? (
           <LightModeIcon
             sx={{

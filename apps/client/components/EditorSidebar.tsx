@@ -48,6 +48,8 @@ type EditorSidebarProps = {
     toggleFloorTexture: () => void;
     exportLashings: boolean;
     toggleExportLashings: () => void;
+    isLightMode: boolean;
+    toggleLightmode: () => void;
   };
 };
 const EditorSidebar = ({ parameterObject }: EditorSidebarProps) => {
@@ -69,7 +71,6 @@ const EditorSidebar = ({ parameterObject }: EditorSidebarProps) => {
     <Box
       sx={{
         boxShadow: "-3px 5px 8px 0px rgba(0,0,0,0.2)",
-        height: "100%",
         zIndex: 10,
         right: parameterObject.isSidebarOpen ? "0" : "-10rem",
         transition: "right 0.5s ease  0s  normal",
@@ -79,6 +80,7 @@ const EditorSidebar = ({ parameterObject }: EditorSidebarProps) => {
         maxWidth: { xs: "0", md: "25rem" },
         overflowY: "auto",
         overflowX: "hidden",
+        height: "calc(100vh - 4rem)",
       }}
       bgcolor="primary.light"
       color="primary.contrastText"
