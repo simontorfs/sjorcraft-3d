@@ -29,6 +29,7 @@ export class PolypedestraTool {
   groundPositionLastMouseMove: THREE.Vector3 = new THREE.Vector3();
 
   verticalHelperLine: HelperLine = new HelperLine();
+  polypedestraIsColliding: boolean = false;
 
   constructor(viewer: Viewer) {
     this.viewer = viewer;
@@ -88,6 +89,7 @@ export class PolypedestraTool {
       this.onlyGroundPointPlaced = true;
       this.addVerticalHelperLine();
     } else {
+      if (this.polypedestraIsColliding) return;
       for (let i = 0; i < this.nrOfPoles; i++) {
         this.scaffolds[i].addToViewer(this.viewer);
         this.scaffolds[i] = new Scaffold();
@@ -128,6 +130,7 @@ export class PolypedestraTool {
     } else {
       this.drawThirdStep();
     }
+    this.checkCollisions();
   }
 
   drawFirstStep(groundPosition: THREE.Vector3) {
@@ -254,5 +257,28 @@ export class PolypedestraTool {
 
   removeVerticalHelperLine() {
     this.viewer.scene.remove(this.verticalHelperLine);
+  }
+
+  checkCollisions() {
+    this.polypedestraIsColliding = false;
+    this.viewer.domElement.style.cursor = "default";
+
+    for (const pole of this.viewer.inventory.poles) {
+      if (
+        this.scaffolds.find(
+          (scaffold) => scaffold.mainPole.visible && scaffold.overlaps(pole)
+        )
+      ) {
+        // @ts-ignore
+        pole.mesh.material.color = new THREE.Color(1, 0, 0);
+        if (this.onlyGroundPointPlaced) {
+          this.polypedestraIsColliding = true;
+          this.viewer.domElement.style.cursor = "not-allowed";
+        }
+      } else {
+        // @ts-ignore
+        pole.mesh.material.color = new THREE.Color(1, 1, 1);
+      }
+    }
   }
 }
