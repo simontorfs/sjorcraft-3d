@@ -24,6 +24,8 @@ export class PolypedestraTool {
   theta: number = 0.0;
   rotationMatrix: THREE.Matrix4 = new THREE.Matrix4();
 
+  groundPositionLastMouseMove: THREE.Vector3 = new THREE.Vector3();
+
   constructor(viewer: Viewer) {
     this.viewer = viewer;
     for (let i = 0; i < 16; i++) {
@@ -46,6 +48,7 @@ export class PolypedestraTool {
       if (i < this.nrOfPoles) this.scaffolds[i].setVisible();
       else this.scaffolds[i].setInvisible();
     }
+    this.drawPolypedestra(this.groundPositionLastMouseMove);
   }
 
   activate() {
@@ -98,6 +101,7 @@ export class PolypedestraTool {
   }
 
   drawPolypedestra(groundPosition: THREE.Vector3) {
+    this.groundPositionLastMouseMove = groundPosition;
     if (!this.midPointPlaced) {
       this.drawFirstStep(groundPosition);
     } else {
