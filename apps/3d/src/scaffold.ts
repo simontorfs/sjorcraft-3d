@@ -266,4 +266,22 @@ export class Scaffold {
       }
     }
   }
+
+  setVisible() {
+    if (this.length > 6.0) {
+      this.mainPole.visible = true;
+      this.extensionPole.visible = true;
+      this.splintPole.visible = true;
+    } else {
+      this.mainPole.visible = true;
+      this.extensionPole.visible = false;
+      this.splintPole.visible = false;
+    }
+  }
+
+  setInvisible() {
+    this.mainPole.visible = false;
+    this.extensionPole.visible = false;
+    this.splintPole.visible = false;
+  }
 }

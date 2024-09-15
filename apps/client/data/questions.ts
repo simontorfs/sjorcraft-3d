@@ -19,4 +19,9 @@ export const questions: { question: string; answer: string }[] = [
     answer:
       "Yes, you can cancel drawing a pole by rightclicking while drawing. This action is possible while using the pole-, bipod- and tripodtool.",
   },
+  {
+    question: "How does the polypedestratool work?",
+    answer:
+      "Click on the polypedestra icon in the toolbar. Then left-click three times in your drawing to set the middle point, the opening angle, and the height of the lashing. You can always go back to the previous step by right-clicking. You can change the number of poles in polypedestra with the up and down arrows on the keyboard.",
+  },
 ];
