@@ -9,8 +9,9 @@ export class PolypedestraTool {
   scaffolds: Scaffold[] = [];
 
   midPointPlaced: boolean = false;
-  onlyGoundPointPlaced: boolean = false;
+  onlyGroundPointPlaced: boolean = false;
 
+  onlyGroundPoint: THREE.Vector3 = new THREE.Vector3();
   onlyGroundPointOffsetDefault: THREE.Vector3;
   onlyGroundPointOffset: THREE.Vector3;
   lashingOffset: THREE.Vector3;
@@ -69,6 +70,7 @@ export class PolypedestraTool {
 
   resetParameters() {
     this.midPointPlaced = false;
+    this.onlyGroundPointPlaced = false;
     this.lashHeight = this.defaultLashHeight;
     this.nrOfPoles = this.defaultNrOfPoles;
   }
@@ -77,6 +79,8 @@ export class PolypedestraTool {
     if (!this.active) return;
     if (!this.midPointPlaced) {
       this.midPointPlaced = true;
+    } else if (!this.onlyGroundPointPlaced) {
+      this.onlyGroundPointPlaced = true;
     } else {
       for (let i = 0; i < this.nrOfPoles; i++) {
         this.scaffolds[i].addToViewer(this.viewer);
@@ -104,8 +108,10 @@ export class PolypedestraTool {
     this.groundPositionLastMouseMove = groundPosition;
     if (!this.midPointPlaced) {
       this.drawFirstStep(groundPosition);
-    } else {
+    } else if (!this.onlyGroundPointPlaced) {
       this.drawSecondStep(groundPosition);
+    } else {
+      this.drawThirdStep();
     }
   }
 
@@ -125,6 +131,7 @@ export class PolypedestraTool {
   }
 
   drawSecondStep(groundPosition: THREE.Vector3) {
+    this.onlyGroundPoint = groundPosition;
     this.onlyGroundPointOffset = groundPosition
       .clone()
       .sub(this.lashPositionProjectedOnFloor);
@@ -148,6 +155,23 @@ export class PolypedestraTool {
       vBottom.applyMatrix4(this.rotationMatrix);
       vTop.applyMatrix4(this.rotationMatrix);
     }
+  }
+
+  drawThirdStep() {
+    let target = this.viewer.inputHandler.getPointOnLineClosestToCursor(
+      this.lashPositionProjectedOnFloor,
+      new THREE.Vector3(0, 1, 0)
+    );
+
+    this.lashHeight = target.y;
+
+    this.lashPosition = new THREE.Vector3(
+      this.lashPositionProjectedOnFloor.x,
+      this.lashHeight,
+      this.lashPositionProjectedOnFloor.z
+    );
+
+    this.drawSecondStep(this.onlyGroundPoint);
   }
 
   getIdealRotationTop() {
