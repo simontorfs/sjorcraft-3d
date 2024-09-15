@@ -17,7 +17,7 @@ export const questions: { question: string; answer: string }[] = [
   {
     question: "Can I cancel drawing a pole?",
     answer:
-      "Yes, you can cancel drawing a pole by rightclicking while drawing. This action is possible while using the pole-, bipod- and tripodtool.",
+      "Yes, you can cancel drawing a pole by rightclicking while drawing. This action is possible while using the pole-, bipod-, tripod and polypedestratool.",
   },
   {
     question: "How does the polypedestratool work?",

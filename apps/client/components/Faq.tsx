@@ -20,7 +20,19 @@ type FaqProps = {
 };
 export const Faq = ({ parameterObject }: FaqProps) => {
   return (
-    <Box>
+    <Box
+      sx={{
+        bgcolor: "background.default",
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+        justifyContent: "flex-start",
+        gap: "5rem",
+        height: "100vh",
+        overflow: "auto",
+        margin: "0 0 5rem 0",
+      }}
+    >
       <NavigationBar parameterObject={parameterObject} />
       <Box
         bgcolor={"background.default"}
@@ -29,7 +41,8 @@ export const Faq = ({ parameterObject }: FaqProps) => {
           flexDirection: "column",
           alignItems: "center",
           justifyContent: "center",
-          height: "100vh",
+          margin: "0 0 5rem 0",
+          minHeight: "20rem",
         }}
       >
         <Typography
