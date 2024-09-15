@@ -72,7 +72,7 @@ export class PolypedestraTool {
     this.midPointPlaced = false;
     this.onlyGroundPointPlaced = false;
     this.lashHeight = this.defaultLashHeight;
-    this.nrOfPoles = this.defaultNrOfPoles;
+    this.setNrOfPoles(this.defaultNrOfPoles);
   }
 
   leftClick() {
@@ -94,6 +94,14 @@ export class PolypedestraTool {
 
   rightClick() {
     if (!this.active) return;
+    if (this.onlyGroundPointPlaced) {
+      this.onlyGroundPointPlaced = false;
+    } else if (this.midPointPlaced) {
+      this.midPointPlaced = false;
+    } else {
+      this.resetParameters();
+    }
+    this.drawPolypedestra(this.groundPositionLastMouseMove);
   }
 
   arrowUp() {
