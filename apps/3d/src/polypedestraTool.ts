@@ -81,6 +81,7 @@ export class PolypedestraTool {
         this.scaffolds[i].addToScene(this.viewer.scene);
       }
       this.resetParameters();
+      this.setNrOfPoles(this.defaultNrOfPoles);
     }
   }
 
