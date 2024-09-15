@@ -32,17 +32,20 @@ export class PolypedestraTool {
       this.scaffolds.push(scaffold);
       scaffold.addToScene(this.viewer.scene);
     }
-    const offset =
-      (this.scaffolds[0].mainRadius + 0.02) /
-      Math.sin(Math.PI / this.nrOfPoles);
-    this.onlyGroundPointOffsetDefault = new THREE.Vector3(offset, 0, 0);
-    this.setNrOfPoles(this.defaultNrOfPoles);
   }
 
   setNrOfPoles(nrOfPoles: number) {
     this.nrOfPoles = nrOfPoles;
     this.theta = (2 * Math.PI) / this.nrOfPoles;
     this.rotationMatrix = new THREE.Matrix4().makeRotationY(this.theta);
+    const offset =
+      (this.scaffolds[0].mainRadius + 0.02) /
+      Math.sin(Math.PI / this.nrOfPoles);
+    this.onlyGroundPointOffsetDefault = new THREE.Vector3(offset, 0, 0);
+    for (let i = 0; i < 16; i++) {
+      if (i < this.nrOfPoles) this.scaffolds[i].setVisible();
+      else this.scaffolds[i].setInvisible();
+    }
   }
 
   activate() {
@@ -50,7 +53,6 @@ export class PolypedestraTool {
     this.setNrOfPoles(this.defaultNrOfPoles);
     for (let i = 0; i < 16; i++) {
       this.scaffolds[i].setPositions(new THREE.Vector3(0, 200, 0));
-      if (i < this.nrOfPoles) this.scaffolds[i].setVisible();
     }
   }
 
@@ -84,6 +86,14 @@ export class PolypedestraTool {
 
   rightClick() {
     if (!this.active) return;
+  }
+
+  arrowUp() {
+    this.setNrOfPoles(Math.min(this.nrOfPoles + 1, 16));
+  }
+
+  arrowDown() {
+    this.setNrOfPoles(Math.max(this.nrOfPoles - 1, 3));
   }
 
   drawPolypedestra(groundPosition: THREE.Vector3) {

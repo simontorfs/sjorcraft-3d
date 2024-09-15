@@ -41,6 +41,16 @@ export class InputHandler {
       case "Control":
         this.ctrlDown = true;
         break;
+      case "ArrowUp":
+        if (this.viewer.polypedestraTool.active) {
+          this.viewer.polypedestraTool.arrowUp();
+        }
+        break;
+      case "ArrowDown":
+        if (this.viewer.polypedestraTool.active) {
+          this.viewer.polypedestraTool.arrowDown();
+        }
+        break;
       case "a":
         event.preventDefault();
         if (this.viewer.selectionTool.active && this.ctrlDown) {
