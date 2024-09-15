@@ -2,6 +2,7 @@ import { Scaffold } from "./scaffold";
 import * as THREE from "three";
 import { Viewer } from "./viewer";
 import { HelperLine } from "./helperLine";
+import { BipodLashing } from "./bipodLashing";
 
 export class BipodTool {
   active: boolean = false;
@@ -73,6 +74,13 @@ export class BipodTool {
       this.removeVerticalHelperLine();
       this.scaffold1.addToViewer(this.viewer);
       this.scaffold2.addToViewer(this.viewer);
+
+      const l = new BipodLashing(
+        this.scaffold1.mainPole,
+        this.scaffold2.mainPole
+      );
+      this.viewer.scene.add(l);
+
       this.scaffold1 = new Scaffold();
       this.scaffold2 = new Scaffold();
       this.scaffold1.addToScene(this.viewer.scene);
