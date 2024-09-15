@@ -1,6 +1,7 @@
 import * as THREE from "three";
 import { Scaffold } from "./scaffold";
 import { Viewer } from "./viewer";
+import { HelperLine } from "./helperLine";
 
 export class PolypedestraTool {
   active: boolean = false;
@@ -26,6 +27,8 @@ export class PolypedestraTool {
   rotationMatrix: THREE.Matrix4 = new THREE.Matrix4();
 
   groundPositionLastMouseMove: THREE.Vector3 = new THREE.Vector3();
+
+  verticalHelperLine: HelperLine = new HelperLine();
 
   constructor(viewer: Viewer) {
     this.viewer = viewer;
@@ -62,10 +65,11 @@ export class PolypedestraTool {
 
   deactivate() {
     this.active = false;
+    this.resetParameters();
+
     for (const scaffold of this.scaffolds) {
       scaffold.setInvisible();
     }
-    this.resetParameters();
   }
 
   resetParameters() {
@@ -73,6 +77,7 @@ export class PolypedestraTool {
     this.onlyGroundPointPlaced = false;
     this.lashHeight = this.defaultLashHeight;
     this.setNrOfPoles(this.defaultNrOfPoles);
+    this.removeVerticalHelperLine();
   }
 
   leftClick() {
@@ -81,6 +86,7 @@ export class PolypedestraTool {
       this.midPointPlaced = true;
     } else if (!this.onlyGroundPointPlaced) {
       this.onlyGroundPointPlaced = true;
+      this.addVerticalHelperLine();
     } else {
       for (let i = 0; i < this.nrOfPoles; i++) {
         this.scaffolds[i].addToViewer(this.viewer);
@@ -96,6 +102,7 @@ export class PolypedestraTool {
     if (!this.active) return;
     if (this.onlyGroundPointPlaced) {
       this.onlyGroundPointPlaced = false;
+      this.removeVerticalHelperLine();
     } else if (this.midPointPlaced) {
       this.midPointPlaced = false;
     } else {
@@ -179,6 +186,8 @@ export class PolypedestraTool {
       this.lashPositionProjectedOnFloor.z
     );
 
+    this.updateVerticalHelperLine();
+
     this.drawSecondStep(this.onlyGroundPoint);
   }
 
@@ -232,4 +241,18 @@ export class PolypedestraTool {
     const denominator = crossD.length();
     return numerator / denominator;
   };
+
+  addVerticalHelperLine() {
+    this.updateVerticalHelperLine();
+    this.viewer.scene.add(this.verticalHelperLine);
+  }
+
+  updateVerticalHelperLine() {
+    const points = [this.lashPositionProjectedOnFloor, this.lashPosition];
+    this.verticalHelperLine.setBetweenPoints(points);
+  }
+
+  removeVerticalHelperLine() {
+    this.viewer.scene.remove(this.verticalHelperLine);
+  }
 }
