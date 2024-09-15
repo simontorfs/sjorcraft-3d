@@ -50,6 +50,15 @@ const stringToColor = (string: string) => {
   return color;
 };
 
+// generate contrastcolor (light or dark depending on background color)
+const contrastColor = (color: string) => {
+  const r = parseInt(color.substr(1, 2), 16);
+  const g = parseInt(color.substr(3, 2), 16);
+  const b = parseInt(color.substr(5, 2), 16);
+  const brightness = (r * 299 + g * 587 + b * 114) / 1000;
+  return brightness > 155 ? "#000000" : "#ffffff";
+};
+
 const NavigationBar = ({ parameterObject }: ToolbarType) => {
   const [drawerOpen, setDrawerOpen] = React.useState(false);
 
@@ -72,6 +81,7 @@ const NavigationBar = ({ parameterObject }: ToolbarType) => {
 
   const accountName = "SjorCRAFT";
   const avatarColor = stringToColor(accountName);
+  const avatarTextColor = contrastColor(avatarColor);
 
   const drawerContent = (
     <Box
@@ -183,7 +193,7 @@ const NavigationBar = ({ parameterObject }: ToolbarType) => {
             >
               <Tooltip title="Account">
                 <IconButton sx={{ p: 0 }}>
-                  <Avatar sx={{ bgcolor: avatarColor }}>
+                  <Avatar sx={{ bgcolor: avatarColor, color: avatarTextColor }}>
                     {accountName.charAt(0)}
                   </Avatar>
                 </IconButton>
