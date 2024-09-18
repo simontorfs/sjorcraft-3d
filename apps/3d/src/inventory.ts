@@ -1,3 +1,4 @@
+import { BipodLashing } from "./bipodLashing";
 import { Lashing } from "./lashing";
 import { Pole, colors, allowedLengths } from "./pole";
 import { Viewer } from "./viewer";
@@ -13,6 +14,7 @@ export class Inventory {
   viewer: Viewer;
   poles: Pole[] = [];
   lashings: Lashing[] = [];
+  bipodLashings: BipodLashing[] = [];
 
   constructor(viewer: Viewer) {
     this.viewer = viewer;
@@ -34,9 +36,18 @@ export class Inventory {
     });
   }
 
+  addBipodLashing(lashing: BipodLashing) {
+    this.bipodLashings.push(lashing);
+    (this.viewer.scene as any).dispatchEvent({
+      type: "new_bipod_lashing_placed",
+      lashing: lashing,
+    });
+  }
+
   removePole(poleToRemove: Pole) {
     this.viewer.scene.remove(poleToRemove);
     this.poles = this.poles.filter((pole) => pole !== poleToRemove);
+
     for (const lashing of this.viewer.inventory.lashings) {
       if (
         lashing.loosePole === poleToRemove ||
@@ -45,6 +56,13 @@ export class Inventory {
         this.removeLashing(lashing);
       }
     }
+
+    for (const lashing of this.viewer.inventory.bipodLashings) {
+      if (lashing.pole1 === poleToRemove || lashing.pole2 === poleToRemove) {
+        this.removeBipodLashing(lashing);
+      }
+    }
+
     (this.viewer.scene as any).dispatchEvent({
       type: "pole_removed",
       pole: poleToRemove,
@@ -54,11 +72,23 @@ export class Inventory {
   removeLashing(lashingToRemove: Lashing) {
     this.viewer.scene.remove(lashingToRemove);
 
-    this.viewer.inventory.lashings = this.lashings.filter(
+    this.lashings = this.lashings.filter(
       (lashing) => lashing !== lashingToRemove
     );
     (this.viewer.scene as any).dispatchEvent({
       type: "lashing_removed",
+      lashing: lashingToRemove,
+    });
+  }
+
+  removeBipodLashing(lashingToRemove: BipodLashing) {
+    this.viewer.scene.remove(lashingToRemove);
+
+    this.bipodLashings = this.bipodLashings.filter(
+      (lashing) => lashing !== lashingToRemove
+    );
+    (this.viewer.scene as any).dispatchEvent({
+      type: "bipod_lashing_removed",
       lashing: lashingToRemove,
     });
   }
@@ -79,6 +109,11 @@ export class Inventory {
       this.viewer.scene.remove(lashing);
     }
     this.lashings = [];
+
+    for (const lashing of this.bipodLashings) {
+      this.viewer.scene.remove(lashing);
+    }
+    this.bipodLashings = [];
   }
 
   getPolesGroupedByLength() {
@@ -105,6 +140,10 @@ export class Inventory {
 
   getAmountOfLashings() {
     return this.lashings.length;
+  }
+
+  getAmountOfBipodLashings() {
+    return this.bipodLashings.length;
   }
 
   resetAllColors() {
