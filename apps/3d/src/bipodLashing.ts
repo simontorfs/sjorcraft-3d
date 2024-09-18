@@ -46,4 +46,14 @@ export class BipodLashing extends THREE.Object3D {
     this.mesh.geometry.dispose();
     this.mesh.geometry = new THREE.TubeGeometry(path, 360, 0.003, 8, true);
   }
+
+  threatenWithDestruction() {
+    // @ts-ignore
+    this.mesh.material.color = new THREE.Color(0x996209);
+  }
+
+  stopThreatening() {
+    // @ts-ignore
+    this.mesh.material.color = new THREE.Color(0x9e9578);
+  }
 }

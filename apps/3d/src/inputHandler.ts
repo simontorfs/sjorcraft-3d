@@ -3,6 +3,7 @@ import { Pole } from "./pole";
 import { Viewer } from "./viewer";
 import { ButtonType } from "../../client/components/ToolbarItem";
 import { Lashing } from "./lashing";
+import { BipodLashing } from "./bipodLashing";
 
 export class InputHandler {
   viewer: Viewer;
@@ -121,7 +122,10 @@ export class InputHandler {
     const hoveredPole = poleIntersect?.object.parent as Pole;
 
     const objectIntersect = this.getObjectIntersect();
-    const hoveredObject = objectIntersect?.object.parent as Pole | Lashing;
+    const hoveredObject = objectIntersect?.object.parent as
+      | Pole
+      | Lashing
+      | BipodLashing;
 
     if (this.viewer.poleTool.active) {
       if (poleIntersect?.normal) {
@@ -172,6 +176,7 @@ export class InputHandler {
     const intersects = raycaster.intersectObjects([
       ...this.viewer.inventory.poles.map((pole) => pole.mesh),
       ...this.viewer.inventory.lashings.map((lashing) => lashing.mesh),
+      ...this.viewer.inventory.bipodLashings.map((lashing) => lashing.mesh),
     ]);
 
     if (intersects.length) {
