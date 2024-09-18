@@ -10,10 +10,7 @@ export class BipodTool {
 
   scaffold1: Scaffold = new Scaffold();
   scaffold2: Scaffold = new Scaffold();
-  lashing: BipodLashing = new BipodLashing(
-    this.scaffold1.mainPole,
-    this.scaffold2.mainPole
-  );
+  lashing: BipodLashing = new BipodLashing(this.scaffold1, this.scaffold2);
 
   scaffold1Placed: boolean = false;
   scaffold2Placed: boolean = false;
@@ -84,10 +81,7 @@ export class BipodTool {
       this.scaffold1.addToScene(this.viewer.scene);
       this.scaffold2.addToScene(this.viewer.scene);
       this.viewer.inventory.addBipodLashing(this.lashing);
-      this.lashing = new BipodLashing(
-        this.scaffold1.mainPole,
-        this.scaffold2.mainPole
-      );
+      this.lashing = new BipodLashing(this.scaffold1, this.scaffold2);
       this.viewer.scene.add(this.lashing);
       this.resetParameters();
     }

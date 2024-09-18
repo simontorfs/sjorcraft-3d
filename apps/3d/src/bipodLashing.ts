@@ -1,18 +1,21 @@
 import * as THREE from "three";
 import { Pole } from "./pole";
 import { BipodLashingCurve } from "./bipodLashingCurve";
+import { Scaffold } from "./scaffold";
 
 export class BipodLashing extends THREE.Object3D {
+  scaffold1: Scaffold;
+  scaffold2: Scaffold;
   pole1: Pole;
   pole2: Pole;
   centerPole1: THREE.Vector3;
   centerPole2: THREE.Vector3;
 
   mesh: THREE.Mesh;
-  constructor(pole1: Pole, pole2: Pole) {
+  constructor(scaffold1: Scaffold, scaffold2: Scaffold) {
     super();
-    this.pole1 = pole1;
-    this.pole2 = pole2;
+    this.scaffold1 = scaffold1;
+    this.scaffold2 = scaffold2;
 
     this.mesh = new THREE.Mesh();
     this.mesh.material = new THREE.MeshStandardMaterial({
@@ -25,6 +28,11 @@ export class BipodLashing extends THREE.Object3D {
   }
 
   update() {
+    if (this.scaffold1.length <= 6.0) this.pole1 = this.scaffold1.mainPole;
+    else this.pole1 = this.scaffold1.extensionPole;
+    if (this.scaffold2.length <= 6.0) this.pole2 = this.scaffold2.mainPole;
+    else this.pole2 = this.scaffold2.extensionPole;
+
     const { closestPoint, closestPointOnOtherPole } =
       this.pole1.getClosestApproach(this.pole2);
 
