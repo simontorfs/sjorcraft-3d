@@ -2,14 +2,17 @@ import { useCallback, useContext, useEffect, useState } from "react";
 import { RendererContext } from "../../contexts/rendererContext";
 import { Pole } from "../../../3d/src/pole";
 import { Lashing } from "../../../3d/src/lashing";
+import { BipodLashing } from "../../../3d/src/bipodLashing";
 
 export const useLashings = () => {
   const rendererContext = useContext(RendererContext);
   const viewer = rendererContext.viewer;
   const [lashings, setLashings] = useState<number>();
+  const [bipodLashings, setBipodLashings] = useState<number>();
 
   useEffect(() => {
     setLashings(viewer?.inventory.getAmountOfLashings());
+    setBipodLashings(viewer?.inventory.getAmountOfBipodLashings());
   }, [viewer]);
 
   const onLashingPlaced = useCallback(
@@ -22,6 +25,20 @@ export const useLashings = () => {
   const onLashingRemoved = useCallback(
     ({ lashing }: { lashing: Lashing }) => {
       setLashings(viewer?.inventory.getAmountOfLashings());
+    },
+    [viewer]
+  );
+
+  const onBipodLashingPlaced = useCallback(
+    ({ lashing }: { lashing: BipodLashing }) => {
+      setBipodLashings(viewer?.inventory.getAmountOfBipodLashings());
+    },
+    [viewer]
+  );
+
+  const onBipodLashingRemoved = useCallback(
+    ({ lashing }: { lashing: BipodLashing }) => {
+      setBipodLashings(viewer?.inventory.getAmountOfBipodLashings());
     },
     [viewer]
   );
@@ -51,5 +68,33 @@ export const useLashings = () => {
     };
   }, [onLashingRemoved, viewer]);
 
-  return lashings;
+  useEffect(() => {
+    if (!viewer) return;
+    (viewer.scene as any).addEventListener(
+      "new_bipod_lashing_placed",
+      onBipodLashingPlaced
+    );
+    return () => {
+      (viewer.scene as any).removeEventListener(
+        "new_bipod_lashing_placed",
+        onBipodLashingPlaced
+      );
+    };
+  }, [onBipodLashingPlaced, viewer]);
+
+  useEffect(() => {
+    if (!viewer) return;
+    (viewer.scene as any).addEventListener(
+      "bipod_lashing_removed",
+      onBipodLashingRemoved
+    );
+    return () => {
+      (viewer.scene as any).removeEventListener(
+        "bipod_lashing_removed",
+        onBipodLashingRemoved
+      );
+    };
+  }, [onBipodLashingRemoved, viewer]);
+
+  return [lashings, bipodLashings];
 };
