@@ -42,6 +42,16 @@ export class InputHandler {
       case "Control":
         this.ctrlDown = true;
         break;
+      case "ArrowUp":
+        if (this.viewer.polypedestraTool.active) {
+          this.viewer.polypedestraTool.arrowUp();
+        }
+        break;
+      case "ArrowDown":
+        if (this.viewer.polypedestraTool.active) {
+          this.viewer.polypedestraTool.arrowDown();
+        }
+        break;
       case "a":
         event.preventDefault();
         if (this.viewer.selectionTool.active && this.ctrlDown) {
@@ -102,6 +112,12 @@ export class InputHandler {
         } else {
           this.viewer.tripodTool.rightClick();
         }
+      } else if (this.viewer.polypedestraTool.active) {
+        if (event.button === THREE.MOUSE.LEFT) {
+          this.viewer.polypedestraTool.leftClick();
+        } else {
+          this.viewer.polypedestraTool.rightClick();
+        }
       } else if (this.viewer.lashingTool.active) {
         if (event.button === THREE.MOUSE.LEFT) {
           this.viewer.lashingTool.leftClick();
@@ -161,6 +177,8 @@ export class InputHandler {
       this.viewer.bipodTool.drawBipod(groundPosition);
     } else if (this.viewer.tripodTool.active) {
       this.viewer.tripodTool.drawTripod(groundPosition);
+    } else if (this.viewer.polypedestraTool.active) {
+      this.viewer.polypedestraTool.drawPolypedestra(groundPosition);
     } else if (this.viewer.lashingTool.active) {
       this.viewer.lashingTool.setHoveredPole(hoveredPole);
     }
@@ -267,6 +285,7 @@ export class InputHandler {
     this.viewer.poleTool.deactivate();
     this.viewer.bipodTool.deactivate();
     this.viewer.tripodTool.deactivate();
+    this.viewer.polypedestraTool.deactivate();
     this.viewer.destructionTool.deactivate();
     this.viewer.lashingTool.deactivate();
   }
@@ -286,8 +305,8 @@ export class InputHandler {
       case "tripodtool":
         this.viewer.tripodTool.activate();
         break;
-      case "polytool":
-        // Activate polypedastraTool
+      case "polypedestratool":
+        this.viewer.polypedestraTool.activate();
         break;
       case "lashingtool":
         this.viewer.lashingTool.activate();

@@ -6,7 +6,7 @@ export type ButtonType =
   | "poletool"
   | "bipodtool"
   | "tripodtool"
-  | "polytool"
+  | "polypedestratool"
   | "lashingtool"
   | "destructiontool";
 interface ToolbarItemProps {
