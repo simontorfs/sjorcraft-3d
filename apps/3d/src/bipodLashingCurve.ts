@@ -34,7 +34,7 @@ export class BipodLashingCurve extends THREE.Curve<THREE.Vector3> {
   }
 
   getPoint(t: number, optionalTarget = new THREE.Vector3()) {
-    const parts = 6;
+    const parts = 9;
     const rp1 = 0.06; // Radius pole1
     const rp2 = 0.06; // Radius pole2
     const ropeDiameter = 0.006;
@@ -47,41 +47,62 @@ export class BipodLashingCurve extends THREE.Curve<THREE.Vector3> {
       tz = 0;
 
     if (t < 1 / parts) {
+      // Timmermanssteek
+      pole1Strand = true;
+      x = parts * t * 2 * Math.PI;
+      tx = Math.cos(x) * rp1;
+      ty = Math.sin(x) * rp1;
+      tz = -2 * spacing;
+    } else if (t < 2 / parts) {
       pole1Strand = true;
       x = parts * t * 2 * Math.PI;
       tx = Math.cos(x) * rp1;
       ty = Math.sin(x) * rp1;
       tz = -spacing;
-    } else if (t < 2 / parts) {
+    } else if (t < 3 / parts) {
       pole1Strand = false;
       x = (parts * t - 1) * 2 * Math.PI;
       tx = Math.cos(x) * rp2;
       ty = Math.sin(x) * rp2;
       tz = -spacing;
-    } else if (t < 3 / parts) {
+    } else if (t < 4 / parts) {
       pole1Strand = true;
       x = (parts * t - 2) * 2 * Math.PI;
       tx = Math.cos(x) * rp1;
       ty = Math.sin(x) * rp1;
       tz = 0;
-    } else if (t < 4 / parts) {
+    } else if (t < 5 / parts) {
       pole1Strand = false;
       x = (parts * t - 3) * 2 * Math.PI;
       tx = Math.cos(x) * rp2;
       ty = Math.sin(x) * rp2;
       tz = 0;
-    } else if (t < 5 / parts) {
+    } else if (t < 6 / parts) {
       pole1Strand = true;
       x = (parts * t - 4) * 2 * Math.PI;
       tx = Math.cos(x) * rp1;
       ty = Math.sin(x) * rp1;
       tz = spacing;
-    } else {
+    } else if (t < 7 / parts) {
       pole1Strand = false;
       x = (parts * t - 5) * 2 * Math.PI;
       tx = Math.cos(x) * rp2;
       ty = Math.sin(x) * rp2;
       tz = spacing;
+    } else if (t < 8 / parts) {
+      // Mastworp
+      pole1Strand = false;
+      x = (parts * t - 5) * 2 * Math.PI;
+      tx = Math.cos(x) * rp2;
+      ty = Math.sin(x) * rp2;
+      tz = 2 * spacing;
+    } else {
+      // Mastworp
+      pole1Strand = false;
+      x = (parts * t - 5) * 2 * Math.PI;
+      tx = Math.cos(x) * rp2;
+      ty = Math.sin(x) * rp2;
+      tz = 3 * spacing;
     }
 
     if (pole1Strand) {
