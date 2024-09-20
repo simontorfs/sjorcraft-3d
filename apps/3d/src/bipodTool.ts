@@ -2,6 +2,7 @@ import { Scaffold } from "./scaffold";
 import * as THREE from "three";
 import { Viewer } from "./viewer";
 import { HelperLine } from "./helperLine";
+import { BipodLashing } from "./bipodLashing";
 
 export class BipodTool {
   active: boolean = false;
@@ -9,6 +10,7 @@ export class BipodTool {
 
   scaffold1: Scaffold = new Scaffold();
   scaffold2: Scaffold = new Scaffold();
+  lashing: BipodLashing = new BipodLashing(this.scaffold1, this.scaffold2);
 
   scaffold1Placed: boolean = false;
   scaffold2Placed: boolean = false;
@@ -29,6 +31,7 @@ export class BipodTool {
 
   constructor(viewer: Viewer) {
     this.viewer = viewer;
+    this.viewer.scene.add(this.lashing);
   }
 
   activate() {
@@ -77,6 +80,9 @@ export class BipodTool {
       this.scaffold2 = new Scaffold();
       this.scaffold1.addToScene(this.viewer.scene);
       this.scaffold2.addToScene(this.viewer.scene);
+      this.viewer.inventory.addBipodLashing(this.lashing);
+      this.lashing = new BipodLashing(this.scaffold1, this.scaffold2);
+      this.viewer.scene.add(this.lashing);
       this.resetParameters();
     }
   }
@@ -109,6 +115,7 @@ export class BipodTool {
       this.drawFourthStep();
     }
     this.checkCollisions();
+    this.lashing.update();
   }
 
   drawFirstStep(groundPosition: THREE.Vector3) {
