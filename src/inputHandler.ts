@@ -1,7 +1,6 @@
 import * as THREE from "three";
 import { Pole } from "./pole";
 import { Viewer } from "./viewer";
-import { ButtonType } from "../../client/components/ToolbarItem";
 import { Lashing } from "./lashing";
 import { BipodLashing } from "./bipodLashing";
 
@@ -290,7 +289,7 @@ export class InputHandler {
     this.viewer.lashingTool.deactivate();
   }
 
-  onActivateTool(tool: ButtonType) {
+  onActivateTool(tool: string) {
     this.deactiveTools();
     switch (tool) {
       case "selectiontool":
@@ -313,6 +312,7 @@ export class InputHandler {
         break;
       case "destructiontool":
         this.viewer.destructionTool.activate();
+        break;
       default:
         break;
     }
