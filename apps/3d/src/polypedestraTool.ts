@@ -62,6 +62,7 @@ export class PolypedestraTool {
     for (let i = 0; i < 16; i++) {
       this.scaffolds[i].setPositions(new THREE.Vector3(0, 200, 0));
     }
+    this.viewer.inventory.resetAllColors();
   }
 
   deactivate() {
@@ -71,6 +72,7 @@ export class PolypedestraTool {
     for (const scaffold of this.scaffolds) {
       scaffold.setInvisible();
     }
+    this.viewer.inventory.resetAllColors();
   }
 
   resetParameters() {
