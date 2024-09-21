@@ -1,8 +1,8 @@
-import { Pole } from "./pole";
-import { Viewer } from "./viewer";
-import { Lashing } from "./lashing";
-import { ColladaExporter } from "./exporters/colladaExporter";
-import { STLExporter } from "./exporters/stlExporter";
+import { Pole } from "./../objects/pole";
+import { Viewer } from "../viewer";
+import { Lashing } from "../objects/lashings/lashing";
+import { ColladaExporter } from "./colladaExporter";
+import { STLExporter } from "./stlExporter";
 
 export type TObjectArray = Array<Pole | Lashing>;
 export class SaveTool {

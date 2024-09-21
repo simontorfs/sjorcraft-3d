@@ -1,17 +1,17 @@
 import * as THREE from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
 import { InputHandler } from "./inputHandler";
-import { PoleTool } from "./poleTool";
-import { SaveTool } from "./saveTool";
-import { SelectionTool } from "./selectionTool";
-import { Floor } from "./floor";
-import { ImageExporter } from "./imageExporter";
-import { BipodTool } from "./bipodTool";
-import { TripodTool } from "./tripodTool";
-import { PolypedestraTool } from "./polypedestraTool";
-import { DestructionTool } from "./destructionTool";
-import { LashingTool } from "./lashingTool";
-import { PoleTransformer } from "./poleTransformer";
+import { PoleTool } from "./tools/poleTool";
+import { SaveTool } from "./exporters/saveTool";
+import { SelectionTool } from "./tools/selectionTool";
+import { Floor } from "./objects/floor";
+import { ImageExporter } from "./exporters/imageExporter";
+import { BipodTool } from "./tools/bipodTool";
+import { TripodTool } from "./tools/tripodTool";
+import { PolypedestraTool } from "./tools/polypedestraTool";
+import { DestructionTool } from "./tools/destructionTool";
+import { LashingTool } from "./tools/lashingTool";
+import { PoleTransformer } from "./tools/poleTransformer";
 import { Inventory } from "./inventory";
 
 export class Viewer {

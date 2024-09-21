@@ -1,6 +1,6 @@
-import { Lashing } from "./lashing";
-import { Pole } from "./pole";
-import { Viewer } from "./viewer";
+import { Lashing } from "../objects/lashings/lashing";
+import { Pole } from "../pole";
+import { Viewer } from "../viewer";
 import * as THREE from "three";
 
 export class LashingTool {

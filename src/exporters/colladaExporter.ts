@@ -1,5 +1,5 @@
 import * as THREE from "three";
-import { TObjectArray } from "../saveTool";
+import { TObjectArray } from "./saveTool";
 
 export class ColladaExporter {
   public parse(objectArray: TObjectArray): string {

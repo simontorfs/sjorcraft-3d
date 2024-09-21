@@ -1,6 +1,6 @@
-import { BipodLashing } from "./bipodLashing";
-import { Lashing } from "./lashing";
-import { Pole, colors, allowedLengths } from "./pole";
+import { BipodLashing } from "./objects/lashings/bipodLashing";
+import { Lashing } from "./objects/lashings/lashing";
+import { Pole, colors, allowedLengths } from "./objects/pole";
 import { Viewer } from "./viewer";
 import * as THREE from "three";
 

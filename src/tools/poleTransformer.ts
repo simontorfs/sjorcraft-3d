@@ -1,8 +1,8 @@
 import * as THREE from "three";
-import { Pole } from "./pole";
-import { Viewer } from "./viewer";
-import { Scaffold } from "./scaffold";
-import { Lashing } from "./lashing";
+import { Pole } from "../objects/pole";
+import { Viewer } from "../viewer";
+import { Scaffold } from "../objects/scaffold";
+import { Lashing } from "../objects/lashings/lashing";
 
 export class PoleTransformer extends THREE.Object3D {
   viewer: Viewer;

@@ -1,8 +1,8 @@
-import { Scaffold } from "./scaffold";
+import { Scaffold } from "../objects/scaffold";
 import * as THREE from "three";
-import { Viewer } from "./viewer";
-import { HelperLine } from "./helperLine";
-import { BipodLashing } from "./bipodLashing";
+import { Viewer } from "../viewer";
+import { HelperLine } from "../objects/helperLine";
+import { BipodLashing } from "../objects/lashings/bipodLashing";
 
 export class BipodTool {
   active: boolean = false;

@@ -1,7 +1,7 @@
 import * as THREE from "three";
-import { Scaffold } from "./scaffold";
-import { Viewer } from "./viewer";
-import { HelperLine } from "./helperLine";
+import { Scaffold } from "../objects/scaffold";
+import { Viewer } from "../viewer";
+import { HelperLine } from "../objects/helperLine";
 
 export class TripodTool {
   active: boolean = false;

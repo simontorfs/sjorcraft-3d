@@ -1,5 +1,5 @@
-import { Pole } from "./pole";
-import { Scaffold } from "./scaffold";
+import { Pole } from "../pole";
+import { Scaffold } from "../scaffold";
 import { SquareLashingCurve } from "./squareLashingCurve";
 import * as THREE from "three";
 

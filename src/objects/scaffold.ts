@@ -1,6 +1,6 @@
 import * as THREE from "three";
-import { Pole } from "./pole";
-import { Viewer } from "./viewer";
+import { Pole } from "../objects/pole";
+import { Viewer } from "./../viewer";
 
 export class Scaffold {
   mainPole: Pole;

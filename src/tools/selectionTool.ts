@@ -1,5 +1,5 @@
-import { Pole } from "./pole";
-import { Viewer } from "./viewer";
+import { Pole } from "../pole";
+import { Viewer } from "../viewer";
 
 export class SelectionTool {
   active: boolean;

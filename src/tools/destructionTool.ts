@@ -1,7 +1,7 @@
-import { BipodLashing } from "./bipodLashing";
-import { Lashing } from "./lashing";
-import { Pole } from "./pole";
-import { Viewer } from "./viewer";
+import { BipodLashing } from "../objects/lashings/bipodLashing";
+import { Lashing } from "../objects/lashings/lashing";
+import { Pole } from "../objects/pole";
+import { Viewer } from "../viewer";
 
 export class DestructionTool {
   active: boolean;

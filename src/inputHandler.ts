@@ -1,8 +1,8 @@
 import * as THREE from "three";
 import { Pole } from "./pole";
 import { Viewer } from "./viewer";
-import { Lashing } from "./lashing";
-import { BipodLashing } from "./bipodLashing";
+import { Lashing } from "./objects/lashings/lashing";
+import { BipodLashing } from "./objects/lashings/bipodLashing";
 
 export class InputHandler {
   viewer: Viewer;

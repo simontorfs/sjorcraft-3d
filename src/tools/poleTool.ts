@@ -1,9 +1,9 @@
-import { Pole } from "./pole";
-import { Scaffold } from "./scaffold";
+import { Pole } from "../objects/pole";
+import { Scaffold } from "../objects/scaffold";
 import * as THREE from "three";
-import { Viewer } from "./viewer";
-import { Lashing } from "./lashing";
-import { HelperLine } from "./helperLine";
+import { Viewer } from "../viewer";
+import { Lashing } from "../objects/lashings/lashing";
+import { HelperLine } from "../objects/helperLine";
 
 export class PoleTool {
   active: boolean;

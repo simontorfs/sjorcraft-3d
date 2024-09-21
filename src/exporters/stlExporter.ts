@@ -1,6 +1,6 @@
 import { Vector3 } from "three";
 import * as THREE from "three";
-import { TObjectArray } from "../saveTool";
+import { TObjectArray } from "./saveTool";
 
 class STLExporter {
   parse(objectArray: TObjectArray, options) {
