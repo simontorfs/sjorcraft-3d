@@ -109,7 +109,7 @@ export class Pole extends THREE.Object3D {
   }
 
   setLength(minimumLength: number) {
-    // if the lenth is too big, just set it to the biggest lenght
+    // if the lenth is too big, just set it to the biggest length
     this.length = allowedLengths[allowedLengths.length - 1];
     this.color = colors[colors.length - 1];
 
