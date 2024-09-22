@@ -40,7 +40,7 @@ export class TripodTool {
     this.active = true;
     this.scaffold1.setPositions(new THREE.Vector3(0, 200, 0));
     this.scaffold2.setPositions(new THREE.Vector3(0, 200, 0));
-    this.scaffold2.setPositions(new THREE.Vector3(0, 200, 0));
+    this.scaffold3.setPositions(new THREE.Vector3(0, 200, 0));
     this.scaffold1.addToScene(this.viewer.scene);
     this.scaffold2.addToScene(this.viewer.scene);
     this.scaffold3.addToScene(this.viewer.scene);
