@@ -13,6 +13,7 @@ import { DestructionTool } from "./tools/destructionTool";
 import { LashingTool } from "./tools/lashingTool";
 import { PoleTransformer } from "./tools/poleTransformer";
 import { Inventory } from "./inventory";
+import { Debug } from "./debug";
 
 export class Viewer {
   domElement: HTMLElement;
@@ -23,6 +24,7 @@ export class Viewer {
   camera: THREE.PerspectiveCamera;
   controls: OrbitControls;
   inputHandler: InputHandler;
+  debug: Debug;
 
   selectionTool: SelectionTool;
   poleTool: PoleTool;
@@ -82,6 +84,7 @@ export class Viewer {
     this.controls.enableDamping = false;
 
     this.inputHandler = new InputHandler(this);
+    this.debug = new Debug(this);
 
     // Floor
     this.floor = new Floor(this);

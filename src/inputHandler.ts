@@ -1,5 +1,5 @@
 import * as THREE from "three";
-import { Pole } from "./pole";
+import { Pole } from "./objects/pole";
 import { Viewer } from "./viewer";
 import { Lashing } from "./objects/lashings/lashing";
 import { BipodLashing } from "./objects/lashings/bipodLashing";
