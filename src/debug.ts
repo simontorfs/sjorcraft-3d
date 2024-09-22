@@ -23,70 +23,24 @@ export class Debug {
       activeElement.blur();
     });
 
-    this.gui
-      .add(
-        {
-          trigger: () =>
-            this.viewer.inputHandler.onActivateTool("selectiontool"),
-        },
-        "trigger"
-      )
-      .name("Selection");
+    const triggers = {
+      selection: () => this.viewer.inputHandler.onActivateTool("selectiontool"),
+      pole: () => this.viewer.inputHandler.onActivateTool("poletool"),
+      bipod: () => this.viewer.inputHandler.onActivateTool("bipodtool"),
+      tripod: () => this.viewer.inputHandler.onActivateTool("tripodtool"),
+      polypedestra: () =>
+        this.viewer.inputHandler.onActivateTool("polypedestratool"),
+      destruction: () =>
+        this.viewer.inputHandler.onActivateTool("destructiontool"),
+      lashing: () => this.viewer.inputHandler.onActivateTool("lashingtool"),
+    };
 
-    this.gui
-      .add(
-        {
-          trigger: () => this.viewer.inputHandler.onActivateTool("poletool"),
-        },
-        "trigger"
-      )
-      .name("Pole");
-
-    this.gui
-      .add(
-        {
-          trigger: () => this.viewer.inputHandler.onActivateTool("bipodtool"),
-        },
-        "trigger"
-      )
-      .name("Bipod");
-
-    this.gui
-      .add(
-        {
-          trigger: () => this.viewer.inputHandler.onActivateTool("tripodtool"),
-        },
-        "trigger"
-      )
-      .name("Tripod");
-
-    this.gui
-      .add(
-        {
-          trigger: () =>
-            this.viewer.inputHandler.onActivateTool("polypedestratool"),
-        },
-        "trigger"
-      )
-      .name("Polypedestra");
-
-    this.gui
-      .add(
-        {
-          trigger: () =>
-            this.viewer.inputHandler.onActivateTool("destructiontool"),
-        },
-        "trigger"
-      )
-      .name("Destruction");
-
-    this.gui
-      .add(
-        {
-          trigger: () => this.viewer.inputHandler.onActivateTool("lashingtool"),
-        },
-        "trigger"
-      )
-      .name("Lashing");
+    this.gui.add(triggers, "selection").name("Selection");
+    this.gui.add(triggers, "pole").name("Pole");
+    this.gui.add(triggers, "bipod").name("Bipod");
+    this.gui.add(triggers, "tripod").name("Tripod");
+    this.gui.add(triggers, "polypedestra").name("Polypedestra");
+    this.gui.add(triggers, "destruction").name("Destruction");
+    this.gui.add(triggers, "lashing").name("Lashing");
   }
 }
