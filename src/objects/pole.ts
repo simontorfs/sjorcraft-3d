@@ -14,6 +14,18 @@ export const colors: THREE.Color[] = [
   new THREE.Color(0x000000),
 ];
 
+const textureLoader = new THREE.TextureLoader();
+const colorTexture = textureLoader.load(
+  "./textures/wood/v1/wood_basecolor.jpg"
+);
+colorTexture.wrapT = THREE.MirroredRepeatWrapping;
+const heightTexture = textureLoader.load("./textures//wood/v1/wood_height.png");
+const normalTexture = textureLoader.load("./textures/wood/v1/wood_normal.jpg");
+const roughnessTexture = textureLoader.load(
+  "./textures/wood/v1/wood_roughness.jpg"
+);
+const aoTexture = textureLoader.load("./textures/wood/v1/wood_ao.jpg");
+
 export class Pole extends THREE.Object3D {
   mesh: THREE.Mesh;
   capTop: THREE.Mesh;
@@ -28,25 +40,6 @@ export class Pole extends THREE.Object3D {
 
   constructor() {
     super();
-    const textureLoader = new THREE.TextureLoader();
-    const colorTexture = textureLoader.load(
-      "./textures/wood/v1/wood_basecolor.jpg"
-    );
-    colorTexture.repeat.y = this.length * 2;
-    colorTexture.wrapT = THREE.MirroredRepeatWrapping;
-    const heightTexture = textureLoader.load(
-      "./textures//wood/v1/wood_height.png"
-    );
-    const normalTexture = textureLoader.load(
-      "./textures/wood/v1/wood_normal.jpg"
-    );
-    const roughnessTexture = textureLoader.load(
-      "./textures/wood/v1/wood_roughness.jpg"
-    );
-    const metalnessTexture = textureLoader.load(
-      "./textures/wood/v1/wood_height.png"
-    );
-    const aoTexture = textureLoader.load("./textures/wood/v1/wood_ao.jpg");
 
     const geometry = new THREE.CylinderGeometry(
       this.radius,
@@ -54,17 +47,15 @@ export class Pole extends THREE.Object3D {
       this.length
     );
     const material = new THREE.MeshStandardMaterial({
-      map: colorTexture,
-      roughnessMap: roughnessTexture,
-      metalnessMap: metalnessTexture,
-      normalMap: normalTexture,
-      aoMap: aoTexture,
+      map: colorTexture.clone(),
+      roughnessMap: roughnessTexture.clone(),
+      normalMap: normalTexture.clone(),
+      aoMap: aoTexture.clone(),
       metalness: 0.2,
-      roughness: 1,
-      wireframe: false,
     });
     this.mesh = new THREE.Mesh(geometry, material);
-    // Create top and bottom caps meshes
+
+    // Caps
     const capGeometry = new THREE.CylinderGeometry(
       this.radius + this.capOffset,
       this.radius + this.capOffset,
@@ -74,17 +65,17 @@ export class Pole extends THREE.Object3D {
       color: this.color,
       transparent: true,
       opacity: 0.5,
-    }); // Blue color
+    });
     this.capTop = new THREE.Mesh(capGeometry, capMaterial);
     this.capBottom = new THREE.Mesh(capGeometry, capMaterial);
     this.setPositionCaps();
 
-    // Add top and bottom caps to the pole
     this.add(this.capTop);
     this.add(this.capBottom);
     this.add(this.mesh);
 
     this.direction = new THREE.Vector3(0, 1, 0);
+    this.updateMaterialsAfterLengthChange();
   }
 
   loadFromJson(pole: any) {
@@ -118,7 +109,7 @@ export class Pole extends THREE.Object3D {
   }
 
   setLength(minimumLength: number) {
-    // if the lenth is to big, just set it to the biggest lenght
+    // if the lenth is too big, just set it to the biggest lenght
     this.length = allowedLengths[allowedLengths.length - 1];
     this.color = colors[colors.length - 1];
 
@@ -136,13 +127,23 @@ export class Pole extends THREE.Object3D {
       this.radius,
       this.length
     );
+    this.updateMaterialsAfterLengthChange();
+    this.setPositionCaps();
+  }
+
+  updateMaterialsAfterLengthChange() {
     // @ts-ignore
     this.mesh.material.map.repeat.y = this.length * 2;
+    // @ts-ignore
+    this.mesh.material.roughnessMap.repeat.y = this.length * 2;
+    // @ts-ignore
+    this.mesh.material.normalMap.repeat.y = this.length * 2;
+    // @ts-ignore
+    this.mesh.material.aoMap.repeat.y = this.length * 2;
     // @ts-ignore
     this.capBottom.material.color = this.color;
     // @ts-ignore
     this.capTop.material.color = this.color;
-    this.setPositionCaps();
   }
 
   setPositionCaps() {
