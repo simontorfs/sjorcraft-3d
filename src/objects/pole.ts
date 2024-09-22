@@ -19,7 +19,7 @@ const colorTexture = textureLoader.load(
   "./textures/wood/v1/wood_basecolor.jpg"
 );
 colorTexture.wrapT = THREE.MirroredRepeatWrapping;
-const heightTexture = textureLoader.load("./textures//wood/v1/wood_height.png");
+const heightTexture = textureLoader.load("./textures/wood/v1/wood_height.png");
 const normalTexture = textureLoader.load("./textures/wood/v1/wood_normal.jpg");
 const roughnessTexture = textureLoader.load(
   "./textures/wood/v1/wood_roughness.jpg"
