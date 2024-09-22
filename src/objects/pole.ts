@@ -18,13 +18,18 @@ const textureLoader = new THREE.TextureLoader();
 const colorTexture = textureLoader.load(
   "./textures/wood/v1/wood_basecolor.jpg"
 );
-colorTexture.wrapT = THREE.MirroredRepeatWrapping;
 const heightTexture = textureLoader.load("./textures/wood/v1/wood_height.png");
 const normalTexture = textureLoader.load("./textures/wood/v1/wood_normal.jpg");
 const roughnessTexture = textureLoader.load(
   "./textures/wood/v1/wood_roughness.jpg"
 );
 const aoTexture = textureLoader.load("./textures/wood/v1/wood_ao.jpg");
+
+colorTexture.wrapT = THREE.MirroredRepeatWrapping;
+heightTexture.wrapT = THREE.MirroredRepeatWrapping;
+normalTexture.wrapT = THREE.MirroredRepeatWrapping;
+roughnessTexture.wrapT = THREE.MirroredRepeatWrapping;
+aoTexture.wrapT = THREE.MirroredRepeatWrapping;
 
 export class Pole extends THREE.Object3D {
   mesh: THREE.Mesh;
