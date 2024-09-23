@@ -1,7 +1,7 @@
 import * as THREE from "three";
 import { Scaffold } from "../objects/scaffold";
 import { Viewer } from "../viewer";
-import { HelperLine } from "../objects/helperLine";
+import { DistanceHelperLine } from "../objects/helperLine";
 
 export class PolypedestraTool {
   active: boolean = false;
@@ -28,7 +28,7 @@ export class PolypedestraTool {
 
   groundPositionLastMouseMove: THREE.Vector3 = new THREE.Vector3();
 
-  verticalHelperLine: HelperLine = new HelperLine();
+  verticalHelperLine: DistanceHelperLine = new DistanceHelperLine();
   polypedestraIsColliding: boolean = false;
 
   constructor(viewer: Viewer) {

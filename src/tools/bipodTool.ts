@@ -1,7 +1,7 @@
 import { Scaffold } from "../objects/scaffold";
 import * as THREE from "three";
 import { Viewer } from "../viewer";
-import { HelperLine } from "../objects/helperLine";
+import { HelperLine, DistanceHelperLine } from "../objects/helperLine";
 import { BipodLashing } from "../objects/lashings/bipodLashing";
 
 export class BipodTool {
@@ -25,7 +25,7 @@ export class BipodTool {
 
   parallelHelperLine: HelperLine = new HelperLine();
   perpendicularHelperLine: HelperLine = new HelperLine();
-  verticalHelperLine: HelperLine = new HelperLine();
+  verticalHelperLine: DistanceHelperLine = new DistanceHelperLine();
 
   bipodIsColliding: boolean = false;
 

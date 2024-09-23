@@ -1,4 +1,5 @@
 import * as THREE from "three";
+import { TextSprite } from "./textsprite";
 
 export class HelperLine extends THREE.Line {
   constructor() {
@@ -17,5 +18,24 @@ export class HelperLine extends THREE.Line {
     this.geometry = new THREE.BufferGeometry().setFromPoints(points);
 
     this.computeLineDistances();
+  }
+}
+
+export class DistanceHelperLine extends HelperLine {
+  label: TextSprite;
+  constructor() {
+    super();
+    this.label = new TextSprite("");
+    this.label.fontsize = 16;
+    this.add(this.label);
+  }
+
+  setBetweenPoints(points: THREE.Vector3[]) {
+    super.setBetweenPoints(points);
+
+    const length = points[0].clone().sub(points[1]).length();
+    this.label.setText(`${length.toFixed(2)} ${"m"}`);
+    const pos = points[0].clone().add(points[1]).divideScalar(2.0);
+    this.label.position.set(pos.x, pos.y, pos.z);
   }
 }

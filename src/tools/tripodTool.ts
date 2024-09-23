@@ -1,7 +1,7 @@
 import * as THREE from "three";
 import { Scaffold } from "../objects/scaffold";
 import { Viewer } from "../viewer";
-import { HelperLine } from "../objects/helperLine";
+import { DistanceHelperLine } from "../objects/helperLine";
 
 export class TripodTool {
   active: boolean = false;
@@ -24,11 +24,11 @@ export class TripodTool {
   defaultLashHeight: number = 3.0;
   lashHeight: number = this.defaultLashHeight;
 
-  boundaryHelperLine12: HelperLine = new HelperLine();
-  boundaryHelperLine23: HelperLine = new HelperLine();
-  boundaryHelperLine31: HelperLine = new HelperLine();
+  boundaryHelperLine12: DistanceHelperLine = new DistanceHelperLine();
+  boundaryHelperLine23: DistanceHelperLine = new DistanceHelperLine();
+  boundaryHelperLine31: DistanceHelperLine = new DistanceHelperLine();
 
-  verticalHelperLine: HelperLine = new HelperLine();
+  verticalHelperLine: DistanceHelperLine = new DistanceHelperLine();
 
   tripodIsColliding: boolean = false;
 
