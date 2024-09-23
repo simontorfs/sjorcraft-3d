@@ -82,13 +82,13 @@ export class TripodTool {
       this.horizontalHelperLines[2].visible = true;
     } else if (!this.scaffold3Placed) {
       this.scaffold3Placed = true;
+      this.verticalHelperLine.visible = true;
     } else if (!this.lashPositionPlaced) {
       this.lashPositionPlaced = true;
-      this.horizontalHelperLines.map((line) => (line.visible = false));
-      this.verticalHelperLine.visible = true;
     } else {
       if (this.tripodIsColliding) return;
       this.verticalHelperLine.visible = false;
+      this.horizontalHelperLines.map((line) => (line.visible = false));
       this.scaffold1.addToViewer(this.viewer);
       this.scaffold2.addToViewer(this.viewer);
       this.scaffold3.addToViewer(this.viewer);
@@ -108,10 +108,9 @@ export class TripodTool {
 
     if (this.lashPositionPlaced) {
       this.lashPositionPlaced = false;
-      this.verticalHelperLine.visible = false;
-      this.horizontalHelperLines.map((line) => (line.visible = true));
     } else if (this.scaffold3Placed) {
       this.scaffold3Placed = false;
+      this.verticalHelperLine.visible = false;
     } else if (this.scaffold2Placed) {
       this.scaffold2Placed = false;
       this.horizontalHelperLines[1].visible = false;
@@ -122,6 +121,7 @@ export class TripodTool {
     } else {
       this.resetParameters();
     }
+    this.updateHelperLines();
   }
 
   drawTripod(groundPosition: THREE.Vector3) {
@@ -329,18 +329,33 @@ export class TripodTool {
   }
 
   updateHelperLines() {
-    this.horizontalHelperLines[0].setBetweenPoints([
-      this.firstGroundPoint,
-      this.secondGroundPoint,
-    ]);
-    this.horizontalHelperLines[1].setBetweenPoints([
-      this.secondGroundPoint,
-      this.thirdGroundPoint,
-    ]);
-    this.horizontalHelperLines[2].setBetweenPoints([
-      this.thirdGroundPoint,
-      this.firstGroundPoint,
-    ]);
+    if (this.scaffold3Placed) {
+      this.horizontalHelperLines[0].setBetweenPoints([
+        this.firstGroundPoint,
+        this.lashPositionProjectedOnFloor,
+      ]);
+      this.horizontalHelperLines[1].setBetweenPoints([
+        this.secondGroundPoint,
+        this.lashPositionProjectedOnFloor,
+      ]);
+      this.horizontalHelperLines[2].setBetweenPoints([
+        this.thirdGroundPoint,
+        this.lashPositionProjectedOnFloor,
+      ]);
+    } else {
+      this.horizontalHelperLines[0].setBetweenPoints([
+        this.firstGroundPoint,
+        this.secondGroundPoint,
+      ]);
+      this.horizontalHelperLines[1].setBetweenPoints([
+        this.secondGroundPoint,
+        this.thirdGroundPoint,
+      ]);
+      this.horizontalHelperLines[2].setBetweenPoints([
+        this.thirdGroundPoint,
+        this.firstGroundPoint,
+      ]);
+    }
 
     this.verticalHelperLine.setBetweenPoints([
       this.lashPositionProjectedOnFloor,
