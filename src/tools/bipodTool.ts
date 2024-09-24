@@ -23,8 +23,8 @@ export class BipodTool {
   defaultLashHeight: number = 3.0;
   lashHeight: number = this.defaultLashHeight;
 
-  parallelHelperLine: HelperLine = new HelperLine();
-  perpendicularHelperLine: HelperLine = new HelperLine();
+  parallelHelperLine: HelperLine = new DistanceHelperLine();
+  perpendicularHelperLine: HelperLine = new DistanceHelperLine();
   verticalHelperLine: DistanceHelperLine = new DistanceHelperLine();
 
   bipodIsColliding: boolean = false;
@@ -32,6 +32,15 @@ export class BipodTool {
   constructor(viewer: Viewer) {
     this.viewer = viewer;
     this.viewer.scene.add(this.lashing);
+
+    this.parallelHelperLine.visible = false;
+    this.perpendicularHelperLine.visible = false;
+    this.verticalHelperLine.visible = false;
+    this.viewer.scene.add(
+      this.parallelHelperLine,
+      this.perpendicularHelperLine,
+      this.verticalHelperLine
+    );
   }
 
   activate() {
@@ -47,7 +56,7 @@ export class BipodTool {
     this.scaffold1.removeFromScene(this.viewer.scene);
     this.scaffold2.removeFromScene(this.viewer.scene);
     this.removeHorizontalHelperLines();
-    this.removeVerticalHelperLine();
+    this.verticalHelperLine.visible = false;
     this.resetParameters();
     this.viewer.inventory.resetAllColors();
   }
@@ -64,16 +73,17 @@ export class BipodTool {
 
     if (!this.scaffold1Placed) {
       this.scaffold1Placed = true;
+      this.parallelHelperLine.visible = true;
     } else if (!this.scaffold2Placed) {
       this.scaffold2Placed = true;
-      this.AddHorizontalHelperLines();
+      this.perpendicularHelperLine.visible = true;
+      this.addVerticalHelperLine();
     } else if (!this.lashPositionPlaced) {
       this.lashPositionPlaced = true;
-      this.removeHorizontalHelperLines();
-      this.addVerticalHelperLine();
     } else {
       if (this.bipodIsColliding) return;
-      this.removeVerticalHelperLine();
+      this.removeHorizontalHelperLines();
+      this.verticalHelperLine.visible = false;
       this.scaffold1.addToViewer(this.viewer);
       this.scaffold2.addToViewer(this.viewer);
       this.scaffold1 = new Scaffold();
@@ -92,13 +102,13 @@ export class BipodTool {
 
     if (this.lashPositionPlaced) {
       this.lashPositionPlaced = false;
-      this.removeVerticalHelperLine();
-      this.AddHorizontalHelperLines();
     } else if (this.scaffold2Placed) {
       this.scaffold2Placed = false;
-      this.removeHorizontalHelperLines();
+      this.verticalHelperLine.visible = false;
+      this.perpendicularHelperLine.visible = false;
     } else if (this.scaffold1Placed) {
       this.scaffold1Placed = false;
+      this.parallelHelperLine.visible = false;
     } else {
       this.resetParameters();
     }
@@ -138,11 +148,13 @@ export class BipodTool {
     this.secondGroundPoint = groundPosition;
     this.lashPositionProjectedOnFloor = this.getCenter();
     this.calculatePositions();
+    this.updateHelperLines();
   }
 
   drawThirdStep(groundPosition: THREE.Vector3) {
     this.lashPositionProjectedOnFloor = groundPosition;
     this.calculatePositions();
+    this.updateHelperLines();
   }
 
   drawFourthStep() {
@@ -154,7 +166,7 @@ export class BipodTool {
     this.lashHeight = target.y;
 
     this.calculatePositions();
-    this.updateVerticalHelperLine();
+    this.updateHelperLines();
   }
 
   calculatePositions() {
@@ -192,43 +204,54 @@ export class BipodTool {
   }
 
   AddHorizontalHelperLines() {
-    const pointsParallel = [this.firstGroundPoint, this.secondGroundPoint];
-    this.parallelHelperLine.setBetweenPoints(pointsParallel);
-    this.viewer.scene.add(this.parallelHelperLine);
-
-    const center = this.getCenter();
-    const perpendicularDirection = new THREE.Vector3()
-      .crossVectors(
-        this.firstGroundPoint.clone().sub(this.secondGroundPoint),
-        new THREE.Vector3(0, 1, 0)
-      )
-      .normalize();
-
-    const pointsPerpendicular = [
-      center.clone().add(perpendicularDirection.clone().multiplyScalar(5)),
-      center.clone().sub(perpendicularDirection.clone().multiplyScalar(5)),
-    ];
-    this.perpendicularHelperLine.setBetweenPoints(pointsPerpendicular);
-    this.viewer.scene.add(this.perpendicularHelperLine);
+    this.updateHelperLines();
+    this.parallelHelperLine.visible = true;
+    this.perpendicularHelperLine.visible = true;
   }
 
   removeHorizontalHelperLines() {
-    this.viewer.scene.remove(this.parallelHelperLine);
-    this.viewer.scene.remove(this.perpendicularHelperLine);
+    this.parallelHelperLine.visible = false;
+    this.perpendicularHelperLine.visible = false;
   }
 
   addVerticalHelperLine() {
-    this.updateVerticalHelperLine();
-    this.viewer.scene.add(this.verticalHelperLine);
+    this.updateHelperLines();
+    this.verticalHelperLine.visible = true;
   }
 
-  updateVerticalHelperLine() {
+  updateHelperLines() {
+    const vectorPole1ToPole2 = this.secondGroundPoint
+      .clone()
+      .sub(this.firstGroundPoint)
+      .normalize();
+    const Alength = vectorPole1ToPole2.dot(
+      this.lashPositionProjectedOnFloor.clone().sub(this.firstGroundPoint)
+    );
+    const projectedLashPoint = vectorPole1ToPole2
+      .clone()
+      .multiplyScalar(Alength)
+      .add(this.firstGroundPoint);
+
+    this.perpendicularHelperLine.setBetweenPoints([
+      projectedLashPoint,
+      this.lashPositionProjectedOnFloor,
+    ]);
+
+    if (this.scaffold2Placed) {
+      this.parallelHelperLine.setBetweenPoints([
+        this.firstGroundPoint,
+        projectedLashPoint,
+        this.secondGroundPoint,
+      ]);
+    } else {
+      this.parallelHelperLine.setBetweenPoints([
+        this.firstGroundPoint,
+        this.secondGroundPoint,
+      ]);
+    }
+
     const points = [this.lashPositionProjectedOnFloor, this.lashPosition];
     this.verticalHelperLine.setBetweenPoints(points);
-  }
-
-  removeVerticalHelperLine() {
-    this.viewer.scene.remove(this.verticalHelperLine);
   }
 
   checkCollisions() {
