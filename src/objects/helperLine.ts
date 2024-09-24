@@ -22,20 +22,40 @@ export class HelperLine extends THREE.Line {
 }
 
 export class DistanceHelperLine extends HelperLine {
-  label: TextSprite;
+  labels: TextSprite[] = [];
   constructor() {
     super();
-    this.label = new TextSprite("");
-    this.label.fontsize = 16;
-    this.add(this.label);
   }
 
   setBetweenPoints(points: THREE.Vector3[]) {
     super.setBetweenPoints(points);
 
-    const length = points[0].clone().sub(points[1]).length();
-    this.label.setText(`${length.toFixed(2)} ${"m"}`);
-    const pos = points[0].clone().add(points[1]).divideScalar(2.0);
-    this.label.position.set(pos.x, pos.y, pos.z);
+    this.setNumberOfLabels(points.length - 1);
+
+    for (let i = 0; i < points.length - 1; i++) {
+      const length = points[i]
+        .clone()
+        .sub(points[i + 1])
+        .length();
+      this.labels[i].setText(`${length.toFixed(2)} ${"m"}`);
+      const pos = points[i]
+        .clone()
+        .add(points[i + 1])
+        .divideScalar(2.0);
+      this.labels[i].position.set(pos.x, pos.y, pos.z);
+    }
+  }
+
+  setNumberOfLabels(nr: number) {
+    if (nr !== this.labels.length) {
+      this.labels.forEach((label) => this.remove(label));
+      this.labels = [];
+      for (let i = 0; i < nr; i++) {
+        const label = new TextSprite("");
+        label.fontsize = 16;
+        this.add(label);
+        this.labels.push(label);
+      }
+    }
   }
 }
