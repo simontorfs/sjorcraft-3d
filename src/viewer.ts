@@ -14,6 +14,7 @@ import { LashingTool } from "./tools/lashingTool";
 import { PoleTransformer } from "./tools/poleTransformer";
 import { Inventory } from "./inventory";
 import { Debug } from "./debug";
+import { TextSprite } from "./objects/textsprite";
 
 export class Viewer {
   domElement: HTMLElement;
@@ -132,6 +133,7 @@ export class Viewer {
 
     const tick = () => {
       this.controls.update();
+      this.update();
 
       this.renderer.render(this.scene, this.camera);
 
@@ -139,5 +141,13 @@ export class Viewer {
     };
 
     tick();
+  }
+
+  update() {
+    this.scene.traverseVisible((object) => {
+      if (object.name === "distance label") {
+        (object as TextSprite).updateSize(this.sizes, this.camera);
+      }
+    });
   }
 }
