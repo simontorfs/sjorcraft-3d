@@ -30,8 +30,7 @@ export class TransformationTool {
       if (!this.activeHandle) return;
       this.poleTransformer.dragHandle(this.activeHandle);
     } else {
-      this.hoveredPole = this.viewer.inputHandler.getPoleIntersect()?.object
-        .parent as Pole;
+      this.hoveredPole = this.viewer.inputHandler.getHoveredPole();
       this.poleTransformer.setActivePole(this.hoveredPole);
       this.activeHandle = this.getHoveredHandle(cursor);
       this.poleTransformer.setHoveredHandle(this.activeHandle);

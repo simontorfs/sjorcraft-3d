@@ -137,11 +137,7 @@ export class InputHandler {
     const poleIntersect = this.getPoleIntersect();
     const hoveredPole = poleIntersect?.object.parent as Pole;
 
-    const objectIntersect = this.getObjectIntersect();
-    const hoveredObject = objectIntersect?.object.parent as
-      | Pole
-      | Lashing
-      | BipodLashing;
+    const hoveredObject = this.getHoveredObject();
 
     if (this.viewer.poleTool.active) {
       if (poleIntersect?.normal) {
@@ -182,7 +178,7 @@ export class InputHandler {
     }
   }
 
-  getObjectIntersect() {
+  getHoveredObject() {
     const raycaster = new THREE.Raycaster();
     raycaster.setFromCamera(this.cursor, this.viewer.camera);
 
@@ -193,10 +189,15 @@ export class InputHandler {
     ]);
 
     if (intersects.length) {
-      return intersects[0];
+      return intersects[0].object.parent as Pole | Lashing | BipodLashing;
     } else {
       return undefined;
     }
+  }
+
+  getHoveredPole() {
+    const intersect = this.getPoleIntersect();
+    return intersect?.object.parent as Pole;
   }
 
   getPoleIntersect() {
