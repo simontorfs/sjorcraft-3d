@@ -15,8 +15,6 @@ export class PoleTransformer extends THREE.Object3D {
   scaleHandleBottom: THREE.Mesh;
   handles: THREE.Mesh[] = [];
 
-  helperPlane: THREE.Plane = new THREE.Plane();
-
   constructor(viewer: Viewer) {
     super();
     this.viewer = viewer;

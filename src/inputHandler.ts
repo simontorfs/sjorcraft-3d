@@ -81,8 +81,8 @@ export class InputHandler {
   onMouseUp(event: any) {
     this.mouseDown = false;
     if (this.mouseHasMoved) {
-      if (this.viewer.selectionTool.active && this.hoveredHandle) {
-        this.viewer.poleTransformer.dropHandle(this.hoveredHandle);
+      if (this.viewer.transformationTool.active) {
+        this.viewer.transformationTool.drop();
       }
     } else {
       if (this.viewer.poleTool.active) {
@@ -159,16 +159,12 @@ export class InputHandler {
         );
       } else {
         this.viewer.poleTool.drawPoleWhileHoveringGound(groundPosition);
-        this.viewer.poleTransformer.setActivePole(undefined);
       }
     } else if (this.viewer.selectionTool.active) {
       this.viewer.selectionTool.setHoveredPole(hoveredPole);
-      if (this.hoveredHandle && this.mouseDown) {
-        this.viewer.poleTransformer.dragHandle(this.hoveredHandle);
+      if (this.mouseDown) {
       } else {
         this.viewer.selectionTool.hoveredPole = hoveredPole;
-        this.viewer.poleTransformer.setActivePole(hoveredPole);
-        this.setHoveredHandle();
       }
     } else if (this.viewer.destructionTool.active) {
       this.viewer.destructionTool.setHoveredObject(hoveredObject);
@@ -180,6 +176,8 @@ export class InputHandler {
       this.viewer.polypedestraTool.drawPolypedestra(groundPosition);
     } else if (this.viewer.lashingTool.active) {
       this.viewer.lashingTool.setHoveredPole(hoveredPole);
+    } else if (this.viewer.transformationTool.active) {
+      this.viewer.transformationTool.onMouseMove(this.cursor, this.mouseDown);
     }
   }
 
@@ -235,25 +233,6 @@ export class InputHandler {
     return new THREE.Vector3(0, 0, 0);
   }
 
-  setHoveredHandle() {
-    if (this.mouseDown) return;
-    const raycaster = new THREE.Raycaster();
-    raycaster.setFromCamera(
-      new THREE.Vector2(this.cursor.x * 2, this.cursor.y * 2),
-      this.viewer.camera
-    );
-
-    const intersect = raycaster.intersectObject(this.viewer.poleTransformer);
-    if (intersect.length) {
-      this.hoveredHandle = intersect[0].object as THREE.Mesh;
-      this.viewer.controls.enableRotate = false;
-    } else {
-      this.hoveredHandle = undefined;
-      this.viewer.controls.enableRotate = true;
-    }
-    this.viewer.poleTransformer.setHoveredHandle(this.hoveredHandle);
-  }
-
   getPointOnLineClosestToCursor(
     lineOrigin: THREE.Vector3,
     lineDirection: THREE.Vector3
@@ -287,6 +266,7 @@ export class InputHandler {
     this.viewer.polypedestraTool.deactivate();
     this.viewer.destructionTool.deactivate();
     this.viewer.lashingTool.deactivate();
+    this.viewer.transformationTool.deactivate();
   }
 
   onActivateTool(tool: string) {
@@ -312,6 +292,9 @@ export class InputHandler {
         break;
       case "destructiontool":
         this.viewer.destructionTool.activate();
+        break;
+      case "transformationtool":
+        this.viewer.transformationTool.activate();
         break;
       default:
         break;

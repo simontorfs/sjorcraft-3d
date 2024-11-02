@@ -1,4 +1,4 @@
-import { Pole } from "../pole";
+import { Pole } from "../objects/pole";
 import { Viewer } from "../viewer";
 
 export class SelectionTool {
@@ -18,7 +18,6 @@ export class SelectionTool {
   deactivate() {
     this.active = false;
     this.deselectAll();
-    this.viewer.poleTransformer.setActivePole(undefined);
     this.viewer.domElement.style.cursor = "default";
   }
 
@@ -61,7 +60,6 @@ export class SelectionTool {
   deleteSelectedPoles() {
     if (!this.active || !this.selectedPoles.length) return;
     this.viewer.inventory.removePoles(this.selectedPoles);
-    this.viewer.poleTransformer.setActivePole(undefined);
   }
 
   setHoveredPole(pole: Pole) {

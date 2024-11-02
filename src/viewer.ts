@@ -11,10 +11,10 @@ import { TripodTool } from "./tools/tripodTool";
 import { PolypedestraTool } from "./tools/polypedestraTool";
 import { DestructionTool } from "./tools/destructionTool";
 import { LashingTool } from "./tools/lashingTool";
-import { PoleTransformer } from "./tools/poleTransformer";
 import { Inventory } from "./inventory";
 import { Debug } from "./debug";
 import { TextSprite } from "./objects/textsprite";
+import { TransformationTool } from "./tools/transformationTool";
 
 export class Viewer {
   domElement: HTMLElement;
@@ -34,7 +34,7 @@ export class Viewer {
   polypedestraTool: PolypedestraTool;
   destructionTool: DestructionTool;
   lashingTool: LashingTool;
-  poleTransformer: PoleTransformer;
+  transformationTool: TransformationTool;
 
   inventory: Inventory;
   saveTool: SaveTool;
@@ -128,8 +128,7 @@ export class Viewer {
     this.polypedestraTool = new PolypedestraTool(this);
     this.destructionTool = new DestructionTool(this);
     this.lashingTool = new LashingTool(this);
-    this.poleTransformer = new PoleTransformer(this);
-    this.scene.add(this.poleTransformer);
+    this.transformationTool = new TransformationTool(this);
 
     const tick = () => {
       this.controls.update();
