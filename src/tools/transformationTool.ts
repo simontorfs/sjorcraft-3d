@@ -25,7 +25,7 @@ export class TransformationTool {
     this.poleTransformer.setActivePole(undefined);
   }
 
-  onMouseMove(cursor: any, mouseDown: boolean) {
+  onMouseMove(cursor: THREE.Vector2, mouseDown: boolean) {
     if (mouseDown) {
       if (!this.activeHandle) return;
       this.poleTransformer.dragHandle(this.activeHandle);
@@ -33,7 +33,7 @@ export class TransformationTool {
       this.hoveredPole = this.viewer.inputHandler.getPoleIntersect()?.object
         .parent as Pole;
       this.poleTransformer.setActivePole(this.hoveredPole);
-      this.activeHandle = this.getHoveredHandle();
+      this.activeHandle = this.getHoveredHandle(cursor);
       this.poleTransformer.setHoveredHandle(this.activeHandle);
     }
   }
@@ -42,15 +42,9 @@ export class TransformationTool {
     if (this.activeHandle) this.poleTransformer.dropHandle(this.activeHandle);
   }
 
-  getHoveredHandle() {
+  getHoveredHandle(cursor: THREE.Vector2) {
     const raycaster = new THREE.Raycaster();
-    raycaster.setFromCamera(
-      new THREE.Vector2(
-        this.viewer.inputHandler.cursor.x * 2,
-        this.viewer.inputHandler.cursor.y * 2
-      ),
-      this.viewer.camera
-    );
+    raycaster.setFromCamera(cursor, this.viewer.camera);
 
     const intersect = raycaster.intersectObject(this.poleTransformer);
     if (intersect.length) {

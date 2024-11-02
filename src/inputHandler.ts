@@ -6,7 +6,7 @@ import { BipodLashing } from "./objects/lashings/bipodLashing";
 
 export class InputHandler {
   viewer: Viewer;
-  cursor: { x: number; y: number };
+  cursor: THREE.Vector2;
   mouseHasMoved: boolean;
   mouseDown: boolean;
   hoveredHandle: THREE.Mesh | undefined = undefined;
@@ -18,7 +18,7 @@ export class InputHandler {
 
     this.mouseHasMoved = false;
 
-    this.cursor = { x: 0, y: 0 };
+    this.cursor = new THREE.Vector2();
     window.addEventListener("keydown", this.onKeyDown.bind(this));
     window.addEventListener("keyup", this.onKeyUp.bind(this));
     domElement.addEventListener("mousedown", this.onMouseDown.bind(this));
@@ -128,9 +128,10 @@ export class InputHandler {
   onMouseMove(event: any) {
     this.mouseHasMoved = true;
     const rect = this.viewer.renderer.domElement.getBoundingClientRect();
-    this.cursor.x = (event.clientX - rect.left) / this.viewer.sizes.width - 0.5;
+    this.cursor.x =
+      2.0 * ((event.clientX - rect.left) / this.viewer.sizes.width - 0.5);
     this.cursor.y =
-      -(event.clientY - rect.top) / this.viewer.sizes.height + 0.5;
+      2.0 * (-(event.clientY - rect.top) / this.viewer.sizes.height + 0.5);
     const groundPosition = this.getGroundPosition();
 
     const poleIntersect = this.getPoleIntersect();
@@ -183,10 +184,7 @@ export class InputHandler {
 
   getObjectIntersect() {
     const raycaster = new THREE.Raycaster();
-    raycaster.setFromCamera(
-      new THREE.Vector2(this.cursor.x * 2, this.cursor.y * 2),
-      this.viewer.camera
-    );
+    raycaster.setFromCamera(this.cursor, this.viewer.camera);
 
     const intersects = raycaster.intersectObjects([
       ...this.viewer.inventory.poles.map((pole) => pole.mesh),
@@ -203,10 +201,7 @@ export class InputHandler {
 
   getPoleIntersect() {
     const raycaster = new THREE.Raycaster();
-    raycaster.setFromCamera(
-      new THREE.Vector2(this.cursor.x * 2, this.cursor.y * 2),
-      this.viewer.camera
-    );
+    raycaster.setFromCamera(this.cursor, this.viewer.camera);
 
     const intersects = raycaster.intersectObjects(
       this.viewer.inventory.poles.map((pole) => pole.mesh)
@@ -221,10 +216,7 @@ export class InputHandler {
 
   getGroundPosition() {
     const raycaster = new THREE.Raycaster();
-    raycaster.setFromCamera(
-      new THREE.Vector2(this.cursor.x * 2, this.cursor.y * 2),
-      this.viewer.camera
-    );
+    raycaster.setFromCamera(this.cursor, this.viewer.camera);
 
     const intersect = raycaster.intersectObject(this.viewer.floor.mesh);
     if (intersect.length) {
@@ -238,10 +230,7 @@ export class InputHandler {
     lineDirection: THREE.Vector3
   ) {
     const raycaster = new THREE.Raycaster();
-    raycaster.setFromCamera(
-      new THREE.Vector2(this.cursor.x * 2, this.cursor.y * 2),
-      this.viewer.camera
-    );
+    raycaster.setFromCamera(this.cursor, this.viewer.camera);
     const w0 = raycaster.ray.origin.clone().sub(lineOrigin);
     const a = lineDirection.dot(lineDirection);
     const b = lineDirection.dot(raycaster.ray.direction);
