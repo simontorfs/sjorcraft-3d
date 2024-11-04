@@ -124,6 +124,11 @@ export class TripodTool {
     this.updateHelperLines();
   }
 
+  onMouseMove() {
+    const groundPosition = this.viewer.inputHandler.getHoveredGroundPosition();
+    this.drawTripod(groundPosition);
+  }
+
   drawTripod(groundPosition: THREE.Vector3) {
     if (!this.scaffold1Placed) {
       this.drawFirstStep(groundPosition);

@@ -114,6 +114,11 @@ export class BipodTool {
     }
   }
 
+  onMouseMove() {
+    const groundPosition = this.viewer.inputHandler.getHoveredGroundPosition();
+    this.drawBipod(groundPosition);
+  }
+
   drawBipod(groundPosition: THREE.Vector3) {
     if (!this.scaffold1Placed) {
       this.drawFirstStep(groundPosition);

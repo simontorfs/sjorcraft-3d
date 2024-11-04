@@ -132,7 +132,6 @@ export class InputHandler {
       2.0 * ((event.clientX - rect.left) / this.viewer.sizes.width - 0.5);
     this.cursor.y =
       2.0 * (-(event.clientY - rect.top) / this.viewer.sizes.height + 0.5);
-    const groundPosition = this.getHoveredGroundPosition();
 
     if (this.mouseDown) {
       if (this.viewer.transformationTool.active) {
@@ -146,11 +145,11 @@ export class InputHandler {
       } else if (this.viewer.destructionTool.active) {
         this.viewer.destructionTool.onMouseMove();
       } else if (this.viewer.bipodTool.active) {
-        this.viewer.bipodTool.drawBipod(groundPosition);
+        this.viewer.bipodTool.onMouseMove();
       } else if (this.viewer.tripodTool.active) {
-        this.viewer.tripodTool.drawTripod(groundPosition);
+        this.viewer.tripodTool.onMouseMove();
       } else if (this.viewer.polypedestraTool.active) {
-        this.viewer.polypedestraTool.drawPolypedestra(groundPosition);
+        this.viewer.polypedestraTool.onMouseMove();
       } else if (this.viewer.lashingTool.active) {
         this.viewer.lashingTool.onMouseMove();
       } else if (this.viewer.transformationTool.active) {

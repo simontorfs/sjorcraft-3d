@@ -123,6 +123,11 @@ export class PolypedestraTool {
     this.setNrOfPoles(Math.max(this.nrOfPoles - 1, 3));
   }
 
+  onMouseMove() {
+    const groundPosition = this.viewer.inputHandler.getHoveredGroundPosition();
+    this.drawPolypedestra(groundPosition);
+  }
+
   drawPolypedestra(groundPosition: THREE.Vector3) {
     this.groundPositionLastMouseMove = groundPosition;
     if (!this.midPointPlaced) {
