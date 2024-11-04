@@ -32,6 +32,11 @@ export class DestructionTool {
     }
   }
 
+  onMouseMove() {
+    const hoveredObject = this.viewer.inputHandler.getHoveredObject();
+    this.setHoveredObject(hoveredObject);
+  }
+
   setHoveredObject(object: Pole | Lashing | BipodLashing) {
     if (object === this.hoveredObject) return;
     this.hoveredObject?.stopThreatening();

@@ -21,6 +21,12 @@ export class SelectionTool {
     this.viewer.domElement.style.cursor = "default";
   }
 
+  onMouseMove() {
+    const poleIntersect = this.viewer.inputHandler.getPoleIntersect();
+    const hoveredPole = poleIntersect?.object.parent as Pole;
+    this.setHoveredPole(hoveredPole);
+  }
+
   deselectAll() {
     for (const pole of this.selectedPoles) {
       pole.deselect();

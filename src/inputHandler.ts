@@ -132,49 +132,30 @@ export class InputHandler {
       2.0 * ((event.clientX - rect.left) / this.viewer.sizes.width - 0.5);
     this.cursor.y =
       2.0 * (-(event.clientY - rect.top) / this.viewer.sizes.height + 0.5);
-    const groundPosition = this.getGroundPosition();
+    const groundPosition = this.getHoveredGroundPosition();
 
-    const poleIntersect = this.getPoleIntersect();
-    const hoveredPole = poleIntersect?.object.parent as Pole;
-
-    const hoveredObject = this.getHoveredObject();
-
-    if (this.viewer.poleTool.active) {
-      if (poleIntersect?.normal) {
-        const rotationMatrix = new THREE.Matrix4();
-        rotationMatrix.extractRotation(hoveredPole.matrix);
-
-        const transformedNormal = poleIntersect.normal
-          .clone()
-          .applyMatrix4(rotationMatrix)
-          .normalize();
-
-        this.viewer.poleTool.drawPoleWhileHoveringOtherPole(
-          poleIntersect.point,
-          hoveredPole,
-          transformedNormal
-        );
-      } else {
-        this.viewer.poleTool.drawPoleWhileHoveringGound(groundPosition);
+    if (this.mouseDown) {
+      if (this.viewer.transformationTool.active) {
+        this.viewer.transformationTool.onMouseDrag();
       }
-    } else if (this.viewer.selectionTool.active) {
-      this.viewer.selectionTool.setHoveredPole(hoveredPole);
-      if (this.mouseDown) {
-      } else {
-        this.viewer.selectionTool.hoveredPole = hoveredPole;
+    } else {
+      if (this.viewer.poleTool.active) {
+        this.viewer.poleTool.onMouseMove();
+      } else if (this.viewer.selectionTool.active) {
+        this.viewer.selectionTool.onMouseMove();
+      } else if (this.viewer.destructionTool.active) {
+        this.viewer.destructionTool.onMouseMove();
+      } else if (this.viewer.bipodTool.active) {
+        this.viewer.bipodTool.drawBipod(groundPosition);
+      } else if (this.viewer.tripodTool.active) {
+        this.viewer.tripodTool.drawTripod(groundPosition);
+      } else if (this.viewer.polypedestraTool.active) {
+        this.viewer.polypedestraTool.drawPolypedestra(groundPosition);
+      } else if (this.viewer.lashingTool.active) {
+        this.viewer.lashingTool.onMouseMove();
+      } else if (this.viewer.transformationTool.active) {
+        this.viewer.transformationTool.onMouseMove();
       }
-    } else if (this.viewer.destructionTool.active) {
-      this.viewer.destructionTool.setHoveredObject(hoveredObject);
-    } else if (this.viewer.bipodTool.active) {
-      this.viewer.bipodTool.drawBipod(groundPosition);
-    } else if (this.viewer.tripodTool.active) {
-      this.viewer.tripodTool.drawTripod(groundPosition);
-    } else if (this.viewer.polypedestraTool.active) {
-      this.viewer.polypedestraTool.drawPolypedestra(groundPosition);
-    } else if (this.viewer.lashingTool.active) {
-      this.viewer.lashingTool.setHoveredPole(hoveredPole);
-    } else if (this.viewer.transformationTool.active) {
-      this.viewer.transformationTool.onMouseMove(this.cursor, this.mouseDown);
     }
   }
 
@@ -215,7 +196,7 @@ export class InputHandler {
     }
   }
 
-  getGroundPosition() {
+  getHoveredGroundPosition() {
     const raycaster = new THREE.Raycaster();
     raycaster.setFromCamera(this.cursor, this.viewer.camera);
 

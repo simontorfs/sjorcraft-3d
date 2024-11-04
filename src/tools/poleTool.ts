@@ -96,6 +96,31 @@ export class PoleTool {
     this.viewer.inventory.resetAllColors();
   }
 
+  onMouseMove() {
+    const poleIntersect = this.viewer.inputHandler.getPoleIntersect();
+    const hoveredPole = poleIntersect?.object.parent as Pole;
+
+    if (poleIntersect?.normal) {
+      const rotationMatrix = new THREE.Matrix4();
+      rotationMatrix.extractRotation(hoveredPole.matrix);
+
+      const transformedNormal = poleIntersect.normal
+        .clone()
+        .applyMatrix4(rotationMatrix)
+        .normalize();
+
+      this.drawPoleWhileHoveringOtherPole(
+        poleIntersect.point,
+        hoveredPole,
+        transformedNormal
+      );
+    } else {
+      const groundPosition =
+        this.viewer.inputHandler.getHoveredGroundPosition();
+      this.drawPoleWhileHoveringGound(groundPosition);
+    }
+  }
+
   drawPoleWhileHoveringGound(groundPosition: THREE.Vector3) {
     if (this.newLashing) this.viewer.scene.remove(this.newLashing);
     this.newLashing = undefined;

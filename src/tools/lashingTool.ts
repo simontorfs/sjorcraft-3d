@@ -1,5 +1,5 @@
 import { Lashing } from "../objects/lashings/lashing";
-import { Pole } from "../pole";
+import { Pole } from "../objects/pole";
 import { Viewer } from "../viewer";
 import * as THREE from "three";
 
@@ -32,6 +32,11 @@ export class LashingTool {
       this.activeLashing.visible = false;
       this.viewer.scene.add(this.activeLashing);
     }
+  }
+
+  onMouseMove() {
+    const hoveredPole = this.viewer.inputHandler.getHoveredPole();
+    this.setHoveredPole(hoveredPole);
   }
 
   setHoveredPole(hoveredPole: Pole) {
