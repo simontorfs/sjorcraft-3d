@@ -203,7 +203,7 @@ export class InputHandler {
     if (intersect.length) {
       return intersect[0].point;
     }
-    return new THREE.Vector3(0, 0, 0);
+    return null;
   }
 
   getPointOnLineClosestToCursor(

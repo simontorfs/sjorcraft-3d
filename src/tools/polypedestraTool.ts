@@ -128,12 +128,12 @@ export class PolypedestraTool {
     this.drawPolypedestra(groundPosition);
   }
 
-  drawPolypedestra(groundPosition: THREE.Vector3) {
+  drawPolypedestra(groundPosition: THREE.Vector3 | null) {
     this.groundPositionLastMouseMove = groundPosition;
     if (!this.midPointPlaced) {
-      this.drawFirstStep(groundPosition);
+      if (groundPosition) this.drawFirstStep(groundPosition);
     } else if (!this.onlyGroundPointPlaced) {
-      this.drawSecondStep(groundPosition);
+      if (groundPosition) this.drawSecondStep(groundPosition);
     } else {
       this.drawThirdStep();
     }

@@ -117,7 +117,7 @@ export class PoleTool {
     } else {
       const groundPosition =
         this.viewer.inputHandler.getHoveredGroundPosition();
-      this.drawPoleWhileHoveringGound(groundPosition);
+      if (groundPosition) this.drawPoleWhileHoveringGound(groundPosition);
     }
   }
 

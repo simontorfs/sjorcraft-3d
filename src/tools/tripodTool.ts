@@ -129,15 +129,15 @@ export class TripodTool {
     this.drawTripod(groundPosition);
   }
 
-  drawTripod(groundPosition: THREE.Vector3) {
+  drawTripod(groundPosition: THREE.Vector3 | null) {
     if (!this.scaffold1Placed) {
-      this.drawFirstStep(groundPosition);
+      if (groundPosition) this.drawFirstStep(groundPosition);
     } else if (!this.scaffold2Placed) {
-      this.drawSecondStep(groundPosition);
+      if (groundPosition) this.drawSecondStep(groundPosition);
     } else if (!this.scaffold3Placed) {
-      this.drawThirdStep(groundPosition);
+      if (groundPosition) this.drawThirdStep(groundPosition);
     } else if (!this.lashPositionPlaced) {
-      this.drawFourthStep(groundPosition);
+      if (groundPosition) this.drawFourthStep(groundPosition);
     } else {
       this.drawFifthStep();
     }
