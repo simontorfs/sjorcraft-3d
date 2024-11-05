@@ -2,14 +2,14 @@ import { BipodLashing } from "../objects/lashings/bipodLashing";
 import { Lashing } from "../objects/lashings/lashing";
 import { Pole } from "../objects/pole";
 import { Viewer } from "../viewer";
+import { Tool } from "./tool";
 
-export class DestructionTool {
+export class DestructionTool extends Tool {
   active: boolean;
   viewer: Viewer;
   hoveredObject: Pole | Lashing | BipodLashing | undefined;
   constructor(viewer: Viewer) {
-    this.viewer = viewer;
-    this.active = false;
+    super(viewer);
   }
 
   activate() {
@@ -21,7 +21,7 @@ export class DestructionTool {
     this.viewer.domElement.style.cursor = "default";
   }
 
-  leftClick() {
+  onLeftClick() {
     if (!this.active) return;
     if (this.hoveredObject instanceof Lashing) {
       this.viewer.inventory.removeLashing(this.hoveredObject);

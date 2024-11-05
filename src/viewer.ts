@@ -84,9 +84,6 @@ export class Viewer {
     this.controls = new OrbitControls(this.camera, this.canvas);
     this.controls.enableDamping = false;
 
-    this.inputHandler = new InputHandler(this);
-    this.debug = new Debug(this);
-
     // Floor
     this.floor = new Floor(this);
     this.floor.setNewFloor(50, 50, new THREE.Color("#2a6e3c"), false);
@@ -129,6 +126,9 @@ export class Viewer {
     this.destructionTool = new DestructionTool(this);
     this.lashingTool = new LashingTool(this);
     this.transformationTool = new TransformationTool(this);
+
+    this.inputHandler = new InputHandler(this);
+    this.debug = new Debug(this);
 
     const tick = () => {
       this.controls.update();

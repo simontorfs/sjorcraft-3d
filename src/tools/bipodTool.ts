@@ -3,11 +3,9 @@ import * as THREE from "three";
 import { Viewer } from "../viewer";
 import { HelperLine, DistanceHelperLine } from "../objects/helperLine";
 import { BipodLashing } from "../objects/lashings/bipodLashing";
+import { Tool } from "./tool";
 
-export class BipodTool {
-  active: boolean = false;
-  viewer: Viewer;
-
+export class BipodTool extends Tool {
   scaffold1: Scaffold = new Scaffold();
   scaffold2: Scaffold = new Scaffold();
   lashing: BipodLashing = new BipodLashing(this.scaffold1, this.scaffold2);
@@ -30,7 +28,7 @@ export class BipodTool {
   bipodIsColliding: boolean = false;
 
   constructor(viewer: Viewer) {
-    this.viewer = viewer;
+    super(viewer);
     this.viewer.scene.add(this.lashing);
 
     this.parallelHelperLine.visible = false;
@@ -68,7 +66,7 @@ export class BipodTool {
     this.lashHeight = this.defaultLashHeight;
   }
 
-  leftClick() {
+  onLeftClick() {
     if (!this.active) return;
 
     if (!this.scaffold1Placed) {
@@ -97,7 +95,7 @@ export class BipodTool {
     }
   }
 
-  rightClick() {
+  onRightClick() {
     if (!this.active) return;
 
     if (this.lashPositionPlaced) {

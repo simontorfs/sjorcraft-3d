@@ -3,18 +3,20 @@ import { Pole } from "./objects/pole";
 import { Viewer } from "./viewer";
 import { Lashing } from "./objects/lashings/lashing";
 import { BipodLashing } from "./objects/lashings/bipodLashing";
+import { Tool } from "./tools/tool";
 
 export class InputHandler {
   viewer: Viewer;
   cursor: THREE.Vector2;
   mouseHasMoved: boolean;
   mouseDown: boolean;
-  hoveredHandle: THREE.Mesh | undefined = undefined;
   ctrlDown: boolean;
+  activeTool: Tool;
 
   constructor(viewer: Viewer) {
     this.viewer = viewer;
     const domElement = this.viewer.domElement;
+    this.activeTool = viewer.selectionTool;
 
     this.mouseHasMoved = false;
 
@@ -42,14 +44,10 @@ export class InputHandler {
         this.ctrlDown = true;
         break;
       case "ArrowUp":
-        if (this.viewer.polypedestraTool.active) {
-          this.viewer.polypedestraTool.arrowUp();
-        }
+        this.activeTool.onArrowUp();
         break;
       case "ArrowDown":
-        if (this.viewer.polypedestraTool.active) {
-          this.viewer.polypedestraTool.arrowDown();
-        }
+        this.activeTool.onArrowDown();
         break;
       case "a":
         event.preventDefault();
@@ -81,46 +79,16 @@ export class InputHandler {
   onMouseUp(event: any) {
     this.mouseDown = false;
     if (this.mouseHasMoved) {
-      if (this.viewer.transformationTool.active) {
-        this.viewer.transformationTool.drop();
-      }
+      this.activeTool.onMouseDrop();
     } else {
-      if (this.viewer.poleTool.active) {
-        if (event.button === THREE.MOUSE.LEFT) {
-          this.viewer.poleTool.leftClick();
-        } else if (event.button === THREE.MOUSE.RIGHT) {
-          this.viewer.poleTool.rightClick();
-        }
-      } else if (this.viewer.selectionTool.active) {
-        if (event.button === THREE.MOUSE.LEFT) {
-          this.viewer.selectionTool.leftClick(this.ctrlDown);
-        }
-      } else if (this.viewer.destructionTool.active) {
-        if (event.button === THREE.MOUSE.LEFT) {
-          this.viewer.destructionTool.leftClick();
-        }
-      } else if (this.viewer.bipodTool.active) {
-        if (event.button === THREE.MOUSE.LEFT) {
-          this.viewer.bipodTool.leftClick();
+      if (event.button === THREE.MOUSE.LEFT) {
+        if (this.ctrlDown) {
+          this.activeTool.onCtrlLeftClick();
         } else {
-          this.viewer.bipodTool.rightClick();
+          this.activeTool.onLeftClick();
         }
-      } else if (this.viewer.tripodTool.active) {
-        if (event.button === THREE.MOUSE.LEFT) {
-          this.viewer.tripodTool.leftClick();
-        } else {
-          this.viewer.tripodTool.rightClick();
-        }
-      } else if (this.viewer.polypedestraTool.active) {
-        if (event.button === THREE.MOUSE.LEFT) {
-          this.viewer.polypedestraTool.leftClick();
-        } else {
-          this.viewer.polypedestraTool.rightClick();
-        }
-      } else if (this.viewer.lashingTool.active) {
-        if (event.button === THREE.MOUSE.LEFT) {
-          this.viewer.lashingTool.leftClick();
-        }
+      } else if (event.button === THREE.MOUSE.RIGHT) {
+        this.activeTool.onRightClick();
       }
     }
   }
@@ -134,27 +102,9 @@ export class InputHandler {
       2.0 * (-(event.clientY - rect.top) / this.viewer.sizes.height + 0.5);
 
     if (this.mouseDown) {
-      if (this.viewer.transformationTool.active) {
-        this.viewer.transformationTool.onMouseDrag();
-      }
+      this.activeTool.onMouseDrag();
     } else {
-      if (this.viewer.poleTool.active) {
-        this.viewer.poleTool.onMouseMove();
-      } else if (this.viewer.selectionTool.active) {
-        this.viewer.selectionTool.onMouseMove();
-      } else if (this.viewer.destructionTool.active) {
-        this.viewer.destructionTool.onMouseMove();
-      } else if (this.viewer.bipodTool.active) {
-        this.viewer.bipodTool.onMouseMove();
-      } else if (this.viewer.tripodTool.active) {
-        this.viewer.tripodTool.onMouseMove();
-      } else if (this.viewer.polypedestraTool.active) {
-        this.viewer.polypedestraTool.onMouseMove();
-      } else if (this.viewer.lashingTool.active) {
-        this.viewer.lashingTool.onMouseMove();
-      } else if (this.viewer.transformationTool.active) {
-        this.viewer.transformationTool.onMouseMove();
-      }
+      this.activeTool.onMouseMove();
     }
   }
 
@@ -243,31 +193,32 @@ export class InputHandler {
     this.deactiveTools();
     switch (tool) {
       case "selectiontool":
-        this.viewer.selectionTool.activate();
+        this.activeTool = this.viewer.selectionTool;
         break;
       case "poletool":
-        this.viewer.poleTool.activate();
+        this.activeTool = this.viewer.poleTool;
         break;
       case "bipodtool":
-        this.viewer.bipodTool.activate();
+        this.activeTool = this.viewer.bipodTool;
         break;
       case "tripodtool":
-        this.viewer.tripodTool.activate();
+        this.activeTool = this.viewer.tripodTool;
         break;
       case "polypedestratool":
-        this.viewer.polypedestraTool.activate();
+        this.activeTool = this.viewer.polypedestraTool;
         break;
       case "lashingtool":
-        this.viewer.lashingTool.activate();
+        this.activeTool = this.viewer.lashingTool;
         break;
       case "destructiontool":
-        this.viewer.destructionTool.activate();
+        this.activeTool = this.viewer.destructionTool;
         break;
       case "transformationtool":
-        this.viewer.transformationTool.activate();
+        this.activeTool = this.viewer.transformationTool;
         break;
       default:
         break;
     }
+    this.activeTool.activate();
   }
 }

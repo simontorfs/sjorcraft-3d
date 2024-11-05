@@ -2,16 +2,14 @@ import { Pole } from "../objects/pole";
 import { Viewer } from "../viewer";
 import { PoleTransformer } from "./poleTransformer";
 import * as THREE from "three";
+import { Tool } from "./tool";
 
-export class TransformationTool {
-  active: boolean;
-  viewer: Viewer;
+export class TransformationTool extends Tool {
   hoveredPole: Pole | undefined;
   poleTransformer: PoleTransformer;
   activeHandle: THREE.Mesh | undefined;
   constructor(viewer: Viewer) {
-    this.viewer = viewer;
-    this.active = false;
+    super(viewer);
     this.poleTransformer = new PoleTransformer(viewer);
     this.viewer.scene.add(this.poleTransformer);
   }
@@ -37,7 +35,7 @@ export class TransformationTool {
     this.poleTransformer.dragHandle(this.activeHandle);
   }
 
-  drop() {
+  onMouseDrop() {
     if (this.activeHandle) this.poleTransformer.dropHandle(this.activeHandle);
   }
 

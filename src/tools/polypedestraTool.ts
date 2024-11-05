@@ -2,11 +2,9 @@ import * as THREE from "three";
 import { Scaffold } from "../objects/scaffold";
 import { Viewer } from "../viewer";
 import { DistanceHelperLine } from "../objects/helperLine";
+import { Tool } from "./tool";
 
-export class PolypedestraTool {
-  active: boolean = false;
-  viewer: Viewer;
-
+export class PolypedestraTool extends Tool {
   scaffolds: Scaffold[] = [];
 
   midPointPlaced: boolean = false;
@@ -32,7 +30,8 @@ export class PolypedestraTool {
   polypedestraIsColliding: boolean = false;
 
   constructor(viewer: Viewer) {
-    this.viewer = viewer;
+    super(viewer);
+
     for (let i = 0; i < 16; i++) {
       const scaffold = new Scaffold();
       scaffold.setInvisible();
@@ -83,7 +82,7 @@ export class PolypedestraTool {
     this.removeVerticalHelperLine();
   }
 
-  leftClick() {
+  onLeftClick() {
     if (!this.active) return;
     if (!this.midPointPlaced) {
       this.midPointPlaced = true;
@@ -102,7 +101,7 @@ export class PolypedestraTool {
     }
   }
 
-  rightClick() {
+  onRightClick() {
     if (!this.active) return;
     if (this.onlyGroundPointPlaced) {
       this.onlyGroundPointPlaced = false;
@@ -115,11 +114,11 @@ export class PolypedestraTool {
     this.drawPolypedestra(this.groundPositionLastMouseMove);
   }
 
-  arrowUp() {
+  onArrowUp() {
     this.setNrOfPoles(Math.min(this.nrOfPoles + 1, 16));
   }
 
-  arrowDown() {
+  onArrowDown() {
     this.setNrOfPoles(Math.max(this.nrOfPoles - 1, 3));
   }
 

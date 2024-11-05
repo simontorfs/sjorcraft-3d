@@ -2,11 +2,9 @@ import * as THREE from "three";
 import { Scaffold } from "../objects/scaffold";
 import { Viewer } from "../viewer";
 import { DistanceHelperLine } from "../objects/helperLine";
+import { Tool } from "./tool";
 
-export class TripodTool {
-  active: boolean = false;
-  viewer: Viewer;
-
+export class TripodTool extends Tool {
   scaffold1: Scaffold = new Scaffold();
   scaffold2: Scaffold = new Scaffold();
   scaffold3: Scaffold = new Scaffold();
@@ -31,7 +29,7 @@ export class TripodTool {
   tripodIsColliding: boolean = false;
 
   constructor(viewer: Viewer) {
-    this.viewer = viewer;
+    super(viewer);
 
     for (let i = 0; i < 3; i++) {
       const line = new DistanceHelperLine();
@@ -72,7 +70,7 @@ export class TripodTool {
     this.lashHeight = this.defaultLashHeight;
   }
 
-  leftClick() {
+  onLeftClick() {
     if (!this.scaffold1Placed) {
       this.scaffold1Placed = true;
       this.horizontalHelperLines[0].visible = true;
@@ -103,7 +101,7 @@ export class TripodTool {
     this.updateHelperLines();
   }
 
-  rightClick() {
+  onRightClick() {
     if (!this.active) return;
 
     if (this.lashPositionPlaced) {

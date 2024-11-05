@@ -1,14 +1,12 @@
 import { Pole } from "../objects/pole";
 import { Viewer } from "../viewer";
+import { Tool } from "./tool";
 
-export class SelectionTool {
-  active: boolean;
-  viewer: Viewer;
+export class SelectionTool extends Tool {
   hoveredPole: Pole | undefined;
   selectedPoles: Pole[] = [];
   constructor(viewer: Viewer) {
-    this.viewer = viewer;
-    this.active = false;
+    super(viewer);
   }
 
   activate() {
@@ -41,25 +39,25 @@ export class SelectionTool {
     }
   }
 
-  leftClick(ctrlDown: boolean) {
+  onLeftClick() {
     if (!this.active) return;
-    if (ctrlDown) {
-      if (!this.hoveredPole) return;
-      if (this.hoveredPole.selected) {
-        this.hoveredPole.deselect();
-        this.selectedPoles = this.selectedPoles.filter(
-          (pole) => pole !== this.hoveredPole
-        );
-      } else {
-        this.hoveredPole.select();
-        this.selectedPoles.push(this.hoveredPole);
-      }
+    this.deselectAll();
+    if (this.hoveredPole) {
+      this.hoveredPole.select();
+      this.selectedPoles.push(this.hoveredPole);
+    }
+  }
+
+  onCtrlLeftClick() {
+    if (!this.hoveredPole) return;
+    if (this.hoveredPole.selected) {
+      this.hoveredPole.deselect();
+      this.selectedPoles = this.selectedPoles.filter(
+        (pole) => pole !== this.hoveredPole
+      );
     } else {
-      this.deselectAll();
-      if (this.hoveredPole) {
-        this.hoveredPole.select();
-        this.selectedPoles.push(this.hoveredPole);
-      }
+      this.hoveredPole.select();
+      this.selectedPoles.push(this.hoveredPole);
     }
   }
 
