@@ -62,13 +62,6 @@ export class Viewer {
       this.camera.updateProjectionMatrix();
       this.renderer.setSize(this.sizes.width, this.sizes.height);
     });
-    window.addEventListener("dblclick", () => {
-      if (!document.fullscreenElement) {
-        this.canvas.requestFullscreen();
-      } else {
-        document.exitFullscreen();
-      }
-    });
 
     // Camera
     this.camera = new THREE.PerspectiveCamera(

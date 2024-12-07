@@ -26,6 +26,11 @@ export class InputHandler {
     domElement.addEventListener("mousedown", this.onMouseDown.bind(this));
     domElement.addEventListener("mouseup", this.onMouseUp.bind(this));
     domElement.addEventListener("mousemove", this.onMouseMove.bind(this));
+    domElement.addEventListener("dblclick", this.onDoubleClick.bind(this));
+  }
+
+  onDoubleClick() {
+    // TODO: Implement zoomto clicked location, preferably only in selection tool
   }
 
   onKeyDown(event: any) {
