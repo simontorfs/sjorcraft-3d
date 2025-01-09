@@ -3,11 +3,9 @@ import * as THREE from "three";
 import { Viewer } from "../viewer";
 import { HelperLine, DistanceHelperLine } from "../objects/helperLine";
 import { BipodLashing } from "../objects/lashings/bipodLashing";
+import { Tool } from "./tool";
 
-export class BipodTool {
-  active: boolean = false;
-  viewer: Viewer;
-
+export class BipodTool extends Tool {
   scaffold1: Scaffold = new Scaffold();
   scaffold2: Scaffold = new Scaffold();
   lashing: BipodLashing = new BipodLashing(this.scaffold1, this.scaffold2);
@@ -30,7 +28,7 @@ export class BipodTool {
   bipodIsColliding: boolean = false;
 
   constructor(viewer: Viewer) {
-    this.viewer = viewer;
+    super(viewer);
     this.viewer.scene.add(this.lashing);
 
     this.parallelHelperLine.visible = false;
@@ -45,8 +43,7 @@ export class BipodTool {
 
   activate() {
     this.active = true;
-    this.scaffold1.setPositions(new THREE.Vector3(0, 200, 0));
-    this.scaffold2.setPositions(new THREE.Vector3(0, 200, 0));
+    this.resetParameters();
     this.scaffold1.addToScene(this.viewer.scene);
     this.scaffold2.addToScene(this.viewer.scene);
   }
@@ -66,9 +63,11 @@ export class BipodTool {
     this.scaffold2Placed = false;
     this.lashPositionPlaced = false;
     this.lashHeight = this.defaultLashHeight;
+    this.scaffold1.setPositions(new THREE.Vector3(0, 200, 0));
+    this.scaffold2.setPositions(new THREE.Vector3(0, 200, 0));
   }
 
-  leftClick() {
+  onLeftClick() {
     if (!this.active) return;
 
     if (!this.scaffold1Placed) {
@@ -97,7 +96,7 @@ export class BipodTool {
     }
   }
 
-  rightClick() {
+  onRightClick() {
     if (!this.active) return;
 
     if (this.lashPositionPlaced) {
@@ -114,13 +113,18 @@ export class BipodTool {
     }
   }
 
-  drawBipod(groundPosition: THREE.Vector3) {
+  onMouseMove() {
+    const groundPosition = this.viewer.inputHandler.getHoveredGroundPosition();
+    this.drawBipod(groundPosition);
+  }
+
+  drawBipod(groundPosition: THREE.Vector3 | null) {
     if (!this.scaffold1Placed) {
-      this.drawFirstStep(groundPosition);
+      if (groundPosition) this.drawFirstStep(groundPosition);
     } else if (!this.scaffold2Placed) {
-      this.drawSecondStep(groundPosition);
+      if (groundPosition) this.drawSecondStep(groundPosition);
     } else if (!this.lashPositionPlaced) {
-      this.drawThirdStep(groundPosition);
+      if (groundPosition) this.drawThirdStep(groundPosition);
     } else {
       this.drawFourthStep();
     }

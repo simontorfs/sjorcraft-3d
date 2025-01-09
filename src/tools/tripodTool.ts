@@ -2,11 +2,9 @@ import * as THREE from "three";
 import { Scaffold } from "../objects/scaffold";
 import { Viewer } from "../viewer";
 import { DistanceHelperLine } from "../objects/helperLine";
+import { Tool } from "./tool";
 
-export class TripodTool {
-  active: boolean = false;
-  viewer: Viewer;
-
+export class TripodTool extends Tool {
   scaffold1: Scaffold = new Scaffold();
   scaffold2: Scaffold = new Scaffold();
   scaffold3: Scaffold = new Scaffold();
@@ -31,7 +29,7 @@ export class TripodTool {
   tripodIsColliding: boolean = false;
 
   constructor(viewer: Viewer) {
-    this.viewer = viewer;
+    super(viewer);
 
     for (let i = 0; i < 3; i++) {
       const line = new DistanceHelperLine();
@@ -46,9 +44,7 @@ export class TripodTool {
 
   activate() {
     this.active = true;
-    this.scaffold1.setPositions(new THREE.Vector3(0, 200, 0));
-    this.scaffold2.setPositions(new THREE.Vector3(0, 200, 0));
-    this.scaffold3.setPositions(new THREE.Vector3(0, 200, 0));
+    this.resetParameters();
     this.scaffold1.addToScene(this.viewer.scene);
     this.scaffold2.addToScene(this.viewer.scene);
     this.scaffold3.addToScene(this.viewer.scene);
@@ -70,9 +66,12 @@ export class TripodTool {
     this.scaffold3Placed = false;
     this.lashPositionPlaced = false;
     this.lashHeight = this.defaultLashHeight;
+    this.scaffold1.setPositions(new THREE.Vector3(0, 200, 0));
+    this.scaffold2.setPositions(new THREE.Vector3(0, 200, 0));
+    this.scaffold3.setPositions(new THREE.Vector3(0, 200, 0));
   }
 
-  leftClick() {
+  onLeftClick() {
     if (!this.scaffold1Placed) {
       this.scaffold1Placed = true;
       this.horizontalHelperLines[0].visible = true;
@@ -103,7 +102,7 @@ export class TripodTool {
     this.updateHelperLines();
   }
 
-  rightClick() {
+  onRightClick() {
     if (!this.active) return;
 
     if (this.lashPositionPlaced) {
@@ -124,15 +123,20 @@ export class TripodTool {
     this.updateHelperLines();
   }
 
-  drawTripod(groundPosition: THREE.Vector3) {
+  onMouseMove() {
+    const groundPosition = this.viewer.inputHandler.getHoveredGroundPosition();
+    this.drawTripod(groundPosition);
+  }
+
+  drawTripod(groundPosition: THREE.Vector3 | null) {
     if (!this.scaffold1Placed) {
-      this.drawFirstStep(groundPosition);
+      if (groundPosition) this.drawFirstStep(groundPosition);
     } else if (!this.scaffold2Placed) {
-      this.drawSecondStep(groundPosition);
+      if (groundPosition) this.drawSecondStep(groundPosition);
     } else if (!this.scaffold3Placed) {
-      this.drawThirdStep(groundPosition);
+      if (groundPosition) this.drawThirdStep(groundPosition);
     } else if (!this.lashPositionPlaced) {
-      this.drawFourthStep(groundPosition);
+      if (groundPosition) this.drawFourthStep(groundPosition);
     } else {
       this.drawFifthStep();
     }

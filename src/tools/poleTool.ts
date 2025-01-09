@@ -4,11 +4,10 @@ import * as THREE from "three";
 import { Viewer } from "../viewer";
 import { Lashing } from "../objects/lashings/lashing";
 import { HelperLine } from "../objects/helperLine";
+import { Tool } from "./tool";
 
-export class PoleTool {
-  active: boolean;
+export class PoleTool extends Tool {
   activeScaffold: Scaffold;
-  viewer: Viewer;
   hoveringGround: boolean;
   fixedLashing: Lashing | undefined;
   newLashing: Lashing | undefined;
@@ -18,8 +17,7 @@ export class PoleTool {
   activeScaffoldIsColliding: boolean = false;
 
   constructor(viewer: Viewer) {
-    this.viewer = viewer;
-    this.active = false;
+    super(viewer);
     this.activeScaffold = new Scaffold();
     this.hoveringGround = false;
     this.snapHelperLine = new HelperLine();
@@ -94,6 +92,31 @@ export class PoleTool {
     this.lastPole = undefined;
 
     this.viewer.inventory.resetAllColors();
+  }
+
+  onMouseMove() {
+    const poleIntersect = this.viewer.inputHandler.getPoleIntersect();
+    const hoveredPole = poleIntersect?.object.parent as Pole;
+
+    if (poleIntersect?.normal) {
+      const rotationMatrix = new THREE.Matrix4();
+      rotationMatrix.extractRotation(hoveredPole.matrix);
+
+      const transformedNormal = poleIntersect.normal
+        .clone()
+        .applyMatrix4(rotationMatrix)
+        .normalize();
+
+      this.drawPoleWhileHoveringOtherPole(
+        poleIntersect.point,
+        hoveredPole,
+        transformedNormal
+      );
+    } else {
+      const groundPosition =
+        this.viewer.inputHandler.getHoveredGroundPosition();
+      if (groundPosition) this.drawPoleWhileHoveringGound(groundPosition);
+    }
   }
 
   drawPoleWhileHoveringGound(groundPosition: THREE.Vector3) {
@@ -242,7 +265,7 @@ export class PoleTool {
     }
   }
 
-  leftClick() {
+  onLeftClick() {
     if (this.activeScaffoldIsColliding) return;
     if (this.fixedLashing || this.hoveringGround) {
       this.commitLashings();
@@ -274,7 +297,7 @@ export class PoleTool {
     this.newLashing = undefined;
   }
 
-  rightClick() {
+  onRightClick() {
     this.activeScaffold.reset();
 
     if (this.fixedLashing) {

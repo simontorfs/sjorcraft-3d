@@ -62,13 +62,6 @@ export class Viewer {
       this.camera.updateProjectionMatrix();
       this.renderer.setSize(this.sizes.width, this.sizes.height);
     });
-    window.addEventListener("dblclick", () => {
-      if (!document.fullscreenElement) {
-        this.canvas.requestFullscreen();
-      } else {
-        document.exitFullscreen();
-      }
-    });
 
     // Camera
     this.camera = new THREE.PerspectiveCamera(
@@ -83,9 +76,6 @@ export class Viewer {
     // Controls
     this.controls = new OrbitControls(this.camera, this.canvas);
     this.controls.enableDamping = false;
-
-    this.inputHandler = new InputHandler(this);
-    this.debug = new Debug(this);
 
     // Floor
     this.floor = new Floor(this);
@@ -129,6 +119,9 @@ export class Viewer {
     this.destructionTool = new DestructionTool(this);
     this.lashingTool = new LashingTool(this);
     this.transformationTool = new TransformationTool(this);
+
+    this.inputHandler = new InputHandler(this);
+    this.debug = new Debug(this);
 
     const tick = () => {
       this.controls.update();
