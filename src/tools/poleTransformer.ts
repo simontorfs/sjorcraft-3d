@@ -188,6 +188,10 @@ export class PoleTransformer extends THREE.Object3D {
         this.viewer.inventory.removeLashing(lashing, true);
       }
     }
+    (this.viewer.scene as any).dispatchEvent({
+      type: "pole_dropped",
+      pole: this.activeScaffold.mainPole,
+    });
   }
 
   dropScaleHandle() {
