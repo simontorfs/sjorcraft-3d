@@ -1,4 +1,5 @@
 import * as THREE from "three";
+import { v4 as uuidv4 } from "uuid";
 
 export const allowedLengths: number[] = [
   1.0, 1.5, 2.0, 2.5, 3.0, 4.0, 5.0, 6.0,
@@ -30,6 +31,7 @@ roughnessTexture.wrapT = THREE.MirroredRepeatWrapping;
 aoTexture.wrapT = THREE.MirroredRepeatWrapping;
 
 export class Pole extends THREE.Object3D {
+  identifier: string;
   mesh: THREE.Mesh;
   capTop: THREE.Mesh;
   capBottom: THREE.Mesh;
@@ -41,8 +43,9 @@ export class Pole extends THREE.Object3D {
   color: THREE.Color = new THREE.Color(0x0000ff);
   selected: Boolean = false;
 
-  constructor() {
+  constructor(identifier?: string) {
     super();
+    this.identifier = identifier || uuidv4();
 
     const geometry = new THREE.CylinderGeometry(
       this.radius,
