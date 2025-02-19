@@ -38,7 +38,7 @@ export class PoleTool extends Tool {
   addDemoPoles() {
     const demoPole1 = new Pole();
     this.viewer.scene.add(demoPole1);
-    this.viewer.inventory.addPole(demoPole1);
+    this.viewer.inventory.addPole(demoPole1, false);
     demoPole1.position.x = -0.07;
     demoPole1.position.y = 1.74;
     demoPole1.position.z = 0.1;
@@ -47,7 +47,7 @@ export class PoleTool extends Tool {
 
     const demoPole2 = new Pole();
     this.viewer.scene.add(demoPole2);
-    this.viewer.inventory.addPole(demoPole2);
+    this.viewer.inventory.addPole(demoPole2, false);
     demoPole2.position.x = 0.9;
     demoPole2.position.y = 1.74;
     demoPole2.position.z = 0.93;
@@ -56,7 +56,7 @@ export class PoleTool extends Tool {
 
     const demoPole3 = new Pole();
     this.viewer.scene.add(demoPole3);
-    this.viewer.inventory.addPole(demoPole3);
+    this.viewer.inventory.addPole(demoPole3, false);
     demoPole3.position.x = 0.07;
     demoPole3.position.y = 1.74;
     demoPole3.position.z = 1.9;
@@ -65,7 +65,7 @@ export class PoleTool extends Tool {
 
     const demoPole4 = new Pole();
     this.viewer.scene.add(demoPole4);
-    this.viewer.inventory.addPole(demoPole4);
+    this.viewer.inventory.addPole(demoPole4, false);
     demoPole4.position.x = -0.9;
     demoPole4.position.y = 1.74;
     demoPole4.position.z = 1.07;
@@ -85,8 +85,9 @@ export class PoleTool extends Tool {
     this.activeScaffold.removeFromScene(this.viewer.scene);
     this.active = false;
     if (this.fixedLashing)
-      this.viewer.inventory.removeLashing(this.fixedLashing);
-    if (this.newLashing) this.viewer.inventory.removeLashing(this.newLashing);
+      this.viewer.inventory.removeLashing(this.fixedLashing, false);
+    if (this.newLashing)
+      this.viewer.inventory.removeLashing(this.newLashing, false);
     this.fixedLashing = undefined;
     this.newLashing = undefined;
     this.lastPole = undefined;
@@ -287,11 +288,11 @@ export class PoleTool extends Tool {
   commitLashings() {
     if (this.fixedLashing) {
       this.fixedLashing.relashToRightScaffoldPole(this.activeScaffold);
-      this.viewer.inventory.addLashing(this.fixedLashing);
+      this.viewer.inventory.addLashing(this.fixedLashing, true);
     }
     if (this.newLashing) {
       this.newLashing.relashToRightScaffoldPole(this.activeScaffold);
-      this.viewer.inventory.addLashing(this.newLashing);
+      this.viewer.inventory.addLashing(this.newLashing, true);
     }
     this.fixedLashing = undefined;
     this.newLashing = undefined;
