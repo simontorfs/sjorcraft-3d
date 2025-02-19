@@ -23,54 +23,6 @@ export class PoleTool extends Tool {
     this.snapHelperLine = new HelperLine();
     this.snapHelperLine.visible = false;
     this.viewer.scene.add(this.snapHelperLine);
-
-    // load poles from local storage if available else add demo poles
-    if (localStorage.getItem("poles") !== null) {
-      this.viewer.saveTool.loadPolesFromLocalStorage();
-    } else if (this.viewer.inventory.poles.length === 0) {
-      this.addDemoPoles();
-    }
-    if (localStorage.getItem("lashes") !== null) {
-      this.viewer.saveTool.loadLashingsFromLocalStorage();
-    }
-  }
-
-  addDemoPoles() {
-    const demoPole1 = new Pole();
-    this.viewer.scene.add(demoPole1);
-    this.viewer.inventory.addPole(demoPole1, false);
-    demoPole1.position.x = -0.07;
-    demoPole1.position.y = 1.74;
-    demoPole1.position.z = 0.1;
-    demoPole1.setDirection(new THREE.Vector3(0, 1.8, 1));
-    demoPole1.name = "demoPole1";
-
-    const demoPole2 = new Pole();
-    this.viewer.scene.add(demoPole2);
-    this.viewer.inventory.addPole(demoPole2, false);
-    demoPole2.position.x = 0.9;
-    demoPole2.position.y = 1.74;
-    demoPole2.position.z = 0.93;
-    demoPole2.setDirection(new THREE.Vector3(-1, 1.8, 0));
-    demoPole2.name = "demoPole2";
-
-    const demoPole3 = new Pole();
-    this.viewer.scene.add(demoPole3);
-    this.viewer.inventory.addPole(demoPole3, false);
-    demoPole3.position.x = 0.07;
-    demoPole3.position.y = 1.74;
-    demoPole3.position.z = 1.9;
-    demoPole3.setDirection(new THREE.Vector3(0, 1.8, -1));
-    demoPole3.name = "demoPole3";
-
-    const demoPole4 = new Pole();
-    this.viewer.scene.add(demoPole4);
-    this.viewer.inventory.addPole(demoPole4, false);
-    demoPole4.position.x = -0.9;
-    demoPole4.position.y = 1.74;
-    demoPole4.position.z = 1.07;
-    demoPole4.setDirection(new THREE.Vector3(1, 1.8, 0));
-    demoPole4.name = "demoPole4";
   }
 
   activate() {
