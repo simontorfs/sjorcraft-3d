@@ -2,8 +2,10 @@ import { Pole } from "../pole";
 import { Scaffold } from "../scaffold";
 import { SquareLashingCurve } from "./squareLashingCurve";
 import * as THREE from "three";
+import { v4 as uuidv4 } from "uuid";
 
 export class Lashing extends THREE.Object3D {
+  identifier: string;
   fixedPole: Pole;
   loosePole: Pole;
   centerFixedPole: THREE.Vector3;
@@ -13,8 +15,10 @@ export class Lashing extends THREE.Object3D {
   fixedHeight: number | undefined;
 
   mesh: THREE.Mesh = new THREE.Mesh();
-  constructor() {
+  constructor(identifier?: string) {
     super();
+
+    this.identifier = identifier || uuidv4();
   }
 
   setPropertiesFromAnchorPoint(
