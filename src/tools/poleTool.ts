@@ -37,9 +37,8 @@ export class PoleTool extends Tool {
     this.activeScaffold.removeFromScene(this.viewer.scene);
     this.active = false;
     if (this.fixedLashing)
-      this.viewer.inventory.removeLashing(this.fixedLashing, false);
-    if (this.newLashing)
-      this.viewer.inventory.removeLashing(this.newLashing, false);
+      this.viewer.inventory.removeLashing(this.fixedLashing);
+    if (this.newLashing) this.viewer.inventory.removeLashing(this.newLashing);
     this.fixedLashing = undefined;
     this.newLashing = undefined;
     this.lastPole = undefined;
@@ -240,11 +239,11 @@ export class PoleTool extends Tool {
   commitLashings() {
     if (this.fixedLashing) {
       this.fixedLashing.relashToRightScaffoldPole(this.activeScaffold);
-      this.viewer.inventory.addLashing(this.fixedLashing, true);
+      this.viewer.inventory.addLashing(this.fixedLashing);
     }
     if (this.newLashing) {
       this.newLashing.relashToRightScaffoldPole(this.activeScaffold);
-      this.viewer.inventory.addLashing(this.newLashing, true);
+      this.viewer.inventory.addLashing(this.newLashing);
     }
     this.fixedLashing = undefined;
     this.newLashing = undefined;

@@ -24,7 +24,7 @@ export class LashingTool extends Tool {
   onLeftClick() {
     if (!this.active) return;
     if (this.activeLashing.visible) {
-      this.viewer.inventory.addLashing(this.activeLashing, true);
+      this.viewer.inventory.addLashing(this.activeLashing);
       this.activeLashing = new Lashing();
       this.activeLashing.visible = false;
       this.viewer.scene.add(this.activeLashing);

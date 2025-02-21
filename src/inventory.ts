@@ -20,37 +20,45 @@ export class Inventory {
     this.viewer = viewer;
   }
 
-  addPole(pole: Pole, dispatch: boolean) {
+  addPole(pole: Pole) {
     this.poles.push(pole);
-    if (dispatch) {
-      (this.viewer.scene as any).dispatchEvent({
-        type: "new_pole_placed",
-        pole: pole,
-      });
-    }
+
+    (this.viewer.scene as any).dispatchEvent({
+      type: "new_pole_placed",
+      pole: pole,
+    });
   }
 
-  addLashing(lashing: Lashing, dispatch: boolean) {
+  addPoleSimple(pole: Pole) {
+    this.poles.push(pole);
+  }
+
+  addLashing(lashing: Lashing) {
     this.lashings.push(lashing);
-    if (dispatch) {
-      (this.viewer.scene as any).dispatchEvent({
-        type: "new_lashing_placed",
-        lashing: lashing,
-      });
-    }
+    (this.viewer.scene as any).dispatchEvent({
+      type: "new_lashing_placed",
+      lashing: lashing,
+    });
   }
 
-  addBipodLashing(lashing: BipodLashing, dispatch: boolean) {
+  addLashingSimple(lashing: Lashing) {
+    this.lashings.push(lashing);
+  }
+
+  addBipodLashing(lashing: BipodLashing) {
     this.bipodLashings.push(lashing);
-    if (dispatch) {
-      (this.viewer.scene as any).dispatchEvent({
-        type: "new_bipod_lashing_placed",
-        lashing: lashing,
-      });
-    }
+
+    (this.viewer.scene as any).dispatchEvent({
+      type: "new_bipod_lashing_placed",
+      lashing: lashing,
+    });
   }
 
-  removePole(poleToRemove: Pole, dispatch: boolean) {
+  addBipodLashingSimple(lashing: BipodLashing) {
+    this.bipodLashings.push(lashing);
+  }
+
+  removePole(poleToRemove: Pole) {
     this.viewer.scene.remove(poleToRemove);
     this.poles = this.poles.filter((pole) => pole !== poleToRemove);
 
@@ -59,57 +67,72 @@ export class Inventory {
         lashing.loosePole === poleToRemove ||
         lashing.fixedPole === poleToRemove
       ) {
-        this.removeLashing(lashing, true);
+        this.removeLashing(lashing);
       }
     }
 
     for (const lashing of this.viewer.inventory.bipodLashings) {
       if (lashing.pole1 === poleToRemove || lashing.pole2 === poleToRemove) {
-        this.removeBipodLashing(lashing, true);
+        this.removeBipodLashing(lashing);
       }
     }
 
-    if (dispatch) {
-      (this.viewer.scene as any).dispatchEvent({
-        type: "pole_removed",
-        pole: poleToRemove,
-      });
-    }
+    (this.viewer.scene as any).dispatchEvent({
+      type: "pole_removed",
+      pole: poleToRemove,
+    });
   }
 
-  removeLashing(lashingToRemove: Lashing, dispatch: boolean) {
+  removePoleSimple(poleToRemove: Pole) {
+    this.viewer.scene.remove(poleToRemove);
+    this.poles = this.poles.filter((pole) => pole !== poleToRemove);
+  }
+
+  removeLashing(lashingToRemove: Lashing) {
     this.viewer.scene.remove(lashingToRemove);
 
     this.lashings = this.lashings.filter(
       (lashing) => lashing !== lashingToRemove
     );
 
-    if (dispatch) {
-      (this.viewer.scene as any).dispatchEvent({
-        type: "lashing_removed",
-        lashing: lashingToRemove,
-      });
-    }
+    (this.viewer.scene as any).dispatchEvent({
+      type: "lashing_removed",
+      lashing: lashingToRemove,
+    });
   }
 
-  removeBipodLashing(lashingToRemove: BipodLashing, dispatch: boolean) {
+  removeLashingSimple(lashingToRemove: Lashing) {
+    this.viewer.scene.remove(lashingToRemove);
+
+    this.lashings = this.lashings.filter(
+      (lashing) => lashing !== lashingToRemove
+    );
+  }
+
+  removeBipodLashing(lashingToRemove: BipodLashing) {
     this.viewer.scene.remove(lashingToRemove);
 
     this.bipodLashings = this.bipodLashings.filter(
       (lashing) => lashing !== lashingToRemove
     );
 
-    if (dispatch) {
-      (this.viewer.scene as any).dispatchEvent({
-        type: "bipod_lashing_removed",
-        lashing: lashingToRemove,
-      });
-    }
+    (this.viewer.scene as any).dispatchEvent({
+      type: "bipod_lashing_removed",
+      lashing: lashingToRemove,
+    });
+  }
+
+  removeBipodLashingSimple(lashingToRemove: BipodLashing) {
+    this.viewer.scene.remove(lashingToRemove);
+
+    this.bipodLashings = this.bipodLashings.filter(
+      (lashing) => lashing !== lashingToRemove
+    );
   }
 
   removePoles(polesToRemove: Pole[]) {
     for (const pole of polesToRemove) {
-      this.removePole(pole, true);
+      this.removePole(pole);
     }
   }
 

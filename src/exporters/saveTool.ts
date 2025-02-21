@@ -28,12 +28,12 @@ export class SaveTool {
           const newPole = new Pole();
           newPole.loadFromJson(pole);
           this.viewer.scene.add(newPole);
-          this.viewer.inventory.addPole(newPole, true);
+          this.viewer.inventory.addPole(newPole);
         });
         data.lashings.forEach((lashing: any) => {
           const newLashing = new Lashing();
           if (newLashing.loadFromJson(lashing, this.viewer.inventory.poles)) {
-            this.viewer.inventory.addLashing(newLashing, true);
+            this.viewer.inventory.addLashing(newLashing);
             this.viewer.scene.add(newLashing);
           }
         });
@@ -59,7 +59,7 @@ export class SaveTool {
           const newPole = new Pole();
           newPole.loadFromJson(pole);
           this.viewer.scene.add(newPole);
-          this.viewer.inventory.addPole(newPole, true);
+          this.viewer.inventory.addPole(newPole);
         });
       };
       reader.readAsText(file);
@@ -108,7 +108,7 @@ export class SaveTool {
       const newPole = new Pole();
       newPole.loadFromJson(pole);
       this.viewer.scene.add(newPole);
-      this.viewer.inventory.addPole(newPole, false);
+      this.viewer.inventory.addPole(newPole);
     });
   }
 
@@ -125,7 +125,7 @@ export class SaveTool {
     lashings.forEach((lashing: any) => {
       const newLashing = new Lashing();
       if (newLashing.loadFromJson(lashing, this.viewer.inventory.poles)) {
-        this.viewer.inventory.addLashing(newLashing, false);
+        this.viewer.inventory.addLashing(newLashing);
       }
     });
   }
