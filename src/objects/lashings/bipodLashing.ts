@@ -2,8 +2,10 @@ import * as THREE from "three";
 import { Pole } from "../pole";
 import { BipodLashingCurve } from "./bipodLashingCurve";
 import { Scaffold } from "../scaffold";
+import { v4 as uuidv4 } from "uuid";
 
 export class BipodLashing extends THREE.Object3D {
+  identifier: string;
   scaffold1: Scaffold;
   scaffold2: Scaffold;
   pole1: Pole;
@@ -12,8 +14,9 @@ export class BipodLashing extends THREE.Object3D {
   centerPole2: THREE.Vector3;
 
   mesh: THREE.Mesh;
-  constructor(scaffold1: Scaffold, scaffold2: Scaffold) {
+  constructor(scaffold1: Scaffold, scaffold2: Scaffold, identifier?: string) {
     super();
+    this.identifier = identifier || uuidv4();
     this.scaffold1 = scaffold1;
     this.scaffold2 = scaffold2;
 
