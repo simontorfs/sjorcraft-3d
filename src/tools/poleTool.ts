@@ -183,7 +183,7 @@ export class PoleTool extends Tool {
     const snapLashings = this.viewer.inventory.lashings.filter(
       (lashing) =>
         lashing.fixedPole.isVertical() &&
-        lashing.anchorPoint.distanceTo(
+        lashing.centerFixedPole.distanceTo(
           this.newLashing?.anchorPoint || new THREE.Vector3() // Typescript complains newLashing could be undefined, even though WE LITERALLY JUST CHECKED THAT IT'S NOT
         ) < 5
     );
