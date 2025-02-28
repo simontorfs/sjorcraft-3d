@@ -145,5 +145,13 @@ export class Viewer {
 
   cleanup() {
     this.inputHandler.cleanup();
+
+    if (this.domElement && this.canvas) {
+      this.domElement.removeChild(this.canvas);
+    }
+
+    if (this.renderer) {
+      this.renderer.dispose();
+    }
   }
 }
