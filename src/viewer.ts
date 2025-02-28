@@ -142,4 +142,8 @@ export class Viewer {
       }
     });
   }
+
+  cleanup() {
+    this.inputHandler.cleanup();
+  }
 }

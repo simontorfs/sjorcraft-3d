@@ -13,6 +13,13 @@ export class InputHandler {
   ctrlDown: boolean;
   activeTool: Tool;
 
+  private onKeyDownBound: (event: KeyboardEvent) => void;
+  private onKeyUpBound: (event: KeyboardEvent) => void;
+  private onMouseDownBound: (event: MouseEvent) => void;
+  private onMouseUpBound: (event: MouseEvent) => void;
+  private onMouseMoveBound: (event: MouseEvent) => void;
+  private onDoubleClickBound: (event: MouseEvent) => void;
+
   constructor(viewer: Viewer) {
     this.viewer = viewer;
     const domElement = this.viewer.domElement;
@@ -21,12 +28,20 @@ export class InputHandler {
     this.mouseHasMoved = false;
 
     this.cursor = new THREE.Vector2();
-    window.addEventListener("keydown", this.onKeyDown.bind(this));
-    window.addEventListener("keyup", this.onKeyUp.bind(this));
-    domElement.addEventListener("mousedown", this.onMouseDown.bind(this));
-    domElement.addEventListener("mouseup", this.onMouseUp.bind(this));
-    domElement.addEventListener("mousemove", this.onMouseMove.bind(this));
-    domElement.addEventListener("dblclick", this.onDoubleClick.bind(this));
+
+    this.onKeyDownBound = this.onKeyDown.bind(this);
+    this.onKeyUpBound = this.onKeyUp.bind(this);
+    this.onMouseDownBound = this.onMouseDown.bind(this);
+    this.onMouseUpBound = this.onMouseUp.bind(this);
+    this.onMouseMoveBound = this.onMouseMove.bind(this);
+    this.onDoubleClickBound = this.onDoubleClick.bind(this);
+
+    window.addEventListener("keydown", this.onKeyDownBound);
+    window.addEventListener("keyup", this.onKeyUpBound);
+    domElement.addEventListener("mousedown", this.onMouseDownBound);
+    domElement.addEventListener("mouseup", this.onMouseUpBound);
+    domElement.addEventListener("mousemove", this.onMouseMoveBound);
+    domElement.addEventListener("dblclick", this.onDoubleClickBound);
   }
 
   onDoubleClick() {
@@ -225,5 +240,15 @@ export class InputHandler {
         break;
     }
     this.activeTool.activate();
+  }
+
+  cleanup() {
+    const domElement = this.viewer.domElement;
+    window.removeEventListener("keydown", this.onKeyDownBound);
+    window.removeEventListener("keyup", this.onKeyUpBound);
+    domElement.removeEventListener("mousedown", this.onMouseDownBound);
+    domElement.removeEventListener("mouseup", this.onMouseUpBound);
+    domElement.removeEventListener("mousemove", this.onMouseMoveBound);
+    domElement.removeEventListener("dblclick", this.onDoubleClickBound);
   }
 }
