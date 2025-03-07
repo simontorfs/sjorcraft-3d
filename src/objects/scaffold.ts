@@ -250,7 +250,7 @@ export class Scaffold {
   addToViewer(viewer: Viewer) {
     for (const pole of [this.mainPole, this.extensionPole, this.splintPole]) {
       if (pole.visible) {
-        viewer.inventory.addPole(pole);
+        viewer.inventory.addPoles([pole]);
       } else {
         viewer.scene.remove(pole);
       }
@@ -260,7 +260,7 @@ export class Scaffold {
   addExtensionToViewer(viewer: Viewer) {
     for (const pole of [this.extensionPole, this.splintPole]) {
       if (pole.visible) {
-        viewer.inventory.addPole(pole);
+        viewer.inventory.addPoles([pole]);
       } else {
         viewer.scene.remove(pole);
       }

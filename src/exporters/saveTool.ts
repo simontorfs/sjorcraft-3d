@@ -28,7 +28,7 @@ export class SaveTool {
           const newPole = new Pole();
           newPole.loadFromJson(pole);
           this.viewer.scene.add(newPole);
-          this.viewer.inventory.addPole(newPole);
+          this.viewer.inventory.addPoles([newPole]);
         });
         data.lashings.forEach((lashing: any) => {
           const newLashing = new Lashing();
@@ -59,7 +59,7 @@ export class SaveTool {
           const newPole = new Pole();
           newPole.loadFromJson(pole);
           this.viewer.scene.add(newPole);
-          this.viewer.inventory.addPole(newPole);
+          this.viewer.inventory.addPoles([newPole]);
         });
       };
       reader.readAsText(file);
@@ -108,7 +108,7 @@ export class SaveTool {
       const newPole = new Pole();
       newPole.loadFromJson(pole);
       this.viewer.scene.add(newPole);
-      this.viewer.inventory.addPole(newPole);
+      this.viewer.inventory.addPoles([newPole]);
     });
   }
 

@@ -20,12 +20,12 @@ export class Inventory {
     this.viewer = viewer;
   }
 
-  addPole(pole: Pole) {
-    this.poles.push(pole);
+  addPoles(poles: Pole[]) {
+    this.poles.push(...poles);
 
     (this.viewer.scene as any).dispatchEvent({
       type: "new_pole_placed",
-      pole: pole,
+      poles: poles,
     });
   }
 
