@@ -91,11 +91,14 @@ export class PolypedestraTool extends Tool {
       this.addVerticalHelperLine();
     } else {
       if (this.polypedestraIsColliding) return;
+
+      const polesToAdd = [];
       for (let i = 0; i < this.nrOfPoles; i++) {
-        this.scaffolds[i].addToViewer(this.viewer);
+        polesToAdd.push(...this.scaffolds[i].getVisiblePoles());
         this.scaffolds[i] = new Scaffold();
         this.scaffolds[i].addToScene(this.viewer.scene);
       }
+      this.viewer.inventory.addPoles(polesToAdd);
       this.resetParameters();
       this.setNrOfPoles(this.defaultNrOfPoles);
     }

@@ -202,7 +202,9 @@ export class PoleTransformer extends THREE.Object3D {
   dropScaleHandle() {
     if (!this.activeScaffold.extensionPole.visible) {
       this.activeScaffold.removeExtensionFromScene(this.viewer.scene);
+    } else {
+      const polesToAdd = this.activeScaffold.getVisibleExtenstionPoles();
+      this.viewer.inventory.addPoles(polesToAdd);
     }
-    this.activeScaffold.addExtensionToViewer(this.viewer);
   }
 }

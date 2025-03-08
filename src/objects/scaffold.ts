@@ -247,24 +247,14 @@ export class Scaffold {
     }
   }
 
-  addToViewer(viewer: Viewer) {
-    for (const pole of [this.mainPole, this.extensionPole, this.splintPole]) {
-      if (pole.visible) {
-        viewer.inventory.addPoles([pole]);
-      } else {
-        viewer.scene.remove(pole);
-      }
-    }
+  getVisiblePoles() {
+    return [this.mainPole, this.extensionPole, this.splintPole].filter(
+      (pole) => pole.visible
+    );
   }
 
-  addExtensionToViewer(viewer: Viewer) {
-    for (const pole of [this.extensionPole, this.splintPole]) {
-      if (pole.visible) {
-        viewer.inventory.addPoles([pole]);
-      } else {
-        viewer.scene.remove(pole);
-      }
-    }
+  getVisibleExtenstionPoles() {
+    return [this.extensionPole, this.splintPole].filter((pole) => pole.visible);
   }
 
   setVisible() {

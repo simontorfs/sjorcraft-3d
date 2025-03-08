@@ -88,9 +88,12 @@ export class TripodTool extends Tool {
       if (this.tripodIsColliding) return;
       this.verticalHelperLine.visible = false;
       this.horizontalHelperLines.map((line) => (line.visible = false));
-      this.scaffold1.addToViewer(this.viewer);
-      this.scaffold2.addToViewer(this.viewer);
-      this.scaffold3.addToViewer(this.viewer);
+      const polesToAdd = [
+        ...this.scaffold1.getVisiblePoles(),
+        ...this.scaffold2.getVisiblePoles(),
+        ...this.scaffold3.getVisiblePoles(),
+      ];
+      this.viewer.inventory.addPoles(polesToAdd);
       this.scaffold1 = new Scaffold();
       this.scaffold2 = new Scaffold();
       this.scaffold3 = new Scaffold();

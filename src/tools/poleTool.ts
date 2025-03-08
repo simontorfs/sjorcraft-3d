@@ -221,7 +221,9 @@ export class PoleTool extends Tool {
     if (this.activeScaffoldIsColliding) return;
     if (this.fixedLashing || this.hoveringGround) {
       this.commitLashings();
-      this.activeScaffold.addToViewer(this.viewer);
+      const polesToAdd = this.activeScaffold.getVisiblePoles();
+      this.viewer.inventory.addPoles(polesToAdd);
+
       this.lastPole = this.activeScaffold.mainPole;
 
       this.activeScaffold = new Scaffold();

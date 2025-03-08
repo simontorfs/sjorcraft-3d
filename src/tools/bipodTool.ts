@@ -83,8 +83,11 @@ export class BipodTool extends Tool {
       if (this.bipodIsColliding) return;
       this.removeHorizontalHelperLines();
       this.verticalHelperLine.visible = false;
-      this.scaffold1.addToViewer(this.viewer);
-      this.scaffold2.addToViewer(this.viewer);
+      const polesToAdd = [
+        ...this.scaffold1.getVisiblePoles(),
+        ...this.scaffold2.getVisiblePoles(),
+      ];
+      this.viewer.inventory.addPoles(polesToAdd);
       this.scaffold1 = new Scaffold();
       this.scaffold2 = new Scaffold();
       this.scaffold1.addToScene(this.viewer.scene);
