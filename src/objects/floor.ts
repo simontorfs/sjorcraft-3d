@@ -33,7 +33,16 @@ export class Floor extends THREE.Object3D {
     const floorGeometry = new THREE.PlaneGeometry(length, width);
     const textureLoader = new THREE.TextureLoader();
     const colorTexture = textureLoader.load(
-      "./textures/grass/grass1-albedo3.png"
+      "./textures/grass/grass_basecolor.jpg"
+    );
+    const heightTexture = textureLoader.load(
+      "./textures/grass/grass_height.jpg"
+    );
+    const normalTexture = textureLoader.load(
+      "./textures/grass/grass_normal.jpg"
+    );
+    const roughnessTexture = textureLoader.load(
+      "./textures/grass/grass_roughness.jpg"
     );
     colorTexture.repeat.y = width;
     colorTexture.repeat.x = length;
@@ -41,7 +50,7 @@ export class Floor extends THREE.Object3D {
     colorTexture.wrapS = THREE.RepeatWrapping;
 
     const floorMaterial = new THREE.MeshBasicMaterial({
-      map: texture ? colorTexture : null,
+      map: texture ? colorTexture : colorTexture,
       wireframe: false,
       color: color ? color : "#2a6e3c",
       transparent: false,
@@ -49,6 +58,7 @@ export class Floor extends THREE.Object3D {
     this.mesh = new THREE.Mesh(floorGeometry, floorMaterial);
     this.mesh.name = "floor";
     this.mesh.rotation.x = -Math.PI / 2;
+    this.mesh.castShadow = true;
     this.viewer.scene.add(this.mesh);
   }
 
