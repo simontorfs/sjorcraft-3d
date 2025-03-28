@@ -33,7 +33,7 @@ export class Floor extends THREE.Object3D {
     const floorGeometry = new THREE.PlaneGeometry(length, width);
     const textureLoader = new THREE.TextureLoader();
     const colorTexture = textureLoader.load(
-      "./textures/grass/grass1-albedo3.png"
+      "../../textures/grass/grass1-albedo3.png"
     );
     colorTexture.repeat.y = width;
     colorTexture.repeat.x = length;
