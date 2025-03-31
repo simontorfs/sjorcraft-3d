@@ -1,6 +1,13 @@
 import * as THREE from "three";
 import { Viewer } from "./../viewer";
 
+const textureLoader = new THREE.TextureLoader();
+const colorTexture = textureLoader.load("/textures/grass/grass_basecolor.jpg");
+
+colorTexture.wrapT = THREE.RepeatWrapping;
+colorTexture.wrapS = THREE.RepeatWrapping;
+colorTexture.colorSpace = THREE.SRGBColorSpace;
+
 export class Floor extends THREE.Object3D {
   viewer: Viewer;
   mesh: THREE.Mesh;
@@ -31,16 +38,9 @@ export class Floor extends THREE.Object3D {
     texture?: boolean
   ) {
     const floorGeometry = new THREE.PlaneGeometry(length, width);
-    const textureLoader = new THREE.TextureLoader();
-    const colorTexture = textureLoader.load(
-      "./textures/grass/grass_basecolor.jpg"
-    );
 
     colorTexture.repeat.y = width;
     colorTexture.repeat.x = length;
-    colorTexture.wrapT = THREE.RepeatWrapping;
-    colorTexture.wrapS = THREE.RepeatWrapping;
-    colorTexture.colorSpace = THREE.SRGBColorSpace;
 
     const floorMaterial = new THREE.MeshBasicMaterial({
       map: texture ? colorTexture : null,
