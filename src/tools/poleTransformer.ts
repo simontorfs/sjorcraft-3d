@@ -3,12 +3,15 @@ import { Pole } from "../objects/pole";
 import { Viewer } from "../viewer";
 import { Scaffold } from "../objects/scaffold";
 import { Lashing } from "../objects/lashings/lashing";
+import { BipodLashing } from "../objects/lashings/bipodLashing";
+
+type AnyLashing = Lashing | BipodLashing;
 
 export class PoleTransformer extends THREE.Object3D {
   viewer: Viewer;
   activeScaffold: Scaffold | undefined = undefined;
   originalPosition: THREE.Vector3 = new THREE.Vector3();
-  lashingsOnActiveScaffold: Lashing[] = [];
+  lashingsOnActiveScaffold: AnyLashing[] = [];
 
   translationHandle: THREE.Mesh;
   scaleHandleTop: THREE.Mesh;
@@ -81,11 +84,18 @@ export class PoleTransformer extends THREE.Object3D {
   }
 
   getActiveLashings() {
-    this.lashingsOnActiveScaffold = this.viewer.inventory.lashings.filter(
-      (lashing) =>
-        lashing.fixedPole === this.activeScaffold.mainPole ||
-        lashing.loosePole === this.activeScaffold.mainPole
-    );
+    this.lashingsOnActiveScaffold = [
+      ...this.viewer.inventory.lashings.filter(
+        (lashing) =>
+          lashing.fixedPole === this.activeScaffold.mainPole ||
+          lashing.loosePole === this.activeScaffold.mainPole
+      ),
+      ...this.viewer.inventory.bipodLashings.filter(
+        (lashing) =>
+          lashing.pole1 === this.activeScaffold.mainPole ||
+          lashing.pole2 === this.activeScaffold.mainPole
+      ),
+    ];
   }
 
   setHoveredHandle(hoveredHandle: THREE.Mesh | undefined) {
@@ -185,7 +195,11 @@ export class PoleTransformer extends THREE.Object3D {
     for (const lashing of this.lashingsOnActiveScaffold) {
       lashing.relashToRightScaffoldPole(this.activeScaffold);
       if (!lashing.visible) {
-        this.viewer.inventory.removeLashing(lashing);
+        if (lashing instanceof Lashing) {
+          this.viewer.inventory.removeLashing(lashing);
+        } else {
+          this.viewer.inventory.removeBipodLashing(lashing);
+        }
       } else {
         (this.viewer.scene as any).dispatchEvent({
           type: "lashing_relashed",

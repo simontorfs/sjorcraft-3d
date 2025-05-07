@@ -67,4 +67,21 @@ export class BipodLashing extends THREE.Object3D {
     // @ts-ignore
     this.mesh.material.color = new THREE.Color(0x9e9578);
   }
+
+  relashToRightScaffoldPole(scaffold: Scaffold) {
+    if (scaffold.length < 6.0) return;
+    const distanceToExtension = this.position.distanceTo(
+      scaffold.extensionPole.position
+    );
+    const distanceToMain = this.position.distanceTo(scaffold.mainPole.position);
+    if (distanceToExtension < distanceToMain) {
+      if (this.pole1 === scaffold.mainPole) {
+        this.pole1 = scaffold.extensionPole;
+      } else if (this.pole2 === scaffold.mainPole) {
+        this.pole2 = scaffold.extensionPole;
+      } else {
+        console.error(this.relashToRightScaffoldPole.name);
+      }
+    }
+  }
 }
