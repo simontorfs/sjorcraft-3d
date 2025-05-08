@@ -196,9 +196,9 @@ export class PoleTransformer extends THREE.Object3D {
       lashing.relashToRightScaffoldPole(this.activeScaffold);
       if (!lashing.visible) {
         if (lashing instanceof Lashing) {
-          this.viewer.inventory.removeLashing(lashing);
+          this.viewer.inventory.removeLashings([lashing]);
         } else {
-          this.viewer.inventory.removeBipodLashing(lashing);
+          this.viewer.inventory.removeBipodLashings([lashing]);
         }
       } else {
         (this.viewer.scene as any).dispatchEvent({

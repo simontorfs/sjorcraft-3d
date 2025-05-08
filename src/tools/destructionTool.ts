@@ -24,11 +24,11 @@ export class DestructionTool extends Tool {
   onLeftClick() {
     if (!this.active) return;
     if (this.hoveredObject instanceof Lashing) {
-      this.viewer.inventory.removeLashing(this.hoveredObject);
+      this.viewer.inventory.removeLashings([this.hoveredObject]);
     } else if (this.hoveredObject instanceof Pole) {
-      this.viewer.inventory.removePole(this.hoveredObject);
+      this.viewer.inventory.removePoles([this.hoveredObject]);
     } else if (this.hoveredObject instanceof BipodLashing) {
-      this.viewer.inventory.removeBipodLashing(this.hoveredObject);
+      this.viewer.inventory.removeBipodLashings([this.hoveredObject]);
     }
   }
 

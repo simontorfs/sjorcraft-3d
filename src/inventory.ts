@@ -58,46 +58,21 @@ export class Inventory {
     this.bipodLashings.push(lashing);
   }
 
-  removePole(poleToRemove: Pole) {
-    this.viewer.scene.remove(poleToRemove);
-    this.poles = this.poles.filter((pole) => pole !== poleToRemove);
-
-    for (const lashing of this.viewer.inventory.lashings) {
-      if (
-        lashing.loosePole === poleToRemove ||
-        lashing.fixedPole === poleToRemove
-      ) {
-        this.removeLashing(lashing);
-      }
-    }
-
-    for (const lashing of this.viewer.inventory.bipodLashings) {
-      if (lashing.pole1 === poleToRemove || lashing.pole2 === poleToRemove) {
-        this.removeBipodLashing(lashing);
-      }
-    }
-
-    (this.viewer.scene as any).dispatchEvent({
-      type: "pole_removed",
-      poles: [poleToRemove],
-    });
-  }
-
   removePoleSimple(poleToRemove: Pole) {
     this.viewer.scene.remove(poleToRemove);
     this.poles = this.poles.filter((pole) => pole !== poleToRemove);
   }
 
-  removeLashing(lashingToRemove: Lashing) {
-    this.viewer.scene.remove(lashingToRemove);
+  removeLashings(lashingsToRemove: Lashing[]) {
+    this.viewer.scene.remove(...lashingsToRemove);
 
     this.lashings = this.lashings.filter(
-      (lashing) => lashing !== lashingToRemove
+      (lashing) => !lashingsToRemove.includes(lashing)
     );
 
     (this.viewer.scene as any).dispatchEvent({
       type: "lashing_removed",
-      lashings: [lashingToRemove],
+      lashings: lashingsToRemove,
     });
   }
 
@@ -109,16 +84,16 @@ export class Inventory {
     );
   }
 
-  removeBipodLashing(lashingToRemove: BipodLashing) {
-    this.viewer.scene.remove(lashingToRemove);
+  removeBipodLashings(lashingsToRemove: BipodLashing[]) {
+    this.viewer.scene.remove(...lashingsToRemove);
 
     this.bipodLashings = this.bipodLashings.filter(
-      (lashing) => lashing !== lashingToRemove
+      (lashing) => !lashingsToRemove.includes(lashing)
     );
 
     (this.viewer.scene as any).dispatchEvent({
       type: "bipod_lashing_removed",
-      lashings: [lashingToRemove],
+      lashings: lashingsToRemove,
     });
   }
 
@@ -131,9 +106,36 @@ export class Inventory {
   }
 
   removePoles(polesToRemove: Pole[]) {
-    for (const pole of polesToRemove) {
-      this.removePole(pole);
+    this.viewer.scene.remove(...polesToRemove);
+    this.poles = this.poles.filter((pole) => !polesToRemove.includes(pole));
+
+    const lashingsToRemove: Lashing[] = [];
+    const bipodLashingsToRemove: BipodLashing[] = [];
+
+    for (const poleToRemove of polesToRemove) {
+      for (const lashing of this.viewer.inventory.lashings) {
+        if (
+          lashing.loosePole === poleToRemove ||
+          lashing.fixedPole === poleToRemove
+        ) {
+          lashingsToRemove.push(lashing);
+        }
+      }
+
+      for (const lashing of this.viewer.inventory.bipodLashings) {
+        if (lashing.pole1 === poleToRemove || lashing.pole2 === poleToRemove) {
+          bipodLashingsToRemove.push(lashing);
+        }
+      }
     }
+
+    (this.viewer.scene as any).dispatchEvent({
+      type: "pole_removed",
+      poles: polesToRemove,
+    });
+
+    this.removeLashings(lashingsToRemove);
+    this.removeBipodLashings(bipodLashingsToRemove);
   }
 
   removeAll() {
