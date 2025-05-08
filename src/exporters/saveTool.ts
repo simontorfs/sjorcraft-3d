@@ -33,7 +33,7 @@ export class SaveTool {
         data.lashings.forEach((lashing: any) => {
           const newLashing = new Lashing();
           if (newLashing.loadFromJson(lashing, this.viewer.inventory.poles)) {
-            this.viewer.inventory.addLashing(newLashing);
+            this.viewer.inventory.addLashings([newLashing]);
             this.viewer.scene.add(newLashing);
           }
         });
@@ -125,7 +125,7 @@ export class SaveTool {
     lashings.forEach((lashing: any) => {
       const newLashing = new Lashing();
       if (newLashing.loadFromJson(lashing, this.viewer.inventory.poles)) {
-        this.viewer.inventory.addLashing(newLashing);
+        this.viewer.inventory.addLashings([newLashing]);
       }
     });
   }

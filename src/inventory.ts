@@ -33,11 +33,11 @@ export class Inventory {
     this.poles.push(pole);
   }
 
-  addLashing(lashing: Lashing) {
-    this.lashings.push(lashing);
+  addLashings(lashings: Lashing[]) {
+    this.lashings.push(...lashings);
     (this.viewer.scene as any).dispatchEvent({
       type: "new_lashing_placed",
-      lashing: lashing,
+      lashings: lashings,
     });
   }
 
@@ -45,12 +45,12 @@ export class Inventory {
     this.lashings.push(lashing);
   }
 
-  addBipodLashing(lashing: BipodLashing) {
-    this.bipodLashings.push(lashing);
+  addBipodLashings(lashings: BipodLashing[]) {
+    this.bipodLashings.push(...lashings);
 
     (this.viewer.scene as any).dispatchEvent({
       type: "new_bipod_lashing_placed",
-      lashing: lashing,
+      lashings: lashings,
     });
   }
 

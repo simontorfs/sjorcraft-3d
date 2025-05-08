@@ -92,7 +92,7 @@ export class BipodTool extends Tool {
       this.scaffold2 = new Scaffold();
       this.scaffold1.addToScene(this.viewer.scene);
       this.scaffold2.addToScene(this.viewer.scene);
-      this.viewer.inventory.addBipodLashing(this.lashing);
+      this.viewer.inventory.addBipodLashings([this.lashing]);
       this.lashing = new BipodLashing(this.scaffold1, this.scaffold2);
       this.viewer.scene.add(this.lashing);
       this.resetParameters();

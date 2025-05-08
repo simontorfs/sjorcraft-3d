@@ -242,11 +242,11 @@ export class PoleTool extends Tool {
   commitLashings() {
     if (this.fixedLashing) {
       this.fixedLashing.relashToRightScaffoldPole(this.activeScaffold);
-      this.viewer.inventory.addLashing(this.fixedLashing);
+      this.viewer.inventory.addLashings([this.fixedLashing]);
     }
     if (this.newLashing) {
       this.newLashing.relashToRightScaffoldPole(this.activeScaffold);
-      this.viewer.inventory.addLashing(this.newLashing);
+      this.viewer.inventory.addLashings([this.newLashing]);
     }
     this.fixedLashing = undefined;
     this.newLashing = undefined;
