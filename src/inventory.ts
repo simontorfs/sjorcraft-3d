@@ -97,7 +97,7 @@ export class Inventory {
 
     (this.viewer.scene as any).dispatchEvent({
       type: "lashing_removed",
-      lashing: lashingToRemove,
+      lashings: [lashingToRemove],
     });
   }
 
@@ -118,7 +118,7 @@ export class Inventory {
 
     (this.viewer.scene as any).dispatchEvent({
       type: "bipod_lashing_removed",
-      lashing: lashingToRemove,
+      lashings: [lashingToRemove],
     });
   }
 
