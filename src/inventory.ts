@@ -79,7 +79,7 @@ export class Inventory {
 
     (this.viewer.scene as any).dispatchEvent({
       type: "pole_removed",
-      pole: poleToRemove,
+      poles: [poleToRemove],
     });
   }
 
