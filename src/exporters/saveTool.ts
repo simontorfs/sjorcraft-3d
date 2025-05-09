@@ -24,43 +24,25 @@ export class SaveTool {
         }
         const data = JSON.parse(reader.result as string);
         this.viewer.inventory.removeAll();
+
+        const importedPoles: Pole[] = [];
         data.poles.forEach((pole: any) => {
           const newPole = new Pole();
           newPole.loadFromJson(pole);
           this.viewer.scene.add(newPole);
-          this.viewer.inventory.addPoles([newPole]);
+          importedPoles.push(newPole);
         });
+        this.viewer.inventory.addPoles(importedPoles);
+
+        const importedLashings: Lashing[] = [];
         data.lashings.forEach((lashing: any) => {
           const newLashing = new Lashing();
           if (newLashing.loadFromJson(lashing, this.viewer.inventory.poles)) {
-            this.viewer.inventory.addLashings([newLashing]);
             this.viewer.scene.add(newLashing);
+            importedLashings.push(newLashing);
           }
         });
-      };
-      reader.readAsText(file);
-    });
-  }
-
-  importPoles() {
-    const fileInput = document.getElementById("file") as HTMLInputElement;
-    fileInput.click();
-    fileInput.addEventListener("change", () => {
-      const file = fileInput.files![0];
-      const reader = new FileReader();
-      reader.onload = () => {
-        // check if extension is .sjor otherwise ignore
-        if (file.name.split(".").pop() !== "sjor") {
-          return;
-        }
-        const data = JSON.parse(reader.result as string);
-        this.viewer.inventory.removeAll();
-        data.forEach((pole: any) => {
-          const newPole = new Pole();
-          newPole.loadFromJson(pole);
-          this.viewer.scene.add(newPole);
-          this.viewer.inventory.addPoles([newPole]);
-        });
+        this.viewer.inventory.addLashings(importedLashings);
       };
       reader.readAsText(file);
     });
@@ -72,19 +54,6 @@ export class SaveTool {
       lashing.saveToJson()
     );
     const data = JSON.stringify({ poles: poles, lashings: lashings }, null, 2);
-    const blob = new Blob([data], { type: "text/json" });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = `${new Date()
-      .toISOString()
-      .slice(0, 10)
-      .replace(/-/g, "")}-${name}.sjor`;
-    a.click();
-  }
-  exportPoles(name: string) {
-    const poles = this.viewer.inventory.poles.map((pole) => pole.saveToJson());
-    const data = JSON.stringify(poles, null, 2);
     const blob = new Blob([data], { type: "text/json" });
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");

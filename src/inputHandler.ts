@@ -52,13 +52,7 @@ export class InputHandler {
     switch (event.key) {
       case "Delete":
       case "Backspace":
-        if (this.ctrlDown) {
-          event.preventDefault();
-          this.viewer.inventory.removeAll();
-          this.viewer.saveTool.clearLocalStorage();
-        } else {
-          this.viewer.selectionTool.deleteSelectedPoles();
-        }
+        this.viewer.selectionTool.deleteSelectedPoles();
         break;
       case "Control":
         this.ctrlDown = true;

@@ -139,20 +139,9 @@ export class Inventory {
   }
 
   removeAll() {
-    for (const pole of this.poles) {
-      this.viewer.scene.remove(pole);
-    }
-    this.poles = [];
-
-    for (const lashing of this.lashings) {
-      this.viewer.scene.remove(lashing);
-    }
-    this.lashings = [];
-
-    for (const lashing of this.bipodLashings) {
-      this.viewer.scene.remove(lashing);
-    }
-    this.bipodLashings = [];
+    this.removePoles(this.poles);
+    this.removeLashings(this.lashings);
+    this.removeBipodLashings(this.bipodLashings);
   }
 
   getPolesGroupedByLength() {
