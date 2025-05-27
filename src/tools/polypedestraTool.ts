@@ -13,7 +13,6 @@ export class PolypedestraTool extends Tool {
   onlyGroundPoint: THREE.Vector3 = new THREE.Vector3();
   onlyGroundPointOffsetDefault: THREE.Vector3;
   onlyGroundPointOffset: THREE.Vector3;
-  lashingOffset: THREE.Vector3;
   lashPosition: THREE.Vector3 = new THREE.Vector3();
   lashPositionProjectedOnFloor: THREE.Vector3 = new THREE.Vector3();
   defaultLashHeight: number = 3.0;
@@ -22,6 +21,8 @@ export class PolypedestraTool extends Tool {
   nrOfPoles: number = this.defaultNrOfPoles;
 
   theta: number = 0.0;
+  gamma: number = 0.0;
+  phi: number = 0.0;
   rotationMatrix: THREE.Matrix4 = new THREE.Matrix4();
 
   groundPositionLastMouseMove: THREE.Vector3 = new THREE.Vector3();
@@ -163,16 +164,14 @@ export class PolypedestraTool extends Tool {
       .clone()
       .sub(this.lashPositionProjectedOnFloor);
 
-    this.lashingOffset = this.onlyGroundPointOffset
-      .clone()
-      .normalize()
-      .multiplyScalar(this.onlyGroundPointOffsetDefault.length());
-
+    this.updatePhi();
     let vBottom = this.onlyGroundPointOffset.clone();
-    let vTop = this.lashingOffset.clone();
-
-    const idealRotationTop = this.getIdealRotationTop();
-    vTop.applyMatrix4(idealRotationTop);
+    let vTop = this.lashPosition
+      .clone()
+      .sub(this.onlyGroundPoint)
+      .applyAxisAngle(new THREE.Vector3(0, 1, 0), this.phi)
+      .add(this.onlyGroundPoint)
+      .sub(this.lashPosition);
 
     for (let i = 0; i < this.nrOfPoles; i++) {
       this.scaffolds[i].setPositionBetweenGroundAndPole(
@@ -203,56 +202,37 @@ export class PolypedestraTool extends Tool {
     this.drawSecondStep(this.onlyGroundPoint);
   }
 
-  getIdealRotationTop() {
-    let bestRotationSoFar = 0.0;
-    let bestDistanceSoFar = Infinity;
-    for (let alpha = 0; alpha < (3 * Math.PI) / 4.0; alpha += 0.01) {
-      const tryRotation = new THREE.Matrix4().makeRotationY(alpha);
+  updatePhi() {
+    const R = this.onlyGroundPointOffset.length();
+    this.gamma = Math.atan(R / this.lashHeight);
 
-      const Pa = this.lashPositionProjectedOnFloor
-        .clone()
-        .add(this.onlyGroundPointOffset);
-      const PaTop = this.lashPosition
-        .clone()
-        .add(this.lashingOffset.clone().applyMatrix4(tryRotation));
-      const Pb = this.lashPositionProjectedOnFloor
-        .clone()
-        .add(
-          this.onlyGroundPointOffset.clone().applyMatrix4(this.rotationMatrix)
-        );
-      const PbTop = this.lashPosition
-        .clone()
-        .add(
-          this.lashingOffset
-            .clone()
-            .applyMatrix4(tryRotation)
-            .applyMatrix4(this.rotationMatrix)
-        );
-      const Da = Pa.clone().sub(PaTop);
-      const Db = Pb.clone().sub(PbTop);
-      const d = this.distanceBetweenLines(Pa, Da, Pb, Db);
-      if (Math.abs(d - 0.12) < bestDistanceSoFar) {
-        bestDistanceSoFar = Math.abs(d - 0.12);
-        bestRotationSoFar = alpha;
-        if (bestDistanceSoFar < 0.001) break;
-      }
-    }
+    const sinGamma = Math.sin(this.gamma);
+    const cosGamma = Math.cos(this.gamma);
+    const cosTheta = Math.cos(this.theta);
 
-    return new THREE.Matrix4().makeRotationY(bestRotationSoFar);
+    const A =
+      Math.abs(sinGamma) *
+      Math.sqrt(
+        Math.pow(cosGamma, 2) * Math.pow(cosTheta, 2) -
+          2 * Math.pow(cosGamma, 2) * cosTheta +
+          Math.pow(cosGamma, 2) -
+          Math.pow(cosTheta, 2) +
+          1
+      );
+
+    let sinPhi = Math.abs(
+      (this.scaffolds[0].mainRadius * A) /
+        (R * (cosTheta - 1) * cosGamma * sinGamma)
+    );
+
+    sinPhi = Math.max(-1.0, Math.min(1.0, sinPhi));
+
+    this.phi = this.limitPhi(Math.asin(sinPhi));
   }
 
-  distanceBetweenLines = (
-    Pa: THREE.Vector3,
-    Da: THREE.Vector3,
-    Pb: THREE.Vector3,
-    Db: THREE.Vector3
-  ) => {
-    const PaPb = new THREE.Vector3().subVectors(Pb, Pa);
-    const crossD = new THREE.Vector3().crossVectors(Da, Db);
-    const numerator = Math.abs(PaPb.dot(crossD));
-    const denominator = crossD.length();
-    return numerator / denominator;
-  };
+  limitPhi(phi: number) {
+    return Math.min((Math.PI - this.theta) / 2, phi);
+  }
 
   addVerticalHelperLine() {
     this.updateVerticalHelperLine();
