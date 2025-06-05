@@ -1,5 +1,6 @@
 import { BipodLashing } from "./objects/lashings/bipodLashing";
 import { Lashing } from "./objects/lashings/lashing";
+import { ScaffoldLashing } from "./objects/lashings/scaffoldLashing";
 import { Pole, colors, allowedLengths } from "./objects/pole";
 import { Viewer } from "./viewer";
 import * as THREE from "three";
@@ -15,6 +16,7 @@ export class Inventory {
   poles: Pole[] = [];
   lashings: Lashing[] = [];
   bipodLashings: BipodLashing[] = [];
+  scaffoldLashings: ScaffoldLashing[] = [];
 
   constructor(viewer: Viewer) {
     this.viewer = viewer;
@@ -56,6 +58,19 @@ export class Inventory {
 
   addBipodLashingSimple(lashing: BipodLashing) {
     this.bipodLashings.push(lashing);
+  }
+
+  addScaffoldLashings(lashings: ScaffoldLashing[]) {
+    this.scaffoldLashings.push(...lashings);
+
+    (this.viewer.scene as any).dispatchEvent({
+      type: "new_scaffold_lashing_placed",
+      lashings: lashings,
+    });
+  }
+
+  addScaffoldLashingSimple(lashing: ScaffoldLashing) {
+    this.scaffoldLashings.push(lashing);
   }
 
   removePoleSimple(poleToRemove: Pole) {
@@ -105,12 +120,34 @@ export class Inventory {
     );
   }
 
+  removeScaffoldLashings(lashingsToRemove: ScaffoldLashing[]) {
+    this.viewer.scene.remove(...lashingsToRemove);
+
+    this.scaffoldLashings = this.scaffoldLashings.filter(
+      (lashing) => !lashingsToRemove.includes(lashing)
+    );
+
+    (this.viewer.scene as any).dispatchEvent({
+      type: "scaffold_lashing_removed",
+      lashings: lashingsToRemove,
+    });
+  }
+
+  removeScaffoldLashingSimple(lashingToRemove: ScaffoldLashing) {
+    this.viewer.scene.remove(lashingToRemove);
+
+    this.scaffoldLashings = this.scaffoldLashings.filter(
+      (lashing) => lashing !== lashingToRemove
+    );
+  }
+
   removePoles(polesToRemove: Pole[]) {
     this.viewer.scene.remove(...polesToRemove);
     this.poles = this.poles.filter((pole) => !polesToRemove.includes(pole));
 
     const lashingsToRemove: Lashing[] = [];
     const bipodLashingsToRemove: BipodLashing[] = [];
+    const scaffoldLashingsToRemove: ScaffoldLashing[] = [];
 
     for (const poleToRemove of polesToRemove) {
       for (const lashing of this.viewer.inventory.lashings) {
@@ -127,6 +164,12 @@ export class Inventory {
           bipodLashingsToRemove.push(lashing);
         }
       }
+
+      for (const lashing of this.viewer.inventory.scaffoldLashings) {
+        if (lashing.pole1 === poleToRemove || lashing.pole2 === poleToRemove) {
+          scaffoldLashingsToRemove.push(lashing);
+        }
+      }
     }
 
     (this.viewer.scene as any).dispatchEvent({
@@ -136,12 +179,14 @@ export class Inventory {
 
     this.removeLashings(lashingsToRemove);
     this.removeBipodLashings(bipodLashingsToRemove);
+    this.removeScaffoldLashings(scaffoldLashingsToRemove);
   }
 
   removeAll() {
     this.removePoles(this.poles);
     this.removeLashings(this.lashings);
     this.removeBipodLashings(this.bipodLashings);
+    this.removeScaffoldLashings(this.scaffoldLashings);
   }
 
   getPolesGroupedByLength() {

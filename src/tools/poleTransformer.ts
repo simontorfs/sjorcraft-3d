@@ -4,8 +4,9 @@ import { Viewer } from "../viewer";
 import { Scaffold } from "../objects/scaffold";
 import { Lashing } from "../objects/lashings/lashing";
 import { BipodLashing } from "../objects/lashings/bipodLashing";
+import { ScaffoldLashing } from "../objects/lashings/scaffoldLashing";
 
-type AnyLashing = Lashing | BipodLashing;
+type AnyLashing = Lashing | BipodLashing | ScaffoldLashing;
 
 export class PoleTransformer extends THREE.Object3D {
   viewer: Viewer;
@@ -91,6 +92,11 @@ export class PoleTransformer extends THREE.Object3D {
           lashing.loosePole === this.activeScaffold.mainPole
       ),
       ...this.viewer.inventory.bipodLashings.filter(
+        (lashing) =>
+          lashing.pole1 === this.activeScaffold.mainPole ||
+          lashing.pole2 === this.activeScaffold.mainPole
+      ),
+      ...this.viewer.inventory.scaffoldLashings.filter(
         (lashing) =>
           lashing.pole1 === this.activeScaffold.mainPole ||
           lashing.pole2 === this.activeScaffold.mainPole
@@ -197,8 +203,10 @@ export class PoleTransformer extends THREE.Object3D {
       if (!lashing.visible) {
         if (lashing instanceof Lashing) {
           this.viewer.inventory.removeLashings([lashing]);
-        } else {
+        } else if (lashing instanceof BipodLashing) {
           this.viewer.inventory.removeBipodLashings([lashing]);
+        } else {
+          this.viewer.inventory.removeScaffoldLashings([lashing]);
         }
       } else {
         (this.viewer.scene as any).dispatchEvent({
@@ -219,6 +227,9 @@ export class PoleTransformer extends THREE.Object3D {
     } else {
       const polesToAdd = this.activeScaffold.getVisibleExtenstionPoles();
       this.viewer.inventory.addPoles(polesToAdd);
+      this.viewer.inventory.addScaffoldLashings(
+        this.activeScaffold.scaffoldLashings
+      );
     }
   }
 }
