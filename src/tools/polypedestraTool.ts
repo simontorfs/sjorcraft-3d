@@ -94,12 +94,17 @@ export class PolypedestraTool extends Tool {
       if (this.polypedestraIsColliding) return;
 
       const polesToAdd = [];
+      const scaffoldLashingsToAdd = [];
       for (let i = 0; i < this.nrOfPoles; i++) {
         polesToAdd.push(...this.scaffolds[i].getVisiblePoles());
+        scaffoldLashingsToAdd.push(
+          ...this.scaffolds[i].getVisibleScaffoldLashings()
+        );
         this.scaffolds[i] = new Scaffold();
         this.scaffolds[i].addToScene(this.viewer.scene);
       }
       this.viewer.inventory.addPoles(polesToAdd);
+      this.viewer.inventory.addScaffoldLashings(scaffoldLashingsToAdd);
       this.resetParameters();
       this.setNrOfPoles(this.defaultNrOfPoles);
     }

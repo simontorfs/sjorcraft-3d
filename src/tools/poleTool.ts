@@ -251,11 +251,9 @@ export class PoleTool extends Tool {
     this.fixedLashing = undefined;
     this.newLashing = undefined;
 
-    if (this.activeScaffold.extensionPole.visible) {
-      this.viewer.inventory.addScaffoldLashings(
-        this.activeScaffold.scaffoldLashings
-      );
-    }
+    this.viewer.inventory.addScaffoldLashings(
+      this.activeScaffold.getVisibleScaffoldLashings()
+    );
   }
 
   onRightClick() {

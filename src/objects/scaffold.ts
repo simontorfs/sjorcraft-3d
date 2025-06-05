@@ -299,6 +299,10 @@ export class Scaffold {
     return [this.extensionPole, this.splintPole].filter((pole) => pole.visible);
   }
 
+  getVisibleScaffoldLashings() {
+    return this.scaffoldLashings.filter((lashing) => lashing.visible);
+  }
+
   setVisible() {
     if (this.length > 6.0) {
       this.mainPole.visible = true;
