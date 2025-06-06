@@ -3,8 +3,9 @@ import { Pole } from "../pole";
 import { Scaffold } from "../scaffold";
 import { v4 as uuidv4 } from "uuid";
 import { ScaffoldLashingCurve } from "./scaffoldLashingCurve";
+import { Lashing } from "./lashing";
 
-export class ScaffoldLashing extends THREE.Object3D {
+export class ScaffoldLashing extends Lashing {
   identifier: string;
   pole1: Pole;
   pole2: Pole;
@@ -65,16 +66,6 @@ export class ScaffoldLashing extends THREE.Object3D {
     );
     this.mesh.geometry.dispose();
     this.mesh.geometry = new THREE.TubeGeometry(path, 360, 0.003, 8, true);
-  }
-
-  threatenWithDestruction() {
-    // @ts-ignore
-    this.mesh.material.color = new THREE.Color(0x996209);
-  }
-
-  stopThreatening() {
-    // @ts-ignore
-    this.mesh.material.color = new THREE.Color(0x9e9578);
   }
 
   relashToRightScaffoldPole(scaffold: Scaffold) {

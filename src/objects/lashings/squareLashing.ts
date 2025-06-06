@@ -1,10 +1,11 @@
 import { Pole } from "../pole";
 import { Scaffold } from "../scaffold";
+import { Lashing } from "./lashing";
 import { SquareLashingCurve } from "./squareLashingCurve";
 import * as THREE from "three";
 import { v4 as uuidv4 } from "uuid";
 
-export class SquareLashing extends THREE.Object3D {
+export class SquareLashing extends Lashing {
   identifier: string;
   fixedPole: Pole;
   loosePole: Pole;
@@ -164,16 +165,6 @@ export class SquareLashing extends THREE.Object3D {
       return true;
     }
     return false;
-  }
-
-  threatenWithDestruction() {
-    // @ts-ignore
-    this.mesh.material.color = new THREE.Color(0x996209);
-  }
-
-  stopThreatening() {
-    // @ts-ignore
-    this.mesh.material.color = new THREE.Color(0x9e9578);
   }
 
   relashToRightScaffoldPole(scaffold: Scaffold) {
