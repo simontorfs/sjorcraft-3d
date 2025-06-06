@@ -1,10 +1,10 @@
 import { Pole } from "./../objects/pole";
 import { Viewer } from "../viewer";
-import { Lashing } from "../objects/lashings/lashing";
+import { SquareLashing } from "../objects/lashings/squareLashing";
 import { ColladaExporter } from "./colladaExporter";
 import { STLExporter } from "./stlExporter";
 
-export type TObjectArray = Array<Pole | Lashing>;
+export type TObjectArray = Array<Pole | SquareLashing>;
 export class SaveTool {
   viewer: Viewer;
   constructor(viewer: Viewer) {
@@ -34,9 +34,9 @@ export class SaveTool {
         });
         this.viewer.inventory.addPoles(importedPoles);
 
-        const importedLashings: Lashing[] = [];
+        const importedLashings: SquareLashing[] = [];
         data.lashings.forEach((lashing: any) => {
-          const newLashing = new Lashing();
+          const newLashing = new SquareLashing();
           if (newLashing.loadFromJson(lashing, this.viewer.inventory.poles)) {
             this.viewer.scene.add(newLashing);
             importedLashings.push(newLashing);
@@ -92,7 +92,7 @@ export class SaveTool {
     const lashings = JSON.parse(localStorage.getItem("lashings") as string);
     this.viewer.inventory.removeAll();
     lashings.forEach((lashing: any) => {
-      const newLashing = new Lashing();
+      const newLashing = new SquareLashing();
       if (newLashing.loadFromJson(lashing, this.viewer.inventory.poles)) {
         this.viewer.inventory.addLashings([newLashing]);
       }

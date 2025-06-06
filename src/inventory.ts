@@ -1,5 +1,5 @@
 import { BipodLashing } from "./objects/lashings/bipodLashing";
-import { Lashing } from "./objects/lashings/lashing";
+import { SquareLashing } from "./objects/lashings/squareLashing";
 import { ScaffoldLashing } from "./objects/lashings/scaffoldLashing";
 import { Pole, colors, allowedLengths } from "./objects/pole";
 import { Viewer } from "./viewer";
@@ -14,7 +14,7 @@ interface IPolesDetail {
 export class Inventory {
   viewer: Viewer;
   poles: Pole[] = [];
-  lashings: Lashing[] = [];
+  lashings: SquareLashing[] = [];
   bipodLashings: BipodLashing[] = [];
   scaffoldLashings: ScaffoldLashing[] = [];
 
@@ -35,7 +35,7 @@ export class Inventory {
     this.poles.push(pole);
   }
 
-  addLashings(lashings: Lashing[]) {
+  addLashings(lashings: SquareLashing[]) {
     this.lashings.push(...lashings);
     (this.viewer.scene as any).dispatchEvent({
       type: "new_lashing_placed",
@@ -43,7 +43,7 @@ export class Inventory {
     });
   }
 
-  addLashingSimple(lashing: Lashing) {
+  addLashingSimple(lashing: SquareLashing) {
     this.lashings.push(lashing);
   }
 
@@ -78,7 +78,7 @@ export class Inventory {
     this.poles = this.poles.filter((pole) => pole !== poleToRemove);
   }
 
-  removeLashings(lashingsToRemove: Lashing[]) {
+  removeLashings(lashingsToRemove: SquareLashing[]) {
     this.viewer.scene.remove(...lashingsToRemove);
 
     this.lashings = this.lashings.filter(
@@ -91,7 +91,7 @@ export class Inventory {
     });
   }
 
-  removeLashingSimple(lashingToRemove: Lashing) {
+  removeLashingSimple(lashingToRemove: SquareLashing) {
     this.viewer.scene.remove(lashingToRemove);
 
     this.lashings = this.lashings.filter(
@@ -145,7 +145,7 @@ export class Inventory {
     this.viewer.scene.remove(...polesToRemove);
     this.poles = this.poles.filter((pole) => !polesToRemove.includes(pole));
 
-    const lashingsToRemove: Lashing[] = [];
+    const lashingsToRemove: SquareLashing[] = [];
     const bipodLashingsToRemove: BipodLashing[] = [];
     const scaffoldLashingsToRemove: ScaffoldLashing[] = [];
 

@@ -2,11 +2,11 @@ import * as THREE from "three";
 import { Pole } from "../objects/pole";
 import { Viewer } from "../viewer";
 import { Scaffold } from "../objects/scaffold";
-import { Lashing } from "../objects/lashings/lashing";
+import { SquareLashing } from "../objects/lashings/squareLashing";
 import { BipodLashing } from "../objects/lashings/bipodLashing";
 import { ScaffoldLashing } from "../objects/lashings/scaffoldLashing";
 
-type AnyLashing = Lashing | BipodLashing | ScaffoldLashing;
+type AnyLashing = SquareLashing | BipodLashing | ScaffoldLashing;
 
 export class PoleTransformer extends THREE.Object3D {
   viewer: Viewer;
@@ -201,7 +201,7 @@ export class PoleTransformer extends THREE.Object3D {
     for (const lashing of this.lashingsOnActiveScaffold) {
       lashing.relashToRightScaffoldPole(this.activeScaffold);
       if (!lashing.visible) {
-        if (lashing instanceof Lashing) {
+        if (lashing instanceof SquareLashing) {
           this.viewer.inventory.removeLashings([lashing]);
         } else if (lashing instanceof BipodLashing) {
           this.viewer.inventory.removeBipodLashings([lashing]);

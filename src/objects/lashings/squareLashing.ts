@@ -4,7 +4,7 @@ import { SquareLashingCurve } from "./squareLashingCurve";
 import * as THREE from "three";
 import { v4 as uuidv4 } from "uuid";
 
-export class Lashing extends THREE.Object3D {
+export class SquareLashing extends THREE.Object3D {
   identifier: string;
   fixedPole: Pole;
   loosePole: Pole;

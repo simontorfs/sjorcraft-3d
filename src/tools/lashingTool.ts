@@ -1,11 +1,11 @@
-import { Lashing } from "../objects/lashings/lashing";
+import { SquareLashing } from "../objects/lashings/squareLashing";
 import { Pole } from "../objects/pole";
 import { Viewer } from "../viewer";
 import { Tool } from "./tool";
 
 export class LashingTool extends Tool {
   hoveredPole: Pole | undefined;
-  activeLashing: Lashing = new Lashing();
+  activeLashing: SquareLashing = new SquareLashing();
   constructor(viewer: Viewer) {
     super(viewer);
     this.activeLashing.visible = false;
@@ -25,7 +25,7 @@ export class LashingTool extends Tool {
     if (!this.active) return;
     if (this.activeLashing.visible) {
       this.viewer.inventory.addLashings([this.activeLashing]);
-      this.activeLashing = new Lashing();
+      this.activeLashing = new SquareLashing();
       this.activeLashing.visible = false;
       this.viewer.scene.add(this.activeLashing);
     }

@@ -1,7 +1,7 @@
 import * as THREE from "three";
 import { Pole } from "./objects/pole";
 import { Viewer } from "./viewer";
-import { Lashing } from "./objects/lashings/lashing";
+import { SquareLashing } from "./objects/lashings/squareLashing";
 import { BipodLashing } from "./objects/lashings/bipodLashing";
 import { Tool } from "./tools/tool";
 
@@ -134,7 +134,7 @@ export class InputHandler {
     ]);
 
     if (intersects.length) {
-      return intersects[0].object.parent as Pole | Lashing | BipodLashing;
+      return intersects[0].object.parent as Pole | SquareLashing | BipodLashing;
     } else {
       return undefined;
     }

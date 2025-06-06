@@ -1,5 +1,5 @@
 import { BipodLashing } from "../objects/lashings/bipodLashing";
-import { Lashing } from "../objects/lashings/lashing";
+import { SquareLashing } from "../objects/lashings/squareLashing";
 import { ScaffoldLashing } from "../objects/lashings/scaffoldLashing";
 import { Pole } from "../objects/pole";
 import { Viewer } from "../viewer";
@@ -8,7 +8,12 @@ import { Tool } from "./tool";
 export class DestructionTool extends Tool {
   active: boolean;
   viewer: Viewer;
-  hoveredObject: Pole | Lashing | BipodLashing | ScaffoldLashing | undefined;
+  hoveredObject:
+    | Pole
+    | SquareLashing
+    | BipodLashing
+    | ScaffoldLashing
+    | undefined;
   constructor(viewer: Viewer) {
     super(viewer);
   }
@@ -24,7 +29,7 @@ export class DestructionTool extends Tool {
 
   onLeftClick() {
     if (!this.active) return;
-    if (this.hoveredObject instanceof Lashing) {
+    if (this.hoveredObject instanceof SquareLashing) {
       this.viewer.inventory.removeLashings([this.hoveredObject]);
     } else if (this.hoveredObject instanceof Pole) {
       this.viewer.inventory.removePoles([this.hoveredObject]);
@@ -40,7 +45,9 @@ export class DestructionTool extends Tool {
     this.setHoveredObject(hoveredObject);
   }
 
-  setHoveredObject(object: Pole | Lashing | BipodLashing | ScaffoldLashing) {
+  setHoveredObject(
+    object: Pole | SquareLashing | BipodLashing | ScaffoldLashing
+  ) {
     if (object === this.hoveredObject) return;
     this.hoveredObject?.stopThreatening();
     this.hoveredObject = object;
