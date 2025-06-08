@@ -1,25 +1,25 @@
 import * as THREE from "three";
 import { Pole } from "../pole";
-import { BipodLashingCurve } from "./bipodLashingCurve";
 import { Scaffold } from "../scaffold";
 import { v4 as uuidv4 } from "uuid";
+import { ScaffoldLashingCurve } from "./scaffoldLashingCurve";
 import { Lashing } from "./lashing";
 
-export class BipodLashing extends Lashing {
+export class ScaffoldLashing extends Lashing {
   identifier: string;
-  scaffold1: Scaffold;
-  scaffold2: Scaffold;
   pole1: Pole;
   pole2: Pole;
   centerPole1: THREE.Vector3;
   centerPole2: THREE.Vector3;
+  offset: number;
 
   mesh: THREE.Mesh;
-  constructor(scaffold1: Scaffold, scaffold2: Scaffold, identifier?: string) {
+  constructor(pole1: Pole, pole2: Pole, offset: number, identifier?: string) {
     super();
     this.identifier = identifier || uuidv4();
-    this.scaffold1 = scaffold1;
-    this.scaffold2 = scaffold2;
+    this.offset = offset;
+    this.pole1 = pole1;
+    this.pole2 = pole2;
 
     this.mesh = new THREE.Mesh();
     this.mesh.material = new THREE.MeshStandardMaterial({
@@ -31,30 +31,39 @@ export class BipodLashing extends Lashing {
     this.update();
   }
 
+  setOffset(offset: number) {
+    this.offset = offset;
+    this.update();
+  }
+
   update() {
-    if (this.scaffold1.length <= 6.0) this.pole1 = this.scaffold1.mainPole;
-    else this.pole1 = this.scaffold1.extensionPole;
-    if (this.scaffold2.length <= 6.0) this.pole2 = this.scaffold2.mainPole;
-    else this.pole2 = this.scaffold2.extensionPole;
-
-    const { closestPoint, closestPointOnOtherPole } =
-      this.pole1.getClosestApproach(this.pole2);
-
-    this.centerPole1 = closestPoint ?? new THREE.Vector3();
-    this.centerPole2 = closestPointOnOtherPole ?? new THREE.Vector3();
-
+    this.centerPole1 = this.pole1.position
+      .clone()
+      .add(this.pole1.direction.clone().multiplyScalar(this.offset));
+    const perpendicularVector = new THREE.Vector3().crossVectors(
+      this.pole1.direction,
+      this.pole1.position.clone().sub(this.pole2.position)
+    );
+    const connectingVector = new THREE.Vector3()
+      .crossVectors(perpendicularVector, this.pole1.direction)
+      .normalize();
+    this.centerPole2 = this.centerPole1
+      .clone()
+      .add(
+        connectingVector
+          .clone()
+          .multiplyScalar(this.pole1.radius + this.pole2.radius)
+      );
     this.position.set(
       this.centerPole1.x,
       this.centerPole1.y,
       this.centerPole1.z
     );
 
-    const path = new BipodLashingCurve(
+    const path = new ScaffoldLashingCurve(
       this.pole1.direction,
-      this.pole2.direction,
       this.centerPole1.clone().sub(this.centerPole2)
     );
-
     this.mesh.geometry.dispose();
     this.mesh.geometry = new THREE.TubeGeometry(path, 360, 0.003, 8, true);
   }

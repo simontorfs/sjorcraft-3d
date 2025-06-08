@@ -2,15 +2,15 @@ import { Pole } from "../objects/pole";
 import { Scaffold } from "../objects/scaffold";
 import * as THREE from "three";
 import { Viewer } from "../viewer";
-import { Lashing } from "../objects/lashings/lashing";
+import { SquareLashing } from "../objects/lashings/squareLashing";
 import { HelperLine } from "../objects/helperLine";
 import { Tool } from "./tool";
 
 export class PoleTool extends Tool {
   activeScaffold: Scaffold;
   hoveringGround: boolean;
-  fixedLashing: Lashing | undefined;
-  newLashing: Lashing | undefined;
+  fixedLashing: SquareLashing | undefined;
+  newLashing: SquareLashing | undefined;
   lastPole: Pole | undefined;
   currentSnapHeight: number | undefined;
   snapHelperLine: HelperLine;
@@ -96,7 +96,7 @@ export class PoleTool extends Tool {
     this.hoveringGround = false;
 
     if (!this.newLashing) {
-      this.newLashing = new Lashing();
+      this.newLashing = new SquareLashing();
     }
     this.newLashing.setPropertiesFromAnchorPoint(
       hoveredPole,
@@ -250,6 +250,10 @@ export class PoleTool extends Tool {
     }
     this.fixedLashing = undefined;
     this.newLashing = undefined;
+
+    this.viewer.inventory.addScaffoldLashings(
+      this.activeScaffold.getVisibleScaffoldLashings()
+    );
   }
 
   onRightClick() {

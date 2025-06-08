@@ -94,6 +94,12 @@ export class TripodTool extends Tool {
         ...this.scaffold3.getVisiblePoles(),
       ];
       this.viewer.inventory.addPoles(polesToAdd);
+      const scaffoldLashingsToAdd = [
+        ...this.scaffold1.getVisibleScaffoldLashings(),
+        ...this.scaffold2.getVisibleScaffoldLashings(),
+        ...this.scaffold3.getVisibleScaffoldLashings(),
+      ];
+      this.viewer.inventory.addScaffoldLashings(scaffoldLashingsToAdd);
       this.scaffold1 = new Scaffold();
       this.scaffold2 = new Scaffold();
       this.scaffold3 = new Scaffold();

@@ -1,11 +1,13 @@
 import * as THREE from "three";
 import { Pole } from "../objects/pole";
-import { Viewer } from "./../viewer";
+import { ScaffoldLashing } from "./lashings/scaffoldLashing";
 
 export class Scaffold {
   mainPole: Pole;
   extensionPole: Pole;
   splintPole: Pole;
+
+  scaffoldLashings: ScaffoldLashing[];
 
   length: number = 0.0;
   mainRadius: number = 0.0;
@@ -16,12 +18,20 @@ export class Scaffold {
     this.mainRadius = this.mainPole.radius;
     this.splintPole = new Pole();
     this.extensionPole = new Pole();
+    this.scaffoldLashings = [
+      new ScaffoldLashing(this.splintPole, this.mainPole, -1.5),
+      new ScaffoldLashing(this.splintPole, this.mainPole, -0.5),
+      new ScaffoldLashing(this.splintPole, this.extensionPole, 0.5),
+      new ScaffoldLashing(this.splintPole, this.extensionPole, 1.5),
+    ];
   }
 
   setMainPole(pole: Pole) {
     this.mainPole = pole;
     this.length = pole.length;
     this.direction = pole.direction;
+    this.scaffoldLashings[0].pole2 = this.mainPole;
+    this.scaffoldLashings[1].pole2 = this.mainPole;
   }
 
   reset() {
@@ -114,6 +124,9 @@ export class Scaffold {
     this.mainPole.setLength(this.length);
     this.extensionPole.visible = false;
     this.splintPole.visible = false;
+    for (const lashing of this.scaffoldLashings) {
+      lashing.visible = false;
+    }
   }
 
   changeLengthTo8() {
@@ -122,6 +135,10 @@ export class Scaffold {
     this.splintPole.setLength(4.0);
     this.extensionPole.visible = true;
     this.splintPole.visible = true;
+    for (const lashing of this.scaffoldLashings) {
+      lashing.visible = true;
+    }
+    this.setScaffoldLashingPositions();
   }
 
   changeLengthTo10() {
@@ -130,6 +147,10 @@ export class Scaffold {
     this.splintPole.setLength(4.0);
     this.extensionPole.visible = true;
     this.splintPole.visible = true;
+    for (const lashing of this.scaffoldLashings) {
+      lashing.visible = true;
+    }
+    this.setScaffoldLashingPositions();
   }
 
   changeLengthTo12() {
@@ -138,6 +159,17 @@ export class Scaffold {
     this.splintPole.setLength(4.0);
     this.extensionPole.visible = true;
     this.splintPole.visible = true;
+    for (const lashing of this.scaffoldLashings) {
+      lashing.visible = true;
+    }
+    this.setScaffoldLashingPositions();
+  }
+
+  setScaffoldLashingPositions() {
+    this.scaffoldLashings[0].setOffset(0.15 - this.splintPole.length / 2.0);
+    this.scaffoldLashings[1].setOffset(-0.15);
+    this.scaffoldLashings[2].setOffset(0.15);
+    this.scaffoldLashings[3].setOffset(this.splintPole.length / 2.0 - 0.15);
   }
 
   setPositions(position: THREE.Vector3) {
@@ -179,6 +211,9 @@ export class Scaffold {
         offsetPosition.y,
         offsetPosition.z
       );
+    }
+    for (const lashing of this.scaffoldLashings) {
+      lashing.update();
     }
   }
 
@@ -226,6 +261,7 @@ export class Scaffold {
     for (const pole of [this.mainPole, this.extensionPole, this.splintPole]) {
       scene.add(pole);
     }
+    scene.add(...this.scaffoldLashings);
   }
 
   addExtensionToScene(scene: THREE.Scene) {
@@ -233,18 +269,24 @@ export class Scaffold {
       scene.add(pole);
       pole.visible = false;
     }
+    scene.add(...this.scaffoldLashings);
+    for (const lashing of this.scaffoldLashings) {
+      lashing.visible = false;
+    }
   }
 
   removeFromScene(scene: THREE.Scene) {
     for (const pole of [this.mainPole, this.extensionPole, this.splintPole]) {
       scene.remove(pole);
     }
+    scene.remove(...this.scaffoldLashings);
   }
 
   removeExtensionFromScene(scene: THREE.Scene) {
     for (const pole of [this.extensionPole, this.splintPole]) {
       scene.remove(pole);
     }
+    scene.remove(...this.scaffoldLashings);
   }
 
   getVisiblePoles() {
@@ -257,15 +299,25 @@ export class Scaffold {
     return [this.extensionPole, this.splintPole].filter((pole) => pole.visible);
   }
 
+  getVisibleScaffoldLashings() {
+    return this.scaffoldLashings.filter((lashing) => lashing.visible);
+  }
+
   setVisible() {
     if (this.length > 6.0) {
       this.mainPole.visible = true;
       this.extensionPole.visible = true;
       this.splintPole.visible = true;
+      for (const lashing of this.scaffoldLashings) {
+        lashing.visible = true;
+      }
     } else {
       this.mainPole.visible = true;
       this.extensionPole.visible = false;
       this.splintPole.visible = false;
+      for (const lashing of this.scaffoldLashings) {
+        lashing.visible = false;
+      }
     }
   }
 
@@ -273,5 +325,8 @@ export class Scaffold {
     this.mainPole.visible = false;
     this.extensionPole.visible = false;
     this.splintPole.visible = false;
+    for (const lashing of this.scaffoldLashings) {
+      lashing.visible = false;
+    }
   }
 }

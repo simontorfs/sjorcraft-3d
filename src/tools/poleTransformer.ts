@@ -2,16 +2,15 @@ import * as THREE from "three";
 import { Pole } from "../objects/pole";
 import { Viewer } from "../viewer";
 import { Scaffold } from "../objects/scaffold";
-import { Lashing } from "../objects/lashings/lashing";
+import { SquareLashing } from "../objects/lashings/squareLashing";
 import { BipodLashing } from "../objects/lashings/bipodLashing";
-
-type AnyLashing = Lashing | BipodLashing;
-
+import { Lashing } from "../objects/lashings/lashing";
+import { ScaffoldLashing } from "../objects/lashings/scaffoldLashing";
 export class PoleTransformer extends THREE.Object3D {
   viewer: Viewer;
   activeScaffold: Scaffold | undefined = undefined;
   originalPosition: THREE.Vector3 = new THREE.Vector3();
-  lashingsOnActiveScaffold: AnyLashing[] = [];
+  lashingsOnActiveScaffold: Lashing[] = [];
 
   translationHandle: THREE.Mesh;
   scaleHandleTop: THREE.Mesh;
@@ -91,6 +90,11 @@ export class PoleTransformer extends THREE.Object3D {
           lashing.loosePole === this.activeScaffold.mainPole
       ),
       ...this.viewer.inventory.bipodLashings.filter(
+        (lashing) =>
+          lashing.pole1 === this.activeScaffold.mainPole ||
+          lashing.pole2 === this.activeScaffold.mainPole
+      ),
+      ...this.viewer.inventory.scaffoldLashings.filter(
         (lashing) =>
           lashing.pole1 === this.activeScaffold.mainPole ||
           lashing.pole2 === this.activeScaffold.mainPole
@@ -195,10 +199,12 @@ export class PoleTransformer extends THREE.Object3D {
     for (const lashing of this.lashingsOnActiveScaffold) {
       lashing.relashToRightScaffoldPole(this.activeScaffold);
       if (!lashing.visible) {
-        if (lashing instanceof Lashing) {
+        if (lashing instanceof SquareLashing) {
           this.viewer.inventory.removeLashings([lashing]);
-        } else {
+        } else if (lashing instanceof BipodLashing) {
           this.viewer.inventory.removeBipodLashings([lashing]);
+        } else if (lashing instanceof ScaffoldLashing) {
+          this.viewer.inventory.removeScaffoldLashings([lashing]);
         }
       } else {
         (this.viewer.scene as any).dispatchEvent({
@@ -219,6 +225,9 @@ export class PoleTransformer extends THREE.Object3D {
     } else {
       const polesToAdd = this.activeScaffold.getVisibleExtenstionPoles();
       this.viewer.inventory.addPoles(polesToAdd);
+      this.viewer.inventory.addScaffoldLashings(
+        this.activeScaffold.scaffoldLashings
+      );
     }
   }
 }

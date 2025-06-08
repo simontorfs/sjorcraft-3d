@@ -1,9 +1,8 @@
 import * as THREE from "three";
 import { Pole } from "./objects/pole";
 import { Viewer } from "./viewer";
-import { Lashing } from "./objects/lashings/lashing";
-import { BipodLashing } from "./objects/lashings/bipodLashing";
 import { Tool } from "./tools/tool";
+import { Lashing } from "./objects/lashings/lashing";
 
 export class InputHandler {
   viewer: Viewer;
@@ -130,10 +129,11 @@ export class InputHandler {
       ...this.viewer.inventory.poles.map((pole) => pole.mesh),
       ...this.viewer.inventory.lashings.map((lashing) => lashing.mesh),
       ...this.viewer.inventory.bipodLashings.map((lashing) => lashing.mesh),
+      ...this.viewer.inventory.scaffoldLashings.map((lashing) => lashing.mesh),
     ]);
 
     if (intersects.length) {
-      return intersects[0].object.parent as Pole | Lashing | BipodLashing;
+      return intersects[0].object.parent as Pole | Lashing;
     } else {
       return undefined;
     }
