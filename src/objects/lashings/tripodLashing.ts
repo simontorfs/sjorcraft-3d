@@ -20,7 +20,26 @@ export class TripodLashing extends Lashing {
   centerMiddlePole: THREE.Vector3;
   centerRightPole: THREE.Vector3;
 
-  mesh: THREE.Mesh;
+  meshes: THREE.Mesh[] = [
+    // Timmermanssteek
+    new THREE.Mesh(),
+    // Left pole
+    new THREE.Mesh(),
+    new THREE.Mesh(),
+    new THREE.Mesh(),
+    // Middle pole
+    new THREE.Mesh(),
+    new THREE.Mesh(),
+    new THREE.Mesh(),
+    // Right pole
+    new THREE.Mesh(),
+    new THREE.Mesh(),
+    new THREE.Mesh(),
+    // Mastworp
+    new THREE.Mesh(),
+    new THREE.Mesh(),
+  ];
+
   constructor(
     leftScaffold: Scaffold,
     middleScaffold: Scaffold,
@@ -34,12 +53,14 @@ export class TripodLashing extends Lashing {
     this.middleScaffold = middleScaffold;
     this.rightScaffold = rightScaffold;
 
-    this.mesh = new THREE.Mesh();
-    this.mesh.material = new THREE.MeshStandardMaterial({
+    const meshMaterial = new THREE.MeshStandardMaterial({
       color: 0x9e9578,
       wireframe: false,
     });
-    this.add(this.mesh);
+    for (const mesh of this.meshes) {
+      mesh.material = meshMaterial;
+    }
+    this.add(...this.meshes);
 
     this.update();
   }
@@ -55,25 +76,41 @@ export class TripodLashing extends Lashing {
       this.rightPole = this.rightScaffold.mainPole;
     else this.rightPole = this.rightScaffold.extensionPole;
 
-    const {
-      closestPoint: closestPointLeft,
-      closestPointOnOtherPole: closestPointMiddleToLeft,
-    } = this.leftPole.getClosestApproach(this.middlePole);
+    const { closestPointOnOtherPole: closestPointMiddleToLeft } =
+      this.leftPole.getClosestApproach(this.middlePole);
 
-    const {
-      closestPoint: closestPointRight,
-      closestPointOnOtherPole: closestPointMiddleToRight,
-    } = this.rightPole.getClosestApproach(this.middlePole);
+    const { closestPointOnOtherPole: closestPointMiddleToRight } =
+      this.rightPole.getClosestApproach(this.middlePole);
 
-    this.centerLeftPole = closestPointLeft ?? new THREE.Vector3();
-    this.centerRightPole = closestPointRight ?? new THREE.Vector3();
-    this.centerMiddlePole =
-      closestPointMiddleToLeft && closestPointMiddleToRight
-        ? closestPointMiddleToLeft
+    if (
+      this.leftPole.isParallelTo(this.middlePole.direction) &&
+      this.rightPole.isParallelTo(this.middlePole.direction)
+    ) {
+      this.centerMiddlePole = this.middlePole.position
+        .clone()
+        .add(
+          this.middlePole.direction
             .clone()
-            .add(closestPointMiddleToRight)
-            .divideScalar(2)
-        : new THREE.Vector3();
+            .multiplyScalar(this.middlePole.length / 2 - 0.2)
+        );
+    } else if (this.rightPole.isParallelTo(this.middlePole.direction)) {
+      this.centerMiddlePole = closestPointMiddleToLeft;
+    } else {
+      if (closestPointMiddleToLeft && closestPointMiddleToRight) {
+        this.centerMiddlePole = new THREE.Vector3()
+          .addVectors(closestPointMiddleToLeft, closestPointMiddleToRight)
+          .divideScalar(2);
+      } else {
+        this.centerMiddlePole = this.middlePole.position.clone();
+      }
+    }
+
+    this.centerLeftPole = this.leftPole.getProjectedPoint(
+      this.centerMiddlePole
+    );
+    this.centerRightPole = this.rightPole.getProjectedPoint(
+      this.centerMiddlePole
+    );
 
     this.position.set(
       this.centerMiddlePole.x,
@@ -81,17 +118,38 @@ export class TripodLashing extends Lashing {
       this.centerMiddlePole.z
     );
 
-    const path = new TripodLashingCurve(
-      this.leftPole.direction,
-      this.middlePole.direction,
-      this.rightPole.direction,
-      this.centerMiddlePole.clone().sub(this.centerLeftPole),
-      this.centerMiddlePole.clone().sub(this.centerRightPole)
-    );
+    for (let i = 0; i < this.meshes.length; i++) {
+      const mesh = this.meshes[i];
+      mesh.geometry.dispose();
+      const path =
+        i < 4
+          ? new TripodLashingCurve(this.leftPole.direction, i - 2)
+          : i < 7
+          ? new TripodLashingCurve(this.middlePole.direction, i - 5)
+          : new TripodLashingCurve(this.rightPole.direction, i - 8);
+      mesh.geometry = new THREE.TubeGeometry(path, 36, 0.003, 8, true);
+      const pos =
+        i < 4
+          ? this.centerLeftPole.clone().sub(this.centerMiddlePole)
+          : i < 7
+          ? new THREE.Vector3()
+          : this.centerRightPole.clone().sub(this.centerMiddlePole);
+      mesh.position.set(pos.x, pos.y, pos.z);
+    }
+  }
 
-    this.mesh.geometry.dispose();
-    this.mesh.geometry = new THREE.TubeGeometry(path, 360, 0.003, 8, true);
-    //this.mesh.geometry = new THREE.SphereGeometry(0.1);
+  threatenWithDestruction() {
+    for (const mesh of this.meshes) {
+      // @ts-ignore
+      mesh.material.color = new THREE.Color(0x996209);
+    }
+  }
+
+  stopThreatening() {
+    for (const mesh of this.meshes) {
+      // @ts-ignore
+      mesh.material.color = new THREE.Color(0x9e9578);
+    }
   }
 
   relashToRightScaffoldPole(scaffold: Scaffold) {

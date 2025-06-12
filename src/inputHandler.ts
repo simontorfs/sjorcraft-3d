@@ -129,7 +129,9 @@ export class InputHandler {
       ...this.viewer.inventory.poles.map((pole) => pole.mesh),
       ...this.viewer.inventory.lashings.map((lashing) => lashing.mesh),
       ...this.viewer.inventory.bipodLashings.map((lashing) => lashing.mesh),
-      ...this.viewer.inventory.tripodLashings.map((lashing) => lashing.mesh),
+      ...this.viewer.inventory.tripodLashings.flatMap(
+        (lashing) => lashing.meshes
+      ),
       ...this.viewer.inventory.scaffoldLashings.map((lashing) => lashing.mesh),
     ]);
 

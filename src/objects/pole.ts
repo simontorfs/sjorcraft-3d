@@ -251,4 +251,12 @@ export class Pole extends THREE.Object3D {
       closestPointOnOtherPole: closestPoint2,
     };
   }
+
+  getProjectedPoint(point: THREE.Vector3) {
+    const v = new THREE.Vector3().subVectors(point, this.position);
+    const projectionLength = v.dot(this.direction);
+    return this.position
+      .clone()
+      .add(this.direction.clone().multiplyScalar(projectionLength));
+  }
 }
