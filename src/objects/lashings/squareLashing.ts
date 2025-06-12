@@ -143,11 +143,7 @@ export class SquareLashing extends Lashing {
       this.position
     );
     const geometry = new THREE.TubeGeometry(path, 360, 0.003, 8, true);
-    const material = new THREE.MeshStandardMaterial({
-      color: 0x9e9578,
-      wireframe: false,
-    });
-    this.mesh = new THREE.Mesh(geometry, material);
+    this.mesh = new THREE.Mesh(geometry, this.material);
     this.add(this.mesh);
   }
 

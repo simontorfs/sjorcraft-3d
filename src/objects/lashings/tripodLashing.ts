@@ -53,12 +53,8 @@ export class TripodLashing extends Lashing {
     this.middleScaffold = middleScaffold;
     this.rightScaffold = rightScaffold;
 
-    const meshMaterial = new THREE.MeshStandardMaterial({
-      color: 0x9e9578,
-      wireframe: false,
-    });
     for (const mesh of this.meshes) {
-      mesh.material = meshMaterial;
+      mesh.material = this.material;
     }
     this.add(...this.meshes);
 
@@ -135,20 +131,6 @@ export class TripodLashing extends Lashing {
           ? new THREE.Vector3()
           : this.centerRightPole.clone().sub(this.centerMiddlePole);
       mesh.position.set(pos.x, pos.y, pos.z);
-    }
-  }
-
-  threatenWithDestruction() {
-    for (const mesh of this.meshes) {
-      // @ts-ignore
-      mesh.material.color = new THREE.Color(0x996209);
-    }
-  }
-
-  stopThreatening() {
-    for (const mesh of this.meshes) {
-      // @ts-ignore
-      mesh.material.color = new THREE.Color(0x9e9578);
     }
   }
 
