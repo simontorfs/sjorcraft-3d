@@ -3,11 +3,17 @@ import { Scaffold } from "../objects/scaffold";
 import { Viewer } from "../viewer";
 import { DistanceHelperLine } from "../objects/helperLine";
 import { Tool } from "./tool";
+import { TripodLashing } from "../objects/lashings/tripodLashing";
 
 export class TripodTool extends Tool {
   scaffold1: Scaffold = new Scaffold();
   scaffold2: Scaffold = new Scaffold();
   scaffold3: Scaffold = new Scaffold();
+  lashing: TripodLashing = new TripodLashing(
+    this.scaffold2,
+    this.scaffold1,
+    this.scaffold3
+  );
 
   scaffold1Placed: boolean = false;
   scaffold2Placed: boolean = false;
@@ -40,6 +46,8 @@ export class TripodTool extends Tool {
 
     this.verticalHelperLine.visible = false;
     this.viewer.scene.add(this.verticalHelperLine);
+
+    this.viewer.scene.add(this.lashing);
   }
 
   activate() {
@@ -106,6 +114,13 @@ export class TripodTool extends Tool {
       this.scaffold1.addToScene(this.viewer.scene);
       this.scaffold2.addToScene(this.viewer.scene);
       this.scaffold3.addToScene(this.viewer.scene);
+      this.viewer.inventory.addTripodLashings([this.lashing]);
+      this.lashing = new TripodLashing(
+        this.scaffold2,
+        this.scaffold1,
+        this.scaffold3
+      );
+      this.viewer.scene.add(this.lashing);
       this.resetParameters();
     }
     this.updateHelperLines();
@@ -151,6 +166,7 @@ export class TripodTool extends Tool {
     }
     this.checkCollisions();
     this.updateHelperLines();
+    this.lashing.update();
   }
 
   drawFirstStep(groundPosition: THREE.Vector3) {
