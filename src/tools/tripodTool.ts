@@ -46,8 +46,6 @@ export class TripodTool extends Tool {
 
     this.verticalHelperLine.visible = false;
     this.viewer.scene.add(this.verticalHelperLine);
-
-    this.viewer.scene.add(this.lashing);
   }
 
   activate() {
@@ -56,6 +54,7 @@ export class TripodTool extends Tool {
     this.scaffold1.addToScene(this.viewer.scene);
     this.scaffold2.addToScene(this.viewer.scene);
     this.scaffold3.addToScene(this.viewer.scene);
+    this.viewer.scene.add(this.lashing);
   }
 
   deactivate() {
@@ -63,6 +62,7 @@ export class TripodTool extends Tool {
     this.scaffold1.removeFromScene(this.viewer.scene);
     this.scaffold2.removeFromScene(this.viewer.scene);
     this.scaffold3.removeFromScene(this.viewer.scene);
+    this.viewer.scene.remove(this.lashing);
     this.horizontalHelperLines.map((line) => (line.visible = false));
     this.verticalHelperLine.visible = false;
     this.resetParameters();
@@ -77,6 +77,7 @@ export class TripodTool extends Tool {
     this.scaffold1.setPositions(new THREE.Vector3(0, 200, 0));
     this.scaffold2.setPositions(new THREE.Vector3(0, 200, 0));
     this.scaffold3.setPositions(new THREE.Vector3(0, 200, 0));
+    this.lashing.position.set(0, 200, 0);
   }
 
   onLeftClick() {
