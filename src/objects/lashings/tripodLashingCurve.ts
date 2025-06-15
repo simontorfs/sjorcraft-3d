@@ -36,10 +36,12 @@ export class TripodLashingCurve extends THREE.Curve<THREE.Vector3> {
     this.normalLM = new THREE.Vector3()
       .crossVectors(this.directionLeftPole, this.directionMiddlePole)
       .normalize();
+    if (!this.normalLM.length()) this.normalLM = vML.clone().normalize();
 
     this.normalRM = new THREE.Vector3()
       .crossVectors(this.directionRightPole, this.directionMiddlePole)
       .normalize();
+    if (!this.normalRM.length()) this.normalRM = vMR.clone().normalize();
 
     this.perpendicularLeftPole = new THREE.Vector3().crossVectors(
       this.directionLeftPole,
