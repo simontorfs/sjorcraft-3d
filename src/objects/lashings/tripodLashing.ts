@@ -20,25 +20,7 @@ export class TripodLashing extends Lashing {
   centerMiddlePole: THREE.Vector3;
   centerRightPole: THREE.Vector3;
 
-  meshes: THREE.Mesh[] = [
-    // Timmermanssteek
-    new THREE.Mesh(),
-    // Left pole
-    new THREE.Mesh(),
-    new THREE.Mesh(),
-    new THREE.Mesh(),
-    // Middle pole
-    new THREE.Mesh(),
-    new THREE.Mesh(),
-    new THREE.Mesh(),
-    // Right pole
-    new THREE.Mesh(),
-    new THREE.Mesh(),
-    new THREE.Mesh(),
-    // Mastworp
-    new THREE.Mesh(),
-    new THREE.Mesh(),
-  ];
+  mesh: THREE.Mesh = new THREE.Mesh();
 
   constructor(
     leftScaffold: Scaffold,
@@ -53,10 +35,9 @@ export class TripodLashing extends Lashing {
     this.middleScaffold = middleScaffold;
     this.rightScaffold = rightScaffold;
 
-    for (const mesh of this.meshes) {
-      mesh.material = this.material;
-    }
-    this.add(...this.meshes);
+    this.mesh.material = this.material;
+
+    this.add(this.mesh);
 
     this.update();
   }
@@ -114,24 +95,16 @@ export class TripodLashing extends Lashing {
       this.centerMiddlePole.z
     );
 
-    for (let i = 0; i < this.meshes.length; i++) {
-      const mesh = this.meshes[i];
-      mesh.geometry.dispose();
-      const path =
-        i < 4
-          ? new TripodLashingCurve(this.leftPole.direction, i - 2)
-          : i < 7
-          ? new TripodLashingCurve(this.middlePole.direction, i - 5)
-          : new TripodLashingCurve(this.rightPole.direction, i - 8);
-      mesh.geometry = new THREE.TubeGeometry(path, 36, 0.003, 8, true);
-      const pos =
-        i < 4
-          ? this.centerLeftPole.clone().sub(this.centerMiddlePole)
-          : i < 7
-          ? new THREE.Vector3()
-          : this.centerRightPole.clone().sub(this.centerMiddlePole);
-      mesh.position.set(pos.x, pos.y, pos.z);
-    }
+    this.mesh.geometry.dispose();
+    const path = new TripodLashingCurve(
+      this.leftPole.direction,
+      this.middlePole.direction,
+      this.rightPole.direction,
+      this.centerLeftPole.clone().sub(this.centerMiddlePole),
+      this.centerRightPole.clone().sub(this.centerMiddlePole)
+    );
+
+    this.mesh.geometry = new THREE.TubeGeometry(path, 360, 0.003, 8, false);
   }
 
   relashToRightScaffoldPole(scaffold: Scaffold) {
