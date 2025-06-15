@@ -6,6 +6,7 @@ import { SquareLashing } from "../objects/lashings/squareLashing";
 import { BipodLashing } from "../objects/lashings/bipodLashing";
 import { Lashing } from "../objects/lashings/lashing";
 import { ScaffoldLashing } from "../objects/lashings/scaffoldLashing";
+import { TripodLashing } from "../objects/lashings/tripodLashing";
 export class PoleTransformer extends THREE.Object3D {
   viewer: Viewer;
   activeScaffold: Scaffold | undefined = undefined;
@@ -94,12 +95,19 @@ export class PoleTransformer extends THREE.Object3D {
           lashing.pole1 === this.activeScaffold.mainPole ||
           lashing.pole2 === this.activeScaffold.mainPole
       ),
+      ...this.viewer.inventory.tripodLashings.filter(
+        (lashing) =>
+          lashing.leftPole === this.activeScaffold.mainPole ||
+          lashing.middlePole === this.activeScaffold.mainPole ||
+          lashing.rightPole === this.activeScaffold.mainPole
+      ),
       ...this.viewer.inventory.scaffoldLashings.filter(
         (lashing) =>
           lashing.pole1 === this.activeScaffold.mainPole ||
           lashing.pole2 === this.activeScaffold.mainPole
       ),
     ];
+    console.log(this.lashingsOnActiveScaffold);
   }
 
   setHoveredHandle(hoveredHandle: THREE.Mesh | undefined) {
@@ -203,6 +211,8 @@ export class PoleTransformer extends THREE.Object3D {
           this.viewer.inventory.removeLashings([lashing]);
         } else if (lashing instanceof BipodLashing) {
           this.viewer.inventory.removeBipodLashings([lashing]);
+        } else if (lashing instanceof TripodLashing) {
+          this.viewer.inventory.removeTripodLashings([lashing]);
         } else if (lashing instanceof ScaffoldLashing) {
           this.viewer.inventory.removeScaffoldLashings([lashing]);
         }

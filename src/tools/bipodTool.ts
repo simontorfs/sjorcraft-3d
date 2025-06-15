@@ -29,7 +29,6 @@ export class BipodTool extends Tool {
 
   constructor(viewer: Viewer) {
     super(viewer);
-    this.viewer.scene.add(this.lashing);
 
     this.parallelHelperLine.visible = false;
     this.perpendicularHelperLine.visible = false;
@@ -46,12 +45,14 @@ export class BipodTool extends Tool {
     this.resetParameters();
     this.scaffold1.addToScene(this.viewer.scene);
     this.scaffold2.addToScene(this.viewer.scene);
+    this.viewer.scene.add(this.lashing);
   }
 
   deactivate() {
     this.active = false;
     this.scaffold1.removeFromScene(this.viewer.scene);
     this.scaffold2.removeFromScene(this.viewer.scene);
+    this.viewer.scene.remove(this.lashing);
     this.removeHorizontalHelperLines();
     this.verticalHelperLine.visible = false;
     this.resetParameters();
@@ -65,6 +66,7 @@ export class BipodTool extends Tool {
     this.lashHeight = this.defaultLashHeight;
     this.scaffold1.setPositions(new THREE.Vector3(0, 200, 0));
     this.scaffold2.setPositions(new THREE.Vector3(0, 200, 0));
+    this.lashing.position.set(0, 200, 0);
   }
 
   onLeftClick() {

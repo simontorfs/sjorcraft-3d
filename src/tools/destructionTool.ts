@@ -5,6 +5,7 @@ import { Pole } from "../objects/pole";
 import { Viewer } from "../viewer";
 import { Tool } from "./tool";
 import { Lashing } from "../objects/lashings/lashing";
+import { TripodLashing } from "../objects/lashings/tripodLashing";
 
 export class DestructionTool extends Tool {
   active: boolean;
@@ -31,6 +32,8 @@ export class DestructionTool extends Tool {
       this.viewer.inventory.removePoles([this.hoveredObject]);
     } else if (this.hoveredObject instanceof BipodLashing) {
       this.viewer.inventory.removeBipodLashings([this.hoveredObject]);
+    } else if (this.hoveredObject instanceof TripodLashing) {
+      this.viewer.inventory.removeTripodLashings([this.hoveredObject]);
     } else if (this.hoveredObject instanceof ScaffoldLashing) {
       this.viewer.inventory.removeScaffoldLashings([this.hoveredObject]);
     }
