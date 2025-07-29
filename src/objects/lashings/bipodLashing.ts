@@ -22,10 +22,7 @@ export class BipodLashing extends Lashing {
     this.scaffold2 = scaffold2;
 
     this.mesh = new THREE.Mesh();
-    this.mesh.material = new THREE.MeshStandardMaterial({
-      color: 0x9e9578,
-      wireframe: false,
-    });
+    this.mesh.material = this.material;
     this.add(this.mesh);
 
     this.update();
