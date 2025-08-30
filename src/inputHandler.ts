@@ -69,7 +69,6 @@ export class InputHandler {
         }
         break;
       default:
-        console.log("down", event.key);
         break;
     }
   }
@@ -80,7 +79,7 @@ export class InputHandler {
         this.ctrlDown = false;
         break;
       default:
-        console.log("up", event.key);
+        break;
     }
   }
 
