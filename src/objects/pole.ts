@@ -1,19 +1,6 @@
 import * as THREE from "three";
 import { v4 as uuidv4 } from "uuid";
-
-export const allowedLengths: number[] = [
-  1.0, 1.5, 2.0, 2.5, 3.0, 4.0, 5.0, 6.0,
-];
-export const colors: THREE.Color[] = [
-  new THREE.Color(0xffa500),
-  new THREE.Color(0x00ff00),
-  new THREE.Color(0xff0000),
-  new THREE.Color(0x037c6e),
-  new THREE.Color(0xffffff),
-  new THREE.Color(0x0000ff),
-  new THREE.Color(0xffff00),
-  new THREE.Color(0x000000),
-];
+import { PoleSetManager } from "../poleSet";
 
 const textureLoader = new THREE.TextureLoader();
 const colorTexture = textureLoader.load("/textures/wood/v1/wood_basecolor.jpg");
@@ -115,9 +102,12 @@ export class Pole extends THREE.Object3D {
   }
 
   setLength(minimumLength: number) {
+    const poleSet = PoleSetManager.getInstance();
+    const allowedLengths = poleSet.getAllowedPoleLengths();
+    const colors = poleSet.getPoleColors();
     // if the lenth is too big, just set it to the biggest length
-    this.length = allowedLengths[allowedLengths.length - 1];
-    this.color = colors[colors.length - 1];
+    this.length = allowedLengths.at(-1);
+    this.color = colors.at(-1);
 
     for (let i = 0; i < allowedLengths.length; i++) {
       const length = allowedLengths[i];

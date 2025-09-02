@@ -1,10 +1,11 @@
 import { BipodLashing } from "./objects/lashings/bipodLashing";
 import { SquareLashing } from "./objects/lashings/squareLashing";
 import { ScaffoldLashing } from "./objects/lashings/scaffoldLashing";
-import { Pole, colors, allowedLengths } from "./objects/pole";
+import { Pole } from "./objects/pole";
 import { Viewer } from "./viewer";
 import * as THREE from "three";
 import { TripodLashing } from "./objects/lashings/tripodLashing";
+import { PoleSetManager } from "./poleSet";
 
 interface IPolesDetail {
   length: number;
@@ -239,8 +240,11 @@ export class Inventory {
   }
 
   getPolesGroupedByLength() {
+    const poleSet = PoleSetManager.getInstance();
     const poles: Pole[] = this.poles;
     const polesGroupedByLength: IPolesDetail[] = [];
+    const allowedLengths = poleSet.getAllowedPoleLengths();
+    const colors = poleSet.getPoleColors();
 
     for (length of allowedLengths) {
       const number = poles.reduce((acc, pole) => {
