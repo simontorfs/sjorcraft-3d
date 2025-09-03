@@ -54,7 +54,7 @@ export class LashingTool extends Tool {
     this.setHoveredPole(hoveredPole);
   }
 
-  setHoveredPole(hoveredPole: Pole) {
+  setHoveredPole(hoveredPole: Pole | undefined) {
     this.hoveredPole = hoveredPole;
     if (!hoveredPole) {
       this.activeLashing.visible = false;

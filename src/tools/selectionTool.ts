@@ -20,8 +20,7 @@ export class SelectionTool extends Tool {
   }
 
   onMouseMove() {
-    const poleIntersect = this.viewer.inputHandler.getPoleIntersect();
-    const hoveredPole = poleIntersect?.object.parent as Pole;
+    const hoveredPole = this.viewer.inputHandler.getHoveredPole();
     this.setHoveredPole(hoveredPole);
   }
 
@@ -66,7 +65,7 @@ export class SelectionTool extends Tool {
     this.viewer.inventory.removePoles(this.selectedPoles);
   }
 
-  setHoveredPole(pole: Pole) {
+  setHoveredPole(pole: Pole | undefined) {
     this.hoveredPole = pole;
     if (this.hoveredPole) {
       this.viewer.domElement.style.cursor = "pointer";

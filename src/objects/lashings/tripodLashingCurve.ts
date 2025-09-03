@@ -119,7 +119,8 @@ export class TripodLashingCurve extends THREE.Curve<THREE.Vector3> {
         .add(this.perpendicularMiddlePole.clone().multiplyScalar(ty));
 
       return optionalTarget.set(v.x, v.y, v.z);
-    } else if (currentSegment === 3) {
+    } else {
+      // currentSegment === 3
       const v = new THREE.Vector3()
         .add(this.directionRightPole.clone().multiplyScalar(tz))
         .add(this.normalRM.clone().multiplyScalar(tx))
