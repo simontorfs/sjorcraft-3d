@@ -194,7 +194,6 @@ export class Pole extends THREE.Object3D {
   overlaps(otherPole: Pole) {
     const { closestPoint, closestPointOnOtherPole } =
       this.getClosestApproach(otherPole);
-    if (!closestPoint || !closestPointOnOtherPole) return false;
 
     const poleSeparation = closestPoint
       .clone()
@@ -228,7 +227,10 @@ export class Pole extends THREE.Object3D {
     const denom = d2121 * d4343 - d4321 * d4321;
     if (Math.abs(denom) < Number.EPSILON) {
       // The poles are parallel
-      return { closestPoint: undefined, closestPointOnOtherPole: undefined }; // TODO: implement this
+      return {
+        closestPoint: new THREE.Vector3(),
+        closestPointOnOtherPole: new THREE.Vector3(1, 0, 0),
+      }; // TODO: implement this
     }
 
     const numer = d1343 * d4321 - d1321 * d4343;

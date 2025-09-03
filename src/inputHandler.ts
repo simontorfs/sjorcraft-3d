@@ -4,6 +4,12 @@ import { Viewer } from "./viewer";
 import { Tool } from "./tools/tool";
 import { Lashing } from "./objects/lashings/lashing";
 
+export type PoleIntersection = {
+  pole: Pole;
+  point: THREE.Vector3;
+  normal: THREE.Vector3;
+};
+
 export class InputHandler {
   viewer: Viewer;
   cursor: THREE.Vector2;
@@ -141,10 +147,10 @@ export class InputHandler {
 
   getHoveredPole() {
     const intersect = this.getPoleIntersect();
-    return intersect?.object.parent as Pole;
+    return intersect?.pole;
   }
 
-  getPoleIntersect() {
+  getPoleIntersect(): PoleIntersection | undefined {
     const raycaster = new THREE.Raycaster();
     raycaster.setFromCamera(this.cursor, this.viewer.camera);
 
@@ -153,7 +159,21 @@ export class InputHandler {
     );
 
     if (intersects.length) {
-      return intersects[0];
+      const pole = intersects[0].object.parent as Pole;
+
+      const rotationMatrix = new THREE.Matrix4();
+      rotationMatrix.extractRotation(pole.matrix);
+      const transformedNormal = intersects[0].normal
+        ?.clone()
+        .applyMatrix4(rotationMatrix)
+        .normalize();
+
+      const point = intersects[0].point;
+      return {
+        pole,
+        point,
+        normal: transformedNormal || new THREE.Vector3(),
+      };
     } else {
       return undefined;
     }

@@ -3,6 +3,8 @@ import { Scaffold } from "../objects/scaffold";
 import { Viewer } from "../viewer";
 import { DistanceHelperLine } from "../objects/helperLine";
 import { Tool } from "./tool";
+import { Pole } from "../objects/pole";
+import { ScaffoldLashing } from "../objects/lashings/scaffoldLashing";
 
 export class PolypedestraTool extends Tool {
   scaffolds: Scaffold[] = [];
@@ -93,8 +95,8 @@ export class PolypedestraTool extends Tool {
     } else {
       if (this.polypedestraIsColliding) return;
 
-      const polesToAdd = [];
-      const scaffoldLashingsToAdd = [];
+      const polesToAdd: Pole[] = [];
+      const scaffoldLashingsToAdd: ScaffoldLashing[] = [];
       for (let i = 0; i < this.nrOfPoles; i++) {
         polesToAdd.push(...this.scaffolds[i].getVisiblePoles());
         scaffoldLashingsToAdd.push(
@@ -137,7 +139,7 @@ export class PolypedestraTool extends Tool {
   }
 
   drawPolypedestra(groundPosition: THREE.Vector3 | null) {
-    this.groundPositionLastMouseMove = groundPosition;
+    if (groundPosition) this.groundPositionLastMouseMove = groundPosition;
     if (!this.midPointPlaced) {
       if (groundPosition) this.drawFirstStep(groundPosition);
     } else if (!this.onlyGroundPointPlaced) {

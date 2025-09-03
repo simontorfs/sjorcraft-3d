@@ -84,30 +84,30 @@ export class PoleTransformer extends THREE.Object3D {
   }
 
   getActiveLashings() {
+    if (!this.activeScaffold) return;
     this.lashingsOnActiveScaffold = [
       ...this.viewer.inventory.lashings.filter(
         (lashing) =>
-          lashing.fixedPole === this.activeScaffold.mainPole ||
-          lashing.loosePole === this.activeScaffold.mainPole
+          lashing.fixedPole === this.activeScaffold!.mainPole ||
+          lashing.loosePole === this.activeScaffold!.mainPole
       ),
       ...this.viewer.inventory.bipodLashings.filter(
         (lashing) =>
-          lashing.pole1 === this.activeScaffold.mainPole ||
-          lashing.pole2 === this.activeScaffold.mainPole
+          lashing.pole1 === this.activeScaffold!.mainPole ||
+          lashing.pole2 === this.activeScaffold!.mainPole
       ),
       ...this.viewer.inventory.tripodLashings.filter(
         (lashing) =>
-          lashing.leftPole === this.activeScaffold.mainPole ||
-          lashing.middlePole === this.activeScaffold.mainPole ||
-          lashing.rightPole === this.activeScaffold.mainPole
+          lashing.leftPole === this.activeScaffold!.mainPole ||
+          lashing.middlePole === this.activeScaffold!.mainPole ||
+          lashing.rightPole === this.activeScaffold!.mainPole
       ),
       ...this.viewer.inventory.scaffoldLashings.filter(
         (lashing) =>
-          lashing.pole1 === this.activeScaffold.mainPole ||
-          lashing.pole2 === this.activeScaffold.mainPole
+          lashing.pole1 === this.activeScaffold!.mainPole ||
+          lashing.pole2 === this.activeScaffold!.mainPole
       ),
     ];
-    console.log(this.lashingsOnActiveScaffold);
   }
 
   setHoveredHandle(hoveredHandle: THREE.Mesh | undefined) {
@@ -123,6 +123,8 @@ export class PoleTransformer extends THREE.Object3D {
   }
 
   dragHandle(handle: THREE.Mesh) {
+    if (!this.activeScaffold) return;
+
     switch (handle) {
       case this.translationHandle:
         this.dragTranslationHandle();
@@ -196,6 +198,8 @@ export class PoleTransformer extends THREE.Object3D {
   }
 
   dropHandle(handle: THREE.Mesh) {
+    if (!this.activeScaffold) return;
+
     switch (handle) {
       case this.translationHandle:
         break;
@@ -230,6 +234,8 @@ export class PoleTransformer extends THREE.Object3D {
   }
 
   dropScaleHandle() {
+    if (!this.activeScaffold) return;
+
     if (!this.activeScaffold.extensionPole.visible) {
       this.activeScaffold.removeExtensionFromScene(this.viewer.scene);
     } else {

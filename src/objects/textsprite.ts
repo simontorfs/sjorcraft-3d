@@ -50,6 +50,8 @@ export class TextSprite extends THREE.Object3D {
   update() {
     let canvas = document.createElement("canvas");
     let context = canvas.getContext("2d");
+    if (!context) return;
+
     context.font = "Bold " + this.fontsize + "px " + this.fontface;
 
     // get size data (height depends only on font size)
