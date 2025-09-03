@@ -49,21 +49,14 @@ export class PoleTool extends Tool {
 
   onMouseMove() {
     const poleIntersect = this.viewer.inputHandler.getPoleIntersect();
-    const hoveredPole = poleIntersect?.object.parent as Pole;
 
-    if (poleIntersect?.normal) {
-      const rotationMatrix = new THREE.Matrix4();
-      rotationMatrix.extractRotation(hoveredPole.matrix);
-
-      const transformedNormal = poleIntersect.normal
-        .clone()
-        .applyMatrix4(rotationMatrix)
-        .normalize();
+    if (poleIntersect) {
+      const hoveredPole = poleIntersect.pole;
 
       this.drawPoleWhileHoveringOtherPole(
         poleIntersect.point,
         hoveredPole,
-        transformedNormal
+        poleIntersect.normal
       );
     } else {
       const groundPosition =

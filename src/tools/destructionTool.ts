@@ -44,7 +44,7 @@ export class DestructionTool extends Tool {
     this.setHoveredObject(hoveredObject);
   }
 
-  setHoveredObject(object: Pole | Lashing) {
+  setHoveredObject(object: Pole | Lashing | undefined) {
     if (object === this.hoveredObject) return;
     this.hoveredObject?.stopThreatening();
     this.hoveredObject = object;

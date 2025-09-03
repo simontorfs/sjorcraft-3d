@@ -2,7 +2,8 @@
   "compilerOptions": {
     "typeRoots": ["./node_modules/@types"],
     "moduleResolution": "node",
-    "esModuleInterop": true
+    "esModuleInterop": true,
+    "strictNullChecks": true
   },
   "include": ["src"]
 }
