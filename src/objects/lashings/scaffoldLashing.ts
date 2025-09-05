@@ -33,6 +33,12 @@ export class ScaffoldLashing extends Lashing {
     this.update();
   }
 
+  setPoles(pole1: Pole, pole2: Pole) {
+    this.pole1 = pole1;
+    this.pole2 = pole2;
+    this.update();
+  }
+
   update() {
     this.centerPole1 = this.pole1.position
       .clone()
@@ -49,7 +55,9 @@ export class ScaffoldLashing extends Lashing {
       .add(
         connectingVector
           .clone()
-          .multiplyScalar(this.pole1.radius + this.pole2.radius)
+          .multiplyScalar(
+            this.pole1.getRadialDistanceToParallelPole(this.pole2)
+          )
       );
     this.position.set(
       this.centerPole1.x,

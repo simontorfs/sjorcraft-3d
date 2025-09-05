@@ -254,6 +254,28 @@ export class Pole extends THREE.Object3D {
     };
   }
 
+  getRadialDistanceToParallelPole(otherPole: Pole) {
+    if (!this.isParallelTo(otherPole.direction)) {
+      throw new Error("Poles are not parallel");
+    }
+    const AB = this.position.clone().sub(otherPole.position);
+    const normalDirection = AB.clone().cross(this.direction);
+
+    if (!normalDirection.length()) return 0; // The poles are collinear. Radial distance is 0.
+
+    const radialDirection = normalDirection
+      .clone()
+      .cross(this.direction)
+      .normalize();
+    return Math.abs(AB.dot(radialDirection));
+  }
+
+  hasProjection(point: THREE.Vector3) {
+    return (
+      this.getProjectedPoint(point).distanceTo(this.position) < this.length / 2
+    );
+  }
+
   getProjectedPoint(point: THREE.Vector3) {
     const v = new THREE.Vector3().subVectors(point, this.position);
     const projectionLength = v.dot(this.direction);
