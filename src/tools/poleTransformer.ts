@@ -69,6 +69,56 @@ export class PoleTransformer extends THREE.Object3D {
       this.setHandlePositions();
       this.setHandleColor();
       this.getActiveLashings();
+
+      let canRotate = false;
+      const scaffoldLashings = this.lashingsOnActiveScaffold.filter(
+        (lashing) => lashing instanceof ScaffoldLashing
+      ) as ScaffoldLashing[];
+
+      if (
+        scaffoldLashings.length === 2 &&
+        this.lashingsOnActiveScaffold.length === 2
+      ) {
+        const otherPole1 =
+          scaffoldLashings[0].pole1 === pole
+            ? scaffoldLashings[0].pole2
+            : scaffoldLashings[0].pole1;
+        const otherPole2 =
+          scaffoldLashings[1].pole1 === pole
+            ? scaffoldLashings[1].pole2
+            : scaffoldLashings[1].pole1;
+
+        if (otherPole1 && otherPole2 && otherPole1 === otherPole2) {
+          canRotate = true;
+        }
+      } else if (
+        scaffoldLashings.length === 4 &&
+        this.lashingsOnActiveScaffold.length === 4
+      ) {
+        const otherPoles = new Set<Pole>();
+        scaffoldLashings.forEach((lashing) => {
+          if (lashing.pole1 !== pole) otherPoles.add(lashing.pole1);
+          if (lashing.pole2 !== pole) otherPoles.add(lashing.pole2);
+        });
+
+        if (otherPoles.size === 2) {
+          const [poleA, poleB] = Array.from(otherPoles);
+          const connectingVector = poleB.position
+            .clone()
+            .sub(poleA.position)
+            .normalize();
+          const poleDirection = this.activeScaffold.direction
+            .clone()
+            .normalize();
+
+          const dotProduct = Math.abs(connectingVector.dot(poleDirection));
+          if (dotProduct > 0.99) {
+            canRotate = true;
+          }
+        }
+      }
+      this.rotationHandle.visible = canRotate;
+      console.log();
     } else {
       this.activeScaffold = undefined;
       this.visible = false;
@@ -170,14 +220,10 @@ export class PoleTransformer extends THREE.Object3D {
 
   dragRotationHandle() {
     if (!this.activeScaffold) return;
-
     const pole = this.activeScaffold.mainPole;
     const rotationAxis = this.activeScaffold.direction.clone().normalize();
-
     const angle = 0.05;
-
     pole.rotateOnAxis(rotationAxis, angle);
-
     this.setHandlePositions();
   }
 
