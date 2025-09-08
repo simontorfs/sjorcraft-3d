@@ -288,36 +288,21 @@ export class TripodTool extends Tool {
   }
 
   optimisePositions() {
-    const direction3 = this.scaffold3.direction.clone();
+    let direction3 = this.scaffold3.direction.clone();
+    this.scaffold3.setPositionOnGround(this.thirdGroundPoint);
 
-    const tolerance = 0.001;
-    for (let i = 0; i < 1000; i++) {
-      let stepSize = 0.0001;
-      if (i < 800) stepSize = 0.0003;
-      if (i < 600) stepSize = 0.001;
-      if (i < 400) stepSize = 0.003;
-      if (i < 200) stepSize = 0.01;
-      const intitialBadness = this.getScaffold3PositionBadness(
-        direction3.clone()
-      );
-      const gradient = new THREE.Vector3(
-        this.getScaffold3PositionBadness(
-          direction3.clone().add(new THREE.Vector3(stepSize, 0, 0))
-        ) - intitialBadness,
-        this.getScaffold3PositionBadness(
-          direction3.clone().add(new THREE.Vector3(0, stepSize, 0))
-        ) - intitialBadness,
-        this.getScaffold3PositionBadness(
-          direction3.clone().add(new THREE.Vector3(0, 0, stepSize))
-        ) - intitialBadness
-      );
+    const tolerance = 0.0001;
+    const maxIterations = 1000;
 
-      direction3.add(gradient.multiplyScalar(-stepSize));
-      if (this.getScaffold3PositionBadness(direction3.clone()) < tolerance) {
+    for (let i = 0; i < maxIterations; i++) {
+      const F = this.getErrorVector(direction3);
+      if (F.length() < tolerance) {
         break;
       }
+      const J = this.getJacobianMatrix(direction3);
+      const delta_d3 = this.solveLinearSystem(J, F.negate());
+      direction3.add(delta_d3).normalize();
     }
-
     const lengthScaffold3 = this.thirdGroundPoint
       .clone()
       .sub(this.lashPosition)
@@ -333,23 +318,117 @@ export class TripodTool extends Tool {
     );
   }
 
-  getScaffold3PositionBadness(scaffold3Direction: THREE.Vector3) {
-    const dist1 = distanceBetweenLines(
-      this.firstGroundPoint,
-      this.scaffold1.direction,
-      this.thirdGroundPoint,
-      scaffold3Direction
+  getErrorVector(scaffold3Direction: THREE.Vector3) {
+    const f1 =
+      distanceBetweenLines(
+        this.firstGroundPoint,
+        this.scaffold1.direction,
+        this.thirdGroundPoint,
+        scaffold3Direction
+      ) -
+      (this.scaffold1.mainRadius + this.scaffold3.mainRadius);
+
+    const f2 =
+      distanceBetweenLines(
+        this.secondGroundPoint,
+        this.scaffold2.direction,
+        this.thirdGroundPoint,
+        scaffold3Direction
+      ) -
+      (this.scaffold2.mainRadius + this.scaffold3.mainRadius);
+    const f3 = scaffold3Direction.lengthSq() - 1;
+
+    return new THREE.Vector3(f1, f2, f3);
+  }
+
+  getJacobianMatrix(d3: THREE.Vector3) {
+    const d1 = this.scaffold1.direction;
+    const d2 = this.scaffold2.direction;
+    const a1 = this.firstGroundPoint;
+    const a2 = this.secondGroundPoint;
+    const a3 = this.thirdGroundPoint;
+    const row1 = this.getDerivedRow(d1, d3, a1, a3);
+    const row2 = this.getDerivedRow(d2, d3, a2, a3);
+    const row3 = new THREE.Vector3(2 * d3.x, 2 * d3.y, 2 * d3.z);
+    const J = new THREE.Matrix3().set(
+      row1.x,
+      row2.x,
+      row3.x,
+      row1.y,
+      row2.y,
+      row3.y,
+      row1.z,
+      row2.z,
+      row3.z
     );
-    const dist2 = distanceBetweenLines(
-      this.secondGroundPoint,
-      this.scaffold2.direction,
-      this.thirdGroundPoint,
-      scaffold3Direction
-    );
-    return (
-      Math.abs(dist1 - this.scaffold1.mainRadius - this.scaffold3.mainRadius) +
-      Math.abs(dist2 - this.scaffold2.mainRadius - this.scaffold3.mainRadius)
-    );
+    return J;
+  }
+
+  getDerivedRow(
+    di: THREE.Vector3,
+    dj: THREE.Vector3,
+    ai: THREE.Vector3,
+    aj: THREE.Vector3
+  ) {
+    const delta_a = aj.clone().sub(ai);
+    const d_cross = di.clone().cross(dj);
+    const M_sq = d_cross.lengthSq();
+
+    if (M_sq < 1e-9) {
+      return new THREE.Vector3(0, 0, 0);
+    }
+    const M = Math.sqrt(M_sq);
+    const N = delta_a.dot(d_cross);
+
+    const i = new THREE.Vector3(1, 0, 0);
+    const j = new THREE.Vector3(0, 1, 0);
+    const k = new THREE.Vector3(0, 0, 1);
+    const dN_d3x = delta_a.clone().dot(i.cross(di));
+    const dN_d3y = delta_a.clone().dot(j.cross(di));
+    const dN_d3z = delta_a.clone().dot(k.cross(di));
+
+    const dM_d3x = d_cross.clone().dot(i.cross(di)) / M;
+    const dM_d3y = d_cross.clone().dot(j.cross(di)) / M;
+    const dM_d3z = d_cross.clone().dot(k.cross(di)) / M;
+
+    const df_d3x = (dN_d3x * M - N * dM_d3x) / M_sq;
+    const df_d3y = (dN_d3y * M - N * dM_d3y) / M_sq;
+    const df_d3z = (dN_d3z * M - N * dM_d3z) / M_sq;
+
+    return new THREE.Vector3(df_d3x, df_d3y, df_d3z);
+  }
+
+  solveLinearSystem(J: THREE.Matrix3, F: THREE.Vector3) {
+    const m = J.elements;
+    const Fx = F.x;
+    const Fy = F.y;
+    const Fz = F.z;
+
+    const D =
+      m[0] * (m[4] * m[8] - m[5] * m[7]) -
+      m[1] * (m[3] * m[8] - m[5] * m[6]) +
+      m[2] * (m[3] * m[7] - m[4] * m[6]);
+
+    if (Math.abs(D) < 1e-9) {
+      return new THREE.Vector3(0, 0, 0);
+    }
+
+    const Dx =
+      Fx * (m[4] * m[8] - m[5] * m[7]) -
+      m[1] * (Fy * m[8] - m[5] * Fz) +
+      m[2] * (Fy * m[7] - m[4] * Fz);
+
+    const Dy =
+      m[0] * (Fy * m[8] - m[5] * Fz) -
+      Fx * (m[3] * m[8] - m[5] * m[6]) +
+      m[2] * (m[3] * Fz - Fy * m[6]);
+
+    const Dz =
+      m[0] * (m[4] * Fz - m[5] * Fy) -
+      m[1] * (m[3] * Fz - Fy * m[6]) +
+      Fx * (m[3] * m[7] - m[4] * m[6]);
+
+    return new THREE.Vector3(Dx / D, Dy / D, Dz / D);
   }
 
   getCenter(p1: THREE.Vector3, p2: THREE.Vector3, p3?: THREE.Vector3) {
