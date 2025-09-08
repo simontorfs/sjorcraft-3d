@@ -13,6 +13,7 @@ export class PoleTransformer extends THREE.Object3D {
   activeScaffold: Scaffold | undefined = undefined;
   originalPosition: THREE.Vector3 = new THREE.Vector3();
   lashingsOnActiveScaffold: Lashing[] = [];
+  connectedPole: Pole | undefined = undefined;
 
   translationHandle: THREE.Mesh;
   scaleHandleTop: THREE.Mesh;
@@ -70,58 +71,11 @@ export class PoleTransformer extends THREE.Object3D {
       this.setHandleColor();
       this.getActiveLashings();
 
-      let canRotate = false;
-      const scaffoldLashings = this.lashingsOnActiveScaffold.filter(
-        (lashing) => lashing instanceof ScaffoldLashing
-      ) as ScaffoldLashing[];
-
-      if (
-        scaffoldLashings.length === 2 &&
-        this.lashingsOnActiveScaffold.length === 2
-      ) {
-        const otherPole1 =
-          scaffoldLashings[0].pole1 === pole
-            ? scaffoldLashings[0].pole2
-            : scaffoldLashings[0].pole1;
-        const otherPole2 =
-          scaffoldLashings[1].pole1 === pole
-            ? scaffoldLashings[1].pole2
-            : scaffoldLashings[1].pole1;
-
-        if (otherPole1 && otherPole2 && otherPole1 === otherPole2) {
-          canRotate = true;
-        }
-      } else if (
-        scaffoldLashings.length === 4 &&
-        this.lashingsOnActiveScaffold.length === 4
-      ) {
-        const otherPoles = new Set<Pole>();
-        scaffoldLashings.forEach((lashing) => {
-          if (lashing.pole1 !== pole) otherPoles.add(lashing.pole1);
-          if (lashing.pole2 !== pole) otherPoles.add(lashing.pole2);
-        });
-
-        if (otherPoles.size === 2) {
-          const [poleA, poleB] = Array.from(otherPoles);
-          const connectingVector = poleB.position
-            .clone()
-            .sub(poleA.position)
-            .normalize();
-          const poleDirection = this.activeScaffold.direction
-            .clone()
-            .normalize();
-
-          const dotProduct = Math.abs(connectingVector.dot(poleDirection));
-          if (dotProduct > 0.99) {
-            canRotate = true;
-          }
-        }
-      }
-      this.rotationHandle.visible = canRotate;
-      console.log();
+      this.rotationHandle.visible = this.canRotate(pole);
     } else {
       this.activeScaffold = undefined;
       this.visible = false;
+      this.connectedPole = undefined;
     }
   }
 
@@ -200,7 +154,6 @@ export class PoleTransformer extends THREE.Object3D {
         this.dragScaleHandle(false);
         break;
       case this.rotationHandle:
-      case this.rotationHandleHitbox:
         this.dragRotationHandle();
         break;
     }
@@ -219,12 +172,30 @@ export class PoleTransformer extends THREE.Object3D {
   }
 
   dragRotationHandle() {
-    if (!this.activeScaffold) return;
+    if (!this.activeScaffold || !this.connectedPole) return;
+
     const pole = this.activeScaffold.mainPole;
-    const rotationAxis = this.activeScaffold.direction.clone().normalize();
     const angle = 0.05;
-    pole.rotateOnAxis(rotationAxis, angle);
+    const rotationAxis = this.connectedPole.direction.clone().normalize();
+    const vectorFromConnectedPoleBase = pole.position
+      .clone()
+      .sub(this.connectedPole.position);
+    const projection = vectorFromConnectedPoleBase.dot(rotationAxis);
+    const rotationPivot = this.connectedPole.position
+      .clone()
+      .add(rotationAxis.clone().multiplyScalar(projection));
+    pole.position.sub(rotationPivot);
+    pole.position.applyAxisAngle(rotationAxis, angle);
+    pole.position.add(rotationPivot);
+    pole.rotateOnWorldAxis(rotationAxis, angle);
     this.setHandlePositions();
+
+    for (const lashing of this.lashingsOnActiveScaffold) {
+      lashing.position.sub(rotationPivot);
+      lashing.position.applyAxisAngle(rotationAxis, angle);
+      lashing.position.add(rotationPivot);
+      lashing.rotateOnWorldAxis(rotationAxis, angle);
+    }
   }
 
   dragTranslationHandle() {
@@ -322,5 +293,56 @@ export class PoleTransformer extends THREE.Object3D {
         this.activeScaffold.scaffoldLashings
       );
     }
+  }
+
+  canRotate(pole: Pole) {
+    this.connectedPole = undefined;
+    let canRotate = false;
+    const scaffoldLashings = this.lashingsOnActiveScaffold.filter(
+      (lashing) => lashing instanceof ScaffoldLashing
+    ) as ScaffoldLashing[];
+
+    if (
+      scaffoldLashings.length === 2 &&
+      this.lashingsOnActiveScaffold.length === 2
+    ) {
+      const otherPole1 =
+        scaffoldLashings[0].pole1 === pole
+          ? scaffoldLashings[0].pole2
+          : scaffoldLashings[0].pole1;
+      const otherPole2 =
+        scaffoldLashings[1].pole1 === pole
+          ? scaffoldLashings[1].pole2
+          : scaffoldLashings[1].pole1;
+
+      if (otherPole1 && otherPole2 && otherPole1 === otherPole2) {
+        canRotate = true;
+        this.connectedPole = otherPole1;
+      }
+    } else if (
+      scaffoldLashings.length === 4 &&
+      this.lashingsOnActiveScaffold.length === 4
+    ) {
+      const otherPoles = new Set<Pole>();
+      scaffoldLashings.forEach((lashing) => {
+        if (lashing.pole1 !== pole) otherPoles.add(lashing.pole1);
+        if (lashing.pole2 !== pole) otherPoles.add(lashing.pole2);
+      });
+      if (otherPoles.size === 2) {
+        const [poleA, poleB] = Array.from(otherPoles);
+        const vectorAB = poleB.position.clone().sub(poleA.position).normalize();
+        const vectorABParallelToPoles =
+          Math.abs(
+            vectorAB.normalize().dot(pole.direction.clone().normalize())
+          ) >
+          1 - 1e-6;
+
+        if (vectorABParallelToPoles) {
+          canRotate = true;
+          this.connectedPole = poleA;
+        }
+      }
+    }
+    return canRotate;
   }
 }
