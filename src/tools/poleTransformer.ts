@@ -7,6 +7,7 @@ import { BipodLashing } from "../objects/lashings/bipodLashing";
 import { Lashing } from "../objects/lashings/lashing";
 import { ScaffoldLashing } from "../objects/lashings/scaffoldLashing";
 import { TripodLashing } from "../objects/lashings/tripodLashing";
+
 export class PoleTransformer extends THREE.Object3D {
   viewer: Viewer;
   activeScaffold: Scaffold | undefined = undefined;
@@ -16,23 +17,36 @@ export class PoleTransformer extends THREE.Object3D {
   translationHandle: THREE.Mesh;
   scaleHandleTop: THREE.Mesh;
   scaleHandleBottom: THREE.Mesh;
+  rotationHandle: THREE.Mesh;
+  rotationHandleHitbox: THREE.Mesh;
   handles: THREE.Mesh[] = [];
 
   constructor(viewer: Viewer) {
     super();
     this.viewer = viewer;
     const geometry = new THREE.CylinderGeometry(0.061, 0.061, 0.1);
+
     this.translationHandle = new THREE.Mesh(geometry, this.getHandleMaterial());
     this.scaleHandleTop = new THREE.Mesh(geometry, this.getHandleMaterial());
     this.scaleHandleBottom = new THREE.Mesh(geometry, this.getHandleMaterial());
+    const torusGeometry = new THREE.TorusGeometry(0.2, 0.03, 16, 100);
+    this.rotationHandle = new THREE.Mesh(
+      torusGeometry,
+      this.getHandleMaterial()
+    );
+    this.rotationHandle.rotation.x = Math.PI / 2;
+
     this.add(this.translationHandle);
     this.add(this.scaleHandleTop);
     this.add(this.scaleHandleBottom);
+    this.add(this.rotationHandle);
     this.visible = false;
+
     this.handles = [
       this.translationHandle,
       this.scaleHandleTop,
       this.scaleHandleBottom,
+      this.rotationHandle,
     ];
   }
 
@@ -135,6 +149,10 @@ export class PoleTransformer extends THREE.Object3D {
       case this.scaleHandleBottom:
         this.dragScaleHandle(false);
         break;
+      case this.rotationHandle:
+      case this.rotationHandleHitbox:
+        this.dragRotationHandle();
+        break;
     }
 
     for (const lashing of this.lashingsOnActiveScaffold) {
@@ -148,6 +166,19 @@ export class PoleTransformer extends THREE.Object3D {
         : lashing.position.distanceTo(this.activeScaffold.mainPole.position);
       lashing.visible = distance < this.activeScaffold.mainPole.length / 2.0;
     }
+  }
+
+  dragRotationHandle() {
+    if (!this.activeScaffold) return;
+
+    const pole = this.activeScaffold.mainPole;
+    const rotationAxis = this.activeScaffold.direction.clone().normalize();
+
+    const angle = 0.05;
+
+    pole.rotateOnAxis(rotationAxis, angle);
+
+    this.setHandlePositions();
   }
 
   dragTranslationHandle() {
