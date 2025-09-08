@@ -288,21 +288,35 @@ export class TripodTool extends Tool {
   }
 
   optimisePositions() {
-    let direction3 = this.scaffold3.direction.clone();
-    this.scaffold3.setPositionOnGround(this.thirdGroundPoint);
+    let direction3 = this.lashPosition
+      .clone()
+      .sub(this.thirdGroundPoint)
+      .normalize();
 
     const tolerance = 0.0001;
-    const maxIterations = 1000;
+    const maxIterations = 50;
 
     for (let i = 0; i < maxIterations; i++) {
       const F = this.getErrorVector(direction3);
+
       if (F.length() < tolerance) {
+        console.log(`Converged in ${i} iterations.`);
         break;
       }
+
       const J = this.getJacobianMatrix(direction3);
-      const delta_d3 = this.solveLinearSystem(J, F.negate());
+
+      // Use the new solver
+      const delta_d3 = this.solveGaussNewtonSystem(J, F);
+
       direction3.add(delta_d3).normalize();
     }
+
+    // Final check
+    if (this.getErrorVector(direction3).length() >= tolerance) {
+      console.warn("Gauss-Newton did not converge.");
+    }
+
     const lengthScaffold3 = this.thirdGroundPoint
       .clone()
       .sub(this.lashPosition)
@@ -396,6 +410,14 @@ export class TripodTool extends Tool {
     const df_d3z = (dN_d3z * M - N * dM_d3z) / M_sq;
 
     return new THREE.Vector3(df_d3x, df_d3y, df_d3z);
+  }
+
+  solveGaussNewtonSystem(J: THREE.Matrix3, F: THREE.Vector3) {
+    const J_T = J.clone().transpose();
+    const J_T_J = new THREE.Matrix3().multiplyMatrices(J_T, J);
+    const J_T_F = F.clone().applyMatrix3(J_T);
+    J_T_F.negate();
+    return this.solveLinearSystem(J_T_J, J_T_F);
   }
 
   solveLinearSystem(J: THREE.Matrix3, F: THREE.Vector3) {
