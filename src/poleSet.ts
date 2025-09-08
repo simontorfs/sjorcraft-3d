@@ -61,6 +61,10 @@ export class PoleSetManager {
     this.colors = this.calculateColors();
   }
 
+  public resetPoleset() {
+    this.setPoleSet(defaultPoleSet);
+  }
+
   public getAllowedPoleLengths() {
     return this.allowedPoleLengths;
   }

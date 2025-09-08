@@ -278,4 +278,14 @@ export class Inventory {
       pole.mesh.material.color = new THREE.Color(1, 1, 1);
     }
   }
+
+  setPoleset(newSet: { length: number; color: number }[]) {
+    const poleSet = PoleSetManager.getInstance();
+    poleSet.setPoleSet(newSet);
+  }
+
+  resetPoleset() {
+    const poleSet = PoleSetManager.getInstance();
+    poleSet.resetPoleset();
+  }
 }
