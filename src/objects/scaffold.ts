@@ -37,7 +37,7 @@ export class Scaffold {
 
   reset() {
     this.setDirection(new THREE.Vector3(0, 1, 0));
-    this.setLength(4.0);
+    this.setMinimumLength(4.0);
     this.setPositions(new THREE.Vector3(0, 200, 0));
   }
 
@@ -50,7 +50,7 @@ export class Scaffold {
 
   setPositionOnGround(groundPosition: THREE.Vector3) {
     this.setDirection(new THREE.Vector3(0, 1, 0));
-    this.setLength(4.0);
+    this.setMinimumLength(4.0);
     const targetPosition = groundPosition
       .clone()
       .add(new THREE.Vector3(0, this.mainPole.length / 2.0, 0));
@@ -63,7 +63,7 @@ export class Scaffold {
   ) {
     const targetOrientationVector = polePoint.clone().sub(groundPoint.clone());
     const distance = targetOrientationVector.length();
-    this.setLength(distance + 0.15);
+    this.setMinimumLength(distance + 0.15);
     this.setDirection(targetOrientationVector);
     const targetPosition = groundPoint
       .clone()
@@ -78,7 +78,7 @@ export class Scaffold {
   setPositionBetweenTwoPoles(pointA: THREE.Vector3, pointB: THREE.Vector3) {
     const targetOrientationVector = pointB.clone().sub(pointA.clone());
     const distance = targetOrientationVector.length();
-    this.setLength(distance + 0.3);
+    this.setMinimumLength(distance + 0.3);
     this.setDirection(targetOrientationVector);
 
     const centerPoint = pointA.clone().add(pointB.clone()).divideScalar(2.0);
@@ -92,11 +92,11 @@ export class Scaffold {
     this.setPositions(targetPosition);
   }
 
-  setLength(minimumLength: number) {
+  setMinimumLength(minimumLength: number) {
     const poleSet = PoleSetManager.getInstance();
     const allowedLengths = poleSet.getAllowedScaffoldLengths();
-    const maxSinglePoleLength = poleSet.getAllowedPoleLengths().at(-1);
-    let newLength = allowedLengths.at(-1);
+    const maxSinglePoleLength = poleSet.getAllowedPoleLengths().at(-1) || 0.5;
+    let newLength = allowedLengths.at(-1) || 0.5;
     for (const length of allowedLengths) {
       if (length >= minimumLength) {
         newLength = length;
@@ -116,7 +116,7 @@ export class Scaffold {
   }
 
   changeLengthToSinglePole() {
-    this.mainPole.setLength(this.length);
+    this.mainPole.setMinimumLength(this.length);
     this.extensionPole.visible = false;
     this.splintPole.visible = false;
     for (const lashing of this.scaffoldLashings) {
@@ -125,9 +125,9 @@ export class Scaffold {
   }
 
   changeLengthToDoublePole() {
-    this.mainPole.setLength(this.length / 2);
-    this.extensionPole.setLength(this.length / 2);
-    this.splintPole.setLength(this.length / 3);
+    this.mainPole.setMinimumLength(this.length / 2);
+    this.extensionPole.setMinimumLength(this.length / 2);
+    this.splintPole.setMinimumLength(this.length / 3);
     this.extensionPole.visible = true;
     this.splintPole.visible = true;
     for (const lashing of this.scaffoldLashings) {
@@ -191,7 +191,7 @@ export class Scaffold {
   resize(resizeAtTop: boolean, newMinimumLength: number) {
     const oldLength = this.length;
     const oldLengthMainPole = this.mainPole.length;
-    this.setLength(newMinimumLength);
+    this.setMinimumLength(newMinimumLength);
     const lengthDifference = this.length - oldLength;
     const lengthDifferenceMainPole = this.mainPole.length - oldLengthMainPole;
     this.setDirection(this.direction);

@@ -77,7 +77,7 @@ export class Pole extends THREE.Object3D {
       new THREE.Vector3(pole.direction.x, pole.direction.y, pole.direction.z)
     );
     this.name = pole.name;
-    this.setLength(pole.length);
+    this.setExactLength(pole.length);
     this.rotation.set(pole.rotation._x, pole.rotation._y, pole.rotation._z);
     this.uuid = pole.uuid;
   }
@@ -101,13 +101,35 @@ export class Pole extends THREE.Object3D {
     this.setRotationFromQuaternion(quaternion);
   }
 
-  setLength(minimumLength: number) {
+  setExactLength(exactLength: number) {
+    const poleSet = PoleSetManager.getInstance();
+    const allowedLengths = poleSet.getAllowedPoleLengths();
+    const colors = poleSet.getPoleColors();
+
+    this.length = exactLength;
+    const lengthIndex = allowedLengths.indexOf(exactLength);
+    this.color =
+      lengthIndex === -1
+        ? new THREE.Color(0x888888)
+        : colors.at(lengthIndex) || new THREE.Color(0x888888);
+
+    this.mesh.geometry.dispose();
+    this.mesh.geometry = new THREE.CylinderGeometry(
+      this.radius,
+      this.radius,
+      this.length
+    );
+    this.updateMaterialsAfterLengthChange();
+    this.setPositionCaps();
+  }
+
+  setMinimumLength(minimumLength: number) {
     const poleSet = PoleSetManager.getInstance();
     const allowedLengths = poleSet.getAllowedPoleLengths();
     const colors = poleSet.getPoleColors();
     // if the lenth is too big, just set it to the biggest length
-    this.length = allowedLengths.at(-1);
-    this.color = colors.at(-1);
+    this.length = allowedLengths.at(-1) || 0.5;
+    this.color = colors.at(-1) || new THREE.Color(0x888888);
 
     for (let i = 0; i < allowedLengths.length; i++) {
       const length = allowedLengths[i];

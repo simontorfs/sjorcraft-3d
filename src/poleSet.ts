@@ -42,7 +42,7 @@ export class PoleSetManager {
     const singlePoleLengths = this.calculateAllowedPoleLengths();
     const scaffoldLengths = this.poleSet
       .map((p) => p.length * 2)
-      .filter((l) => l > singlePoleLengths.at(-1) + Number.EPSILON);
+      .filter((l) => l > (singlePoleLengths.at(-1) || 0) + Number.EPSILON);
     return [...singlePoleLengths, ...scaffoldLengths];
   }
 
