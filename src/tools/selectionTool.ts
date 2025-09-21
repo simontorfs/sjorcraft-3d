@@ -5,6 +5,8 @@ import { Tool } from "./tool";
 export class SelectionTool extends Tool {
   hoveredPole: Pole | undefined;
   selectedPoles: Pole[] = [];
+  private editAllowed: boolean = true;
+
   constructor(viewer: Viewer) {
     super(viewer);
   }
@@ -38,6 +40,10 @@ export class SelectionTool extends Tool {
     }
   }
 
+  allowEdit(allow: boolean) {
+    this.editAllowed = allow;
+  }
+
   onLeftClick() {
     if (!this.active) return;
     this.deselectAll();
@@ -61,7 +67,7 @@ export class SelectionTool extends Tool {
   }
 
   deleteSelectedPoles() {
-    if (!this.active || !this.selectedPoles.length) return;
+    if (!this.active || !this.selectedPoles.length || !this.editAllowed) return;
     this.viewer.inventory.removePoles(this.selectedPoles);
   }
 
