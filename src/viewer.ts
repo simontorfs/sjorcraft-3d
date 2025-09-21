@@ -79,7 +79,7 @@ export class Viewer {
 
     // Floor
     this.floor = new Floor(this);
-    this.floor.setNewFloor(50, 50, new THREE.Color("#2a6e3c"), false);
+    this.scene.add(this.floor);
 
     // Light
     const ambientLight = new THREE.AmbientLight(
@@ -141,6 +141,7 @@ export class Viewer {
         (object as TextSprite).updateSize(this.sizes, this.camera);
       }
     });
+    this.floor.update();
   }
 
   cleanup() {

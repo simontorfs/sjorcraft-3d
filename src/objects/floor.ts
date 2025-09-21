@@ -1,114 +1,125 @@
 import * as THREE from "three";
 import { Viewer } from "./../viewer";
+import { Water } from "three/examples/jsm/objects/Water.js";
+import { Sky } from "three/examples/jsm/objects/Sky.js";
+
+const size = 50;
 
 const textureLoader = new THREE.TextureLoader();
-const colorTexture = textureLoader.load("/textures/grass/grass_basecolor.jpg");
+const grassTexture = textureLoader.load("/textures/grass/grass_basecolor.jpg");
+const waterNormals = textureLoader.load(
+  "/textures/water/waternormals.jpg",
+  function (texture) {
+    texture.wrapS = texture.wrapT = THREE.RepeatWrapping;
+  }
+);
 
-colorTexture.wrapT = THREE.RepeatWrapping;
-colorTexture.wrapS = THREE.RepeatWrapping;
-colorTexture.colorSpace = THREE.SRGBColorSpace;
+grassTexture.wrapT = THREE.RepeatWrapping;
+grassTexture.wrapS = THREE.RepeatWrapping;
+grassTexture.colorSpace = THREE.SRGBColorSpace;
+grassTexture.repeat.y = size;
+grassTexture.repeat.x = size;
 
 export class Floor extends THREE.Object3D {
   viewer: Viewer;
+  geometry: THREE.PlaneGeometry;
   mesh: THREE.Mesh;
   grid: THREE.GridHelper;
+  water?: Water;
   constructor(viewer: Viewer) {
     super();
     this.viewer = viewer;
-    this.setNewFloor(50, 50, new THREE.Color("#2a6e3c"), false);
-  }
-  /**
-   * @description This method removes the grid from the scene
-   */
-  removeGrid() {
-    this.viewer.scene.remove(this.grid);
-  }
-  /**
-   *
-   * @param length this is the length of the floor
-   * @param width this is the width of the floor
-   * @param color if provided, this is the color of the floor, default is green
-   * @param texture if provided, this is the texture of the floor, default is false
-   * @description This method sets the floor of the scene
-   */
-  setFloor(
-    length: number,
-    width: number,
-    color?: THREE.Color,
-    texture?: boolean
-  ) {
-    const floorGeometry = new THREE.PlaneGeometry(length, width);
+    const floorGeometry = new THREE.PlaneGeometry(size, size);
 
-    colorTexture.repeat.y = width;
-    colorTexture.repeat.x = length;
-
-    const floorMaterial = new THREE.MeshBasicMaterial({
-      map: texture ? colorTexture : null,
-      wireframe: false,
-      color: texture ? undefined : color ? color : "#2a6e3c",
-      transparent: false,
-    });
-    this.mesh = new THREE.Mesh(floorGeometry, floorMaterial);
+    this.mesh = new THREE.Mesh(floorGeometry);
     this.mesh.name = "floor";
     this.mesh.rotation.x = -Math.PI / 2;
-    this.viewer.scene.add(this.mesh);
-  }
+    this.add(this.mesh);
 
-  /**
-   *
-   * @param size this is the size of the grid
-   * @param divisions this is the number of divisions in the grid
-   * @description This method sets the grid of the scene
-   */
-  setGrid(size: number, divisions: number, texture?: boolean) {
     this.grid = new THREE.GridHelper(
       size,
-      divisions,
-      texture ? new THREE.Color() : new THREE.Color("#888888"),
-      texture ? new THREE.Color() : new THREE.Color("#888888")
+      size,
+      new THREE.Color("#888888"),
+      new THREE.Color("#888888")
     );
     this.grid.position.y = 0.01;
     this.grid.material.opacity = 0.35;
     this.grid.material.transparent = true;
-    this.viewer.scene.add(this.grid);
+
+    this.setPlainFloor(new THREE.Color("#2a6e3c"));
+
+    // Maybe disable lights when switching to water floor?
+    // this.setWaterFloor();
   }
 
-  /**
-   *
-   * @param length this is the length of the floor
-   * @param width this is the width of the floor
-   * @description This method updates the dimensions of the floor and grid
-   */
-  setDimensions(length: number, width: number) {
-    this.mesh.geometry.dispose();
-    (this.mesh.geometry = new THREE.PlaneGeometry(length, width)),
-      this.removeGrid();
-    const size = Math.max(length, width);
-    this.setGrid(size, size);
+  setPlainFloor(color: THREE.Color) {
+    this.mesh.material = new THREE.MeshBasicMaterial({
+      color,
+    });
+    this.add(this.grid);
   }
 
-  /**
-   *
-   * @param length this is the length of the floor
-   * @param width this is the width of the floor
-   * @param color if provided, this is the color of the floor, default is green
-   * @param texture if provided, this is the texture of the floor, default is false
-   * @description This method sets a completly new floor and grid
-   */
-  setNewFloor(
-    length: number,
-    width: number,
-    color?: THREE.Color,
-    texture?: boolean
-  ) {
-    this.viewer.scene.remove(this.mesh);
-    this.viewer.scene.remove(this.grid);
-    this.setFloor(length, width, color, texture);
-    const size = Math.max(length, width);
-    this.setGrid(size, size, texture);
+  setGrassFloor() {
+    this.mesh.material = new THREE.MeshBasicMaterial({
+      map: grassTexture,
+    });
+    this.add(this.grid);
   }
 
-  onUpdateFromClient(texture?: boolean, color?: THREE.Color) {
-    this.setNewFloor(50, 50, color, texture);
+  setWaterFloor() {
+    this.water = new Water(this.mesh.geometry, {
+      textureWidth: 512,
+      textureHeight: 512,
+      waterNormals,
+      sunDirection: new THREE.Vector3(),
+      sunColor: 0xffffff,
+      waterColor: 0x001e0f,
+      distortionScale: 3.7,
+      fog: true,
+    });
+
+    this.water.rotation.x = -Math.PI / 2;
+
+    this.add(this.water);
+
+    const sky = new Sky();
+    sky.scale.setScalar(10000);
+    this.add(sky);
+    const skyUniforms = sky.material.uniforms;
+
+    skyUniforms["turbidity"].value = 10;
+    skyUniforms["rayleigh"].value = 2;
+    skyUniforms["mieCoefficient"].value = 0.005;
+    skyUniforms["mieDirectionalG"].value = 0.8;
+
+    const parameters = {
+      elevation: 2,
+      azimuth: 180,
+    };
+
+    const phi = THREE.MathUtils.degToRad(90 - parameters.elevation);
+    const theta = THREE.MathUtils.degToRad(parameters.azimuth);
+
+    const sun = new THREE.Vector3();
+
+    sun.setFromSphericalCoords(1, phi, theta);
+
+    sky.material.uniforms["sunPosition"].value.copy(sun);
+    this.water.material.uniforms["sunDirection"].value.copy(sun).normalize();
+
+    const sceneEnv = new THREE.Scene();
+    sceneEnv.add(sky);
+    const pmremGenerator = new THREE.PMREMGenerator(this.viewer.renderer);
+    const renderTarget = pmremGenerator.fromScene(sceneEnv);
+    this.add(sky);
+
+    this.viewer.renderer.toneMapping = THREE.ACESFilmicToneMapping;
+    this.viewer.renderer.toneMappingExposure = 0.5;
+
+    this.viewer.scene.environment = renderTarget.texture;
+  }
+
+  update() {
+    if (this.water) this.water.material.uniforms["time"].value += 1.0 / 60.0;
   }
 }
