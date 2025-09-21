@@ -3,7 +3,8 @@
     "typeRoots": ["./node_modules/@types"],
     "moduleResolution": "node",
     "esModuleInterop": true,
-    "strictNullChecks": true
+    "strictNullChecks": true,
+    "target": "ESNext"
   },
   "include": ["src"]
 }

@@ -33,12 +33,14 @@ export class LashingTool extends Tool {
   onLeftClick() {
     if (!this.active) return;
     if (this.activeLashing.visible) {
-      this.viewer.inventory.addLashings([this.activeLashing]);
+      this.viewer.inventory.addItems({ squareLashings: [this.activeLashing] });
       this.activeLashing = new SquareLashing();
       this.activeLashing.visible = false;
       this.viewer.scene.add(this.activeLashing);
     } else if (this.activeScaffoldLashing.visible) {
-      this.viewer.inventory.addScaffoldLashings([this.activeScaffoldLashing]);
+      this.viewer.inventory.addItems({
+        scaffoldLashings: [this.activeScaffoldLashing],
+      });
       this.activeScaffoldLashing = new ScaffoldLashing(
         new Pole(),
         new Pole(),

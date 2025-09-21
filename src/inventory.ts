@@ -25,67 +25,52 @@ export class Inventory {
     this.viewer = viewer;
   }
 
-  addPoles(poles: Pole[]) {
+  addItems({
+    poles = [],
+    squareLashings = [],
+    bipodLashings = [],
+    tripodLashings = [],
+    scaffoldLashings = [],
+  }: {
+    poles?: Pole[];
+    squareLashings?: SquareLashing[];
+    bipodLashings?: BipodLashing[];
+    tripodLashings?: TripodLashing[];
+    scaffoldLashings?: ScaffoldLashing[];
+  }) {
     this.poles.push(...poles);
+    this.lashings.push(...squareLashings);
+    this.bipodLashings.push(...bipodLashings);
+    this.tripodLashings.push(...tripodLashings);
+    this.scaffoldLashings.push(...scaffoldLashings);
 
     (this.viewer.scene as any).dispatchEvent({
-      type: "new_pole_placed",
-      poles: poles,
+      type: "new_items_placed",
+      poles,
+      squareLashings,
+      bipodLashings,
+      tripodLashings,
+      scaffoldLashings,
     });
   }
 
-  addPoleSimple(pole: Pole) {
-    this.poles.push(pole);
+  pushPoles(poles: Pole[]) {
+    this.poles.push(...poles);
   }
 
-  addLashings(lashings: SquareLashing[]) {
-    this.lashings.push(...lashings);
-    (this.viewer.scene as any).dispatchEvent({
-      type: "new_lashing_placed",
-      lashings: lashings,
-    });
-  }
-
-  addLashingSimple(lashing: SquareLashing) {
+  pushLashing(lashing: SquareLashing) {
     this.lashings.push(lashing);
   }
 
-  addBipodLashings(lashings: BipodLashing[]) {
-    this.bipodLashings.push(...lashings);
-
-    (this.viewer.scene as any).dispatchEvent({
-      type: "new_bipod_lashing_placed",
-      lashings: lashings,
-    });
-  }
-
-  addBipodLashingSimple(lashing: BipodLashing) {
+  pushBipodLashing(lashing: BipodLashing) {
     this.bipodLashings.push(lashing);
   }
 
-  addTripodLashings(lashings: TripodLashing[]) {
-    this.tripodLashings.push(...lashings);
-
-    (this.viewer.scene as any).dispatchEvent({
-      type: "new_tripod_lashing_placed",
-      lashings,
-    });
-  }
-
-  addTripodLashingSimple(lashing: TripodLashing) {
+  pushTripodLashing(lashing: TripodLashing) {
     this.tripodLashings.push(lashing);
   }
 
-  addScaffoldLashings(lashings: ScaffoldLashing[]) {
-    this.scaffoldLashings.push(...lashings);
-
-    (this.viewer.scene as any).dispatchEvent({
-      type: "new_scaffold_lashing_placed",
-      lashings: lashings,
-    });
-  }
-
-  addScaffoldLashingSimple(lashing: ScaffoldLashing) {
+  pushScaffoldLashing(lashing: ScaffoldLashing) {
     this.scaffoldLashings.push(lashing);
   }
 

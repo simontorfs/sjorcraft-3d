@@ -89,17 +89,22 @@ export class BipodTool extends Tool {
         ...this.scaffold1.getVisiblePoles(),
         ...this.scaffold2.getVisiblePoles(),
       ];
-      this.viewer.inventory.addPoles(polesToAdd);
+
       const scaffoldLashingsToAdd = [
         ...this.scaffold1.getVisibleScaffoldLashings(),
         ...this.scaffold2.getVisibleScaffoldLashings(),
       ];
-      this.viewer.inventory.addScaffoldLashings(scaffoldLashingsToAdd);
+
+      this.viewer.inventory.addItems({
+        poles: polesToAdd,
+        scaffoldLashings: scaffoldLashingsToAdd,
+        bipodLashings: [this.lashing],
+      });
+
       this.scaffold1 = new Scaffold();
       this.scaffold2 = new Scaffold();
       this.scaffold1.addToScene(this.viewer.scene);
       this.scaffold2.addToScene(this.viewer.scene);
-      this.viewer.inventory.addBipodLashings([this.lashing]);
       this.lashing = new BipodLashing(this.scaffold1, this.scaffold2);
       this.viewer.scene.add(this.lashing);
       this.resetParameters();

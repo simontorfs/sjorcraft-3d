@@ -8,8 +8,6 @@ import { Lashing } from "../objects/lashings/lashing";
 import { TripodLashing } from "../objects/lashings/tripodLashing";
 
 export class DestructionTool extends Tool {
-  active: boolean;
-  viewer: Viewer;
   hoveredObject: Pole | Lashing | undefined;
   constructor(viewer: Viewer) {
     super(viewer);

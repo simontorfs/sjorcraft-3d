@@ -240,10 +240,13 @@ export class PoleTransformer extends THREE.Object3D {
       this.activeScaffold.removeExtensionFromScene(this.viewer.scene);
     } else {
       const polesToAdd = this.activeScaffold.getVisibleExtenstionPoles();
-      this.viewer.inventory.addPoles(polesToAdd);
-      this.viewer.inventory.addScaffoldLashings(
-        this.activeScaffold.scaffoldLashings
-      );
+      const scaffoldLashingsToAdd =
+        this.activeScaffold.getVisibleScaffoldLashings();
+
+      this.viewer.inventory.addItems({
+        poles: polesToAdd,
+        scaffoldLashings: scaffoldLashingsToAdd,
+      });
     }
   }
 }

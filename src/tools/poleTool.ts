@@ -214,9 +214,13 @@ export class PoleTool extends Tool {
   onLeftClick() {
     if (this.activeScaffoldIsColliding) return;
     if (this.fixedLashing || this.hoveringGround) {
-      this.commitLashings();
+      const { lashingsToAdd, scaffoldLashingsToAdd } = this.commitLashings();
       const polesToAdd = this.activeScaffold.getVisiblePoles();
-      this.viewer.inventory.addPoles(polesToAdd);
+      this.viewer.inventory.addItems({
+        poles: polesToAdd,
+        squareLashings: lashingsToAdd,
+        scaffoldLashings: scaffoldLashingsToAdd,
+      });
 
       this.lastPole = this.activeScaffold.mainPole;
 
@@ -233,20 +237,22 @@ export class PoleTool extends Tool {
   }
 
   commitLashings() {
+    const lashingsToAdd: SquareLashing[] = [];
     if (this.fixedLashing) {
       this.fixedLashing.relashToRightScaffoldPole(this.activeScaffold);
-      this.viewer.inventory.addLashings([this.fixedLashing]);
+      lashingsToAdd.push(this.fixedLashing);
     }
     if (this.newLashing) {
       this.newLashing.relashToRightScaffoldPole(this.activeScaffold);
-      this.viewer.inventory.addLashings([this.newLashing]);
+      lashingsToAdd.push(this.newLashing);
     }
     this.fixedLashing = undefined;
     this.newLashing = undefined;
 
-    this.viewer.inventory.addScaffoldLashings(
-      this.activeScaffold.getVisibleScaffoldLashings()
-    );
+    const scaffoldLashingsToAdd =
+      this.activeScaffold.getVisibleScaffoldLashings();
+
+    return { lashingsToAdd, scaffoldLashingsToAdd };
   }
 
   onRightClick() {

@@ -105,8 +105,10 @@ export class PolypedestraTool extends Tool {
         this.scaffolds[i] = new Scaffold();
         this.scaffolds[i].addToScene(this.viewer.scene);
       }
-      this.viewer.inventory.addPoles(polesToAdd);
-      this.viewer.inventory.addScaffoldLashings(scaffoldLashingsToAdd);
+      this.viewer.inventory.addItems({
+        poles: polesToAdd,
+        scaffoldLashings: scaffoldLashingsToAdd,
+      });
       this.resetParameters();
       this.setNrOfPoles(this.defaultNrOfPoles);
     }
