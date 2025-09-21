@@ -208,25 +208,33 @@ export class PoleTransformer extends THREE.Object3D {
         this.dropScaleHandle();
         break;
     }
+    const squareLashingsToRemove = this.lashingsOnActiveScaffold.filter(
+      (l) => l instanceof SquareLashing && !l.visible
+    ) as SquareLashing[];
+    const bipodLashingsToRemove = this.lashingsOnActiveScaffold.filter(
+      (l) => l instanceof BipodLashing && !l.visible
+    ) as BipodLashing[];
+    const tripodLashingsToRemove = this.lashingsOnActiveScaffold.filter(
+      (l) => l instanceof TripodLashing && !l.visible
+    ) as TripodLashing[];
+    const scaffoldLashingsToRemove = this.lashingsOnActiveScaffold.filter(
+      (l) => l instanceof ScaffoldLashing && !l.visible
+    ) as ScaffoldLashing[];
     for (const lashing of this.lashingsOnActiveScaffold) {
-      lashing.relashToRightScaffoldPole(this.activeScaffold);
-      if (!lashing.visible) {
-        if (lashing instanceof SquareLashing) {
-          this.viewer.inventory.removeLashings([lashing]);
-        } else if (lashing instanceof BipodLashing) {
-          this.viewer.inventory.removeBipodLashings([lashing]);
-        } else if (lashing instanceof TripodLashing) {
-          this.viewer.inventory.removeTripodLashings([lashing]);
-        } else if (lashing instanceof ScaffoldLashing) {
-          this.viewer.inventory.removeScaffoldLashings([lashing]);
-        }
-      } else {
+      if (lashing.visible) {
+        lashing.relashToRightScaffoldPole(this.activeScaffold);
         (this.viewer.scene as any).dispatchEvent({
           type: "lashing_relashed",
           lashing,
         });
       }
     }
+    this.viewer.inventory.removeItems({
+      squareLashings: squareLashingsToRemove,
+      bipodLashings: bipodLashingsToRemove,
+      tripodLashings: tripodLashingsToRemove,
+      scaffoldLashings: scaffoldLashingsToRemove,
+    });
     (this.viewer.scene as any).dispatchEvent({
       type: "pole_dropped",
       pole: this.activeScaffold.mainPole,

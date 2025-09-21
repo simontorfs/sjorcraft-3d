@@ -37,9 +37,9 @@ export class PoleTool extends Tool {
     this.activeScaffold.removeFromScene(this.viewer.scene);
     this.active = false;
     if (this.fixedLashing)
-      this.viewer.inventory.removeLashings([this.fixedLashing]);
+      this.viewer.inventory.removeSquareLashing(this.fixedLashing);
     if (this.newLashing)
-      this.viewer.inventory.removeLashings([this.newLashing]);
+      this.viewer.inventory.removeSquareLashing(this.newLashing);
     this.fixedLashing = undefined;
     this.newLashing = undefined;
     this.lastPole = undefined;
