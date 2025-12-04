@@ -3,7 +3,12 @@ import { Scaffold } from "../objects/scaffold";
 import * as THREE from "three";
 import { Viewer } from "../viewer";
 import { SquareLashing } from "../objects/lashings/squareLashing";
-import { HelperLine } from "../objects/helperLine";
+import {
+  AngleLabel,
+  AngleMarker,
+  DistanceHelperLine,
+  HelperLine,
+} from "../objects/helperLine";
 import { Tool } from "./tool";
 
 export class PoleTool extends Tool {
@@ -13,16 +18,22 @@ export class PoleTool extends Tool {
   newLashing: SquareLashing | undefined;
   lastPole: Pole | undefined;
   currentSnapHeight: number | undefined;
-  snapHelperLine: HelperLine;
+
   activeScaffoldIsColliding: boolean = false;
+
+  snapHelperLine: HelperLine = new HelperLine();
+  fixedPoleHelperLine: DistanceHelperLine = new DistanceHelperLine();
+  angleMarker1: AngleMarker = new AngleMarker();
+  angleMarker2: AngleMarker = new AngleMarker();
+  poleAngle: AngleLabel = new AngleLabel();
 
   constructor(viewer: Viewer) {
     super(viewer);
     this.activeScaffold = new Scaffold();
     this.hoveringGround = false;
-    this.snapHelperLine = new HelperLine();
+
     this.snapHelperLine.visible = false;
-    this.viewer.scene.add(this.snapHelperLine);
+    this.setHelpers();
   }
 
   activate() {
@@ -31,6 +42,12 @@ export class PoleTool extends Tool {
     this.activeScaffold.setPositions(new THREE.Vector3(0, 200, 0));
     this.activeScaffold.addToScene(this.viewer.scene);
     this.active = true;
+
+    this.viewer.scene.add(this.snapHelperLine);
+    this.viewer.scene.add(this.fixedPoleHelperLine);
+    this.viewer.scene.add(this.angleMarker1);
+    this.viewer.scene.add(this.angleMarker2);
+    this.viewer.scene.add(this.poleAngle);
   }
 
   deactivate() {
@@ -45,6 +62,13 @@ export class PoleTool extends Tool {
     this.lastPole = undefined;
 
     this.viewer.inventory.resetAllColors();
+
+    this.setHelpers();
+    this.viewer.scene.remove(this.snapHelperLine);
+    this.viewer.scene.remove(this.fixedPoleHelperLine);
+    this.viewer.scene.remove(this.angleMarker1);
+    this.viewer.scene.remove(this.angleMarker2);
+    this.viewer.scene.remove(this.poleAngle);
   }
 
   onMouseMove() {
@@ -62,6 +86,37 @@ export class PoleTool extends Tool {
       const groundPosition =
         this.viewer.inputHandler.getHoveredGroundPosition();
       if (groundPosition) this.drawPoleWhileHoveringGound(groundPosition);
+    }
+    this.setHelpers();
+  }
+
+  setHelpers() {
+    this.fixedPoleHelperLine.visible = false;
+    this.poleAngle.visible = false;
+    this.angleMarker1.visible = false;
+    this.angleMarker2.visible = false;
+    if (this.newLashing) {
+      const fixedPole = this.newLashing.fixedPole;
+      const projectedPosition = fixedPole.getProjectedPoint(
+        this.newLashing.position
+      );
+      this.fixedPoleHelperLine.setBetweenPoints([
+        fixedPole.getTop(),
+        projectedPosition,
+        fixedPole.getBottom(),
+      ]);
+      this.fixedPoleHelperLine.visible = true;
+      if (this.fixedLashing) {
+        this.angleMarker1.setOnLashing(this.newLashing);
+        this.angleMarker1.visible = true;
+      }
+    }
+
+    if (this.fixedLashing) {
+      this.angleMarker2.setOnLashing(this.fixedLashing);
+      this.angleMarker2.visible = true;
+      this.poleAngle.setOnPole(this.activeScaffold.mainPole);
+      this.poleAngle.visible = true;
     }
   }
 
@@ -177,9 +232,7 @@ export class PoleTool extends Tool {
     const snapLashings = this.viewer.inventory.lashings.filter(
       (lashing) =>
         lashing.fixedPole.isVertical() &&
-        lashing.centerFixedPole.distanceTo(
-          this.newLashing?.anchorPoint || new THREE.Vector3() // Typescript complains newLashing could be undefined, even though WE LITERALLY JUST CHECKED THAT IT'S NOT
-        ) < 5
+        lashing.centerFixedPole.distanceTo(this.newLashing!.anchorPoint) < 5
     );
     if (this.fixedLashing) snapLashings.push(this.fixedLashing);
 

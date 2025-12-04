@@ -295,4 +295,18 @@ export class Pole extends THREE.Object3D {
       .clone()
       .add(this.direction.clone().multiplyScalar(projectionLength));
   }
+
+  getTop() {
+    return this.direction
+      .clone()
+      .multiplyScalar(this.length / 2)
+      .add(this.position);
+  }
+
+  getBottom() {
+    return this.direction
+      .clone()
+      .multiplyScalar(-this.length / 2)
+      .add(this.position);
+  }
 }
