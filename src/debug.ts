@@ -35,6 +35,7 @@ export class Debug {
       lashing: () => this.viewer.inputHandler.onActivateTool("lashingtool"),
       transformation: () =>
         this.viewer.inputHandler.onActivateTool("transformationtool"),
+      measure: () => this.viewer.inputHandler.onActivateTool("measuretool"),
     };
 
     this.gui.add(triggers, "selection").name("Selection");
@@ -45,5 +46,6 @@ export class Debug {
     this.gui.add(triggers, "destruction").name("Destruction");
     this.gui.add(triggers, "lashing").name("Lashing");
     this.gui.add(triggers, "transformation").name("Transformation");
+    this.gui.add(triggers, "measure").name("Measure");
   }
 }

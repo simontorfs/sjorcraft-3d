@@ -15,6 +15,7 @@ import { Inventory } from "./inventory";
 import { Debug } from "./debug";
 import { TextSprite } from "./objects/textsprite";
 import { TransformationTool } from "./tools/transformationTool";
+import { MeasureTool } from "./tools/measureTool";
 
 export class Viewer {
   domElement: HTMLElement;
@@ -35,6 +36,7 @@ export class Viewer {
   destructionTool: DestructionTool;
   lashingTool: LashingTool;
   transformationTool: TransformationTool;
+  measureTool: MeasureTool;
 
   inventory: Inventory;
   saveTool: SaveTool;
@@ -119,6 +121,7 @@ export class Viewer {
     this.destructionTool = new DestructionTool(this);
     this.lashingTool = new LashingTool(this);
     this.transformationTool = new TransformationTool(this);
+    this.measureTool = new MeasureTool(this);
 
     this.inputHandler = new InputHandler(this);
     this.debug = new Debug(this);

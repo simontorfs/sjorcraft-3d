@@ -261,4 +261,24 @@ export class Inventory {
     const poleSet = PoleSetManager.getInstance();
     poleSet.resetPoleset();
   }
+
+  getLashPointsOnPole(pole: Pole) {
+    return [
+      ...this.lashings
+        .filter((l) => l.fixedPole === pole || l.loosePole === pole)
+        .map((l) => pole.getProjectedPoint(l.position)),
+      ...this.bipodLashings
+        .filter((l) => l.pole1 === pole || l.pole2 === pole)
+        .map((l) => pole.getProjectedPoint(l.position)),
+      ...this.tripodLashings
+        .filter((l) => l.leftPole === pole)
+        .map((l) => l.centerLeftPole),
+      ...this.tripodLashings
+        .filter((l) => l.rightPole === pole)
+        .map((l) => l.centerRightPole),
+      ...this.tripodLashings
+        .filter((l) => l.middlePole === pole)
+        .map((l) => l.centerMiddlePole),
+    ];
+  }
 }

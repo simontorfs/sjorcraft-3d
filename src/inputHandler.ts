@@ -221,6 +221,7 @@ export class InputHandler {
     this.viewer.destructionTool.deactivate();
     this.viewer.lashingTool.deactivate();
     this.viewer.transformationTool.deactivate();
+    this.viewer.measureTool.deactivate();
   }
 
   onActivateTool(tool: string) {
@@ -249,6 +250,9 @@ export class InputHandler {
         break;
       case "transformationtool":
         this.activeTool = this.viewer.transformationTool;
+        break;
+      case "measuretool":
+        this.activeTool = this.viewer.measureTool;
         break;
       default:
         break;
