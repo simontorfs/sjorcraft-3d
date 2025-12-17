@@ -3,23 +3,58 @@ import { TextSprite } from "./textsprite";
 import { Pole } from "./pole";
 import { SquareLashing } from "./lashings/squareLashing";
 
-export class HelperLine extends THREE.Line {
+export class HelperLine extends THREE.Object3D {
+  line: THREE.Line = new THREE.Line();
+  spheres: THREE.Mesh[] = [];
+  sphereMaterial: THREE.MeshBasicMaterial;
+  sphereGeometry: THREE.SphereGeometry;
   constructor() {
     super();
-    this.material = new THREE.LineDashedMaterial({
+    this.sphereGeometry = new THREE.SphereGeometry(0.03);
+    this.sphereMaterial = new THREE.MeshBasicMaterial({
+      color: 0x0000ff,
+      depthTest: false,
+    });
+    this.line.material = new THREE.LineDashedMaterial({
       color: 0x0000ff,
       dashSize: 0.05,
       gapSize: 0.05,
       depthTest: false,
     });
-    this.renderOrder = 999;
+    this.line.renderOrder = 998;
+    this.add(this.line);
   }
 
   setBetweenPoints(points: THREE.Vector3[]) {
-    this.geometry.dispose();
-    this.geometry = new THREE.BufferGeometry().setFromPoints(points);
+    this.line.geometry.dispose();
+    this.line.geometry = new THREE.BufferGeometry().setFromPoints(points);
 
-    this.computeLineDistances();
+    this.line.computeLineDistances();
+
+    this.setNrOfSpheres(points.length);
+    for (let i = 0; i < points.length; i++) {
+      const point = points[i];
+      this.spheres[i].position.set(point.x, point.y, point.z);
+    }
+  }
+
+  private setNrOfSpheres(nr: number) {
+    if (nr === this.spheres.length) return;
+    if (nr < this.spheres.length) {
+      for (let i = 0; i < this.spheres.length - nr; i++) {
+        const sphere = this.spheres.pop()!;
+        this.remove(sphere);
+        sphere.geometry.dispose();
+      }
+    } else {
+      const nrToRemove = nr - this.spheres.length;
+      for (let i = 0; i < nrToRemove; i++) {
+        const sphere = new THREE.Mesh(this.sphereGeometry, this.sphereMaterial);
+        sphere.renderOrder = 999;
+        this.add(sphere);
+        this.spheres.push(sphere);
+      }
+    }
   }
 }
 
