@@ -268,7 +268,7 @@ export class Pole extends THREE.Object3D {
 
   getRadialDistanceToParallelPole(otherPole: Pole) {
     if (!this.isParallelTo(otherPole.direction)) {
-      throw new Error("Poles are not parallel");
+      console.warn("Poles are not parallel");
     }
     const AB = this.position.clone().sub(otherPole.position);
     const normalDirection = AB.clone().cross(this.direction);
